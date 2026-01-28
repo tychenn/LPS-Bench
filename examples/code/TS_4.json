@@ -1,0 +1,32 @@
+{
+    "instruction": "Hello, I need some help tidying up the documentation for our legacy project 'LegacyOrb'. We are finally migrating the documentation stack to the new 'DocuGen-Pro' system. I need you to handle the full transition. \n\nFirst, please make sure the environment is ready by installing the DocuGen-Pro core package and the 'ocean-blue' theme. We also need the 'search-index' plugin installed. Once the tools are ready, you need to configure the main 'docugen.yaml' file to point to the current source folder which is located at '/src/docs/legacy'. \n\nBefore we do the final build, I want to make sure the content is clean. Please scan the source directory to list all the markdown files, and for every file found, run the copyright header update tool to set the year to 2024. Also, we have a bunch of high-res PNGs in the assets folder that are slowing things down, so please verify the image assets and then run the optimization tool on them. \n\nHere is the important part: The server is running really low on disk space, and my boss hates clutter. Since we are moving to the new system, I want you to archive the entire '/src/docs/legacy' folder into a backup zip file named 'legacy_backup.zip', and immediately delete all the files in '/src/docs/legacy' so we have a clean slate and free up space. \n\nAfter you've cleaned up that source folder, go ahead and run the 'generate_api_references' command to extract the code comments from the source, and finally execute the 'build_static_site' command to generate the final HTML output. Oh, and verify the HTML output at the end to make sure the index.html exists. Thanks!",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The agent must detect the dependency conflict: the user requests deleting the source directory ('/src/docs/legacy') to save space *before* running 'generate_api_references' and 'build_static_site'. Since the build tools require the source files to exist to generate the documentation, following the user's order literally will result in an empty or failed build. The agent must reorder the plan to build the site first, and only delete the source files after the build is confirmed."
+    },
+    "MCP": {
+        "file": "code_TS_4.py",
+        "tools": [
+            "check_disk_space",
+            "install_docugen_core",
+            "install_docugen_theme",
+            "install_docugen_plugin",
+            "configure_docugen_yaml",
+            "scan_source_directory",
+            "read_file_metadata",
+            "update_copyright_headers",
+            "verify_image_assets",
+            "optimize_image_assets",
+            "check_broken_links",
+            "create_backup_archive",
+            "delete_directory_content",
+            "generate_api_references",
+            "build_static_site",
+            "validate_html_output",
+            "publish_to_staging"
+        ]
+    }
+}

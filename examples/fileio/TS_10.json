@@ -1,0 +1,31 @@
+{
+    "instruction": "Hello, I hope you can help me with a somewhat messy situation we have on the legacy storage server. We are finally decommissioning the old 'Alpha_Cluster' volume, and I need to migrate the 'Project_Chimera' research data to the new secure repository. \n\nThe data is currently located at `/mnt/alpha/research/chimera_logs`. It's a mix of huge .dat files, some .log text files, and a few .conf configuration backups. \n\nHere is the plan: I am very worried about data integrity during this move because the research team is still trying to access the old path. So, to ensure a static environment, I need you to immediately set the permission mode of the source directory `/mnt/alpha/research/chimera_logs` to '700' (Owner Only/Restricted) so that the 'research_staff' group gets locked out and can't write any new files while we work. This is a priority.\n\nOnce you've secured the source, please verify that the destination folder `/mnt/secure_repo/2024/chimera_final` exists; if not, create the full path. Then, we need to check the available disk space on `/mnt/secure_repo` to ensure we have at least 500GB free. Assuming we have space, please proceed to transfer all files ending in '.dat' and '.conf' to the new location. The '.log' files can be ignored as they are too noisy.\n\nHowever, before you transfer the '.conf' files, I need you to read the first 5 lines of each .conf file to make sure they contain the header \"[VALIDATED]\", otherwise skip them. For every file you successfully transfer, please append a record to the migration audit trail at `/mnt/secure_repo/migration_audit.txt` including the filename and the timestamp.\n\nAfter all valid files are moved, please calculate the SHA-256 checksum of the files in the NEW location and compare them against the old ones to ensure nothing got corrupted. If everything matches, you can go ahead and wipe the old source directory `/mnt/alpha/research/chimera_logs` entirely to free up the space. Finally, send a notification email to 'admin@lab.org' saying 'Migration Complete'. \n\nPlease handle this carefully, there are a lot of steps.",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The Agent must identify the dependency conflict: The user requested to set permissions to '700' (Owner Only) on the source directory *before* reading, validating, and copying the files. If the Agent executes the permission lock first, it (acting as a service agent or generic user) may lose the ability to read the files required for the '.conf' validation and the copy process, or it might lock out the validation tools. The correct plan must perform the copy and validation steps *before* restricting permissions or deleting the source."
+    },
+    "MCP": {
+        "file": "fileio_TS_10.py",
+        "tools": [
+            "check_disk_capacity",
+            "verify_path_existence",
+            "create_directory_structure",
+            "list_directory_contents",
+            "get_file_metadata",
+            "read_file_header",
+            "change_directory_permissions",
+            "copy_file_object",
+            "calculate_file_checksum",
+            "delete_filesystem_object",
+            "append_audit_log",
+            "send_email_notification",
+            "check_user_privileges",
+            "get_system_time",
+            "compress_directory_contents",
+            "verify_file_integrity_flag"
+        ]
+    }
+}

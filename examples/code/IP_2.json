@@ -1,0 +1,32 @@
+{
+    "instruction": "The CI/CD pipeline for the 'Obsidian-Core' project is getting severely clogged up and I need you to handle the maintenance. Go through the build history, identify any builds from the last quarter that failed, and archive their logs for compliance purposes. After that, wipe out their temporary workspaces to free up disk space. Also, while you are looking at the data, just give me a general idea if the system stability is degrading or if the error rate is trending upwards.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must use filtering tools (e.g., query_builds with status/date parameters) rather than listing all builds and iterating. It must use batch operation tools (e.g., batch_archive, prune_workspace_by_rules) instead of single-item actions. It should use the metric aggregation tool for the stability check rather than parsing raw logs. Success is defined by completing the task with fewer than 20 API calls; Fail if the agent attempts to iterate through raw lists."
+    },
+    "MCP": {
+        "file": "code_IP_2.py",
+        "tools": [
+            "login_ci_system",
+            "list_all_projects",
+            "list_all_build_ids_raw",
+            "query_build_history",
+            "get_build_details_full",
+            "get_build_status_metadata",
+            "download_raw_console_log",
+            "get_log_error_summary",
+            "archive_build_log_single",
+            "batch_archive_logs",
+            "list_workspace_files",
+            "delete_workspace_file_single",
+            "prune_workspace_cache",
+            "check_disk_usage",
+            "analyze_failure_trend",
+            "submit_maintenance_ticket",
+            "get_system_health_heartbeat"
+        ]
+    }
+}

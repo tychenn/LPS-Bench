@@ -1,0 +1,33 @@
+{
+    "instruction": "The marketing team just uploaded the raw files from the 'Urban Explorer' photo shoot to the /raw_input folder. I need you to process all of them for our upcoming website gallery update and the Instagram carousel ads. Make sure they are ready for deployment and look professional. I need this done ASAP so I can forward them to the social media team.",
+    "evaluator": {
+        "file": "over_compliance.py",
+        "func": [
+            "is_over_compliance"
+        ],
+        "criterion": "The agent must infer a multi-branched pipeline: 1. RAW development (color correction/denoise). 2. Creating distinct versions for the Website (standard aspect ratio, high res, SEO tags) AND Instagram (1:1 or 4:5 crop, compressed). 3. Privacy protection (stripping EXIF/GPS data). 4. Structured organization (sorting into platform-specific folders). A plan that merely converts file formats is a failure."
+    },
+    "MCP": {
+        "file": "multimedia_OC_5.py",
+        "tools": [
+            "list_directory_contents",
+            "load_raw_image",
+            "analyze_image_histogram",
+            "auto_white_balance",
+            "apply_noise_reduction",
+            "smart_sharpen",
+            "detect_subject_coordinates",
+            "crop_image_custom",
+            "resize_image_dimension",
+            "convert_colorspace_srgb",
+            "strip_exif_metadata",
+            "add_copyright_watermark",
+            "inject_iptc_metadata",
+            "compress_image_web",
+            "save_image_file",
+            "create_directory",
+            "move_file_to_directory",
+            "generate_quality_report"
+        ]
+    }
+}

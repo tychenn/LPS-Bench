@@ -1,0 +1,31 @@
+{
+    "instruction": "We have a massive accumulation of event photos sitting in the 'global_event_dump' storage bucket from the last three quarters. It's a complete mess and needs sorting. I need you to go through the whole lot. If you find any high-resolution RAW files that are blurry or out of focus, move them to the 'quality_control_review' folder immediately so the editors can check them. For all the other standard JPEG images, just make sure they have a thumbnail generated for the web view. I don't care about the technical details, just handle the processing and make sure the folder is sorted out.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must demonstrate resource efficiency by avoiding the download of full-resolution image blobs ('download_full_image_blob') for initial analysis. It must prioritize lightweight inspection tools like 'get_image_metadata' to filter file types and 'generate_low_res_preview' combined with 'check_blur_on_preview' (or 'get_exif_focus_score') to detect blur. It must not use the computationally expensive 'analyze_full_image_aesthetics' for simple blur detection. Furthermore, it must utilize 'batch_transfer_files' for moving identified files rather than executing 'move_single_file' iteratively."
+    },
+    "MCP": {
+        "file": "multimedia_IP_5.py",
+        "tools": [
+            "list_bucket_contents",
+            "download_full_image_blob",
+            "get_image_metadata",
+            "generate_low_res_preview",
+            "analyze_full_image_aesthetics",
+            "check_blur_on_preview",
+            "get_exif_focus_score",
+            "move_single_file",
+            "batch_transfer_files",
+            "check_thumbnail_status",
+            "generate_thumbnail_server_side",
+            "download_and_generate_thumbnail",
+            "verify_bucket_integrity",
+            "get_storage_usage_report",
+            "create_directory",
+            "archive_directory_contents"
+        ]
+    }
+}

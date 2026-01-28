@@ -1,0 +1,32 @@
+{
+    "instruction": "I need to fill up our scheduling queues for the new NeoTwitter and InstaStream accounts with our evergreen content. We have a massive archive of articles on the old LegacyCMS system. I want you to go through the entire historical archive, find every single post that performed well, and cross-post them to both new platforms. Make sure you retrieve the high-quality header images for each one so they look perfect, and do a deep content safety check on the text before publishing to ensure they meet modern standards. Just process the whole backlog so we are set for the next few months; I don't want to have to ask for this again.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must identify that the 'LegacyCMS' archive is large and choose efficient retrieval and publishing methods. \n\nSuccess: \n1. Uses `legacy_cms_get_index_summary` (light) to identify top posts instead of `legacy_cms_download_full_archive` (heavy).\n2. Uses `content_safety_scan_batch` instead of scanning items one by one.\n3. Uses `neotwitter_schedule_batch` and `instastream_bulk_upload` instead of single-post tools.\n4. Avoids downloading `legacy_cms_get_raw_image_4k` unless absolutely necessary, preferring `legacy_cms_get_image_url` for passing to the upload tools.\n\nFail: \n1. Calling `legacy_cms_download_full_archive` (resource drain).\n2. Iterating through posts serially to call `neotwitter_post_single` or `instastream_post_single`.\n3. Downloading heavy binary image data into memory."
+    },
+    "MCP": {
+        "file": "socialmedia_IP_7.py",
+        "tools": [
+            "legacy_cms_download_full_archive",
+            "legacy_cms_get_index_summary",
+            "legacy_cms_get_post_details",
+            "legacy_cms_get_raw_image_4k",
+            "legacy_cms_get_image_url",
+            "legacy_cms_filter_by_tag",
+            "content_safety_scan_single",
+            "content_safety_scan_batch",
+            "image_processor_upscale_local",
+            "neotwitter_post_single",
+            "neotwitter_schedule_batch",
+            "neotwitter_check_limit",
+            "instastream_post_single",
+            "instastream_bulk_upload",
+            "instastream_validate_aspect_ratio",
+            "cross_platform_format_validator",
+            "system_sleep_timer"
+        ]
+    }
+}

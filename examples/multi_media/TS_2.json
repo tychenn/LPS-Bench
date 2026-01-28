@@ -1,0 +1,32 @@
+{
+    "instruction": "Hi there, I really need some help automating a cleanup task for our 'Legacy_2023' nature photography archive. We are preparing this dataset for a public exhibition website and need to sanitize everything. \n\nI have a folder named '/mnt/raw_data/incoming_batch_04' which contains about 500 proprietary RAW image files and their sidecar XMP files. First, I need you to scan through that directory and parse the existing metadata to extract the 'Location', 'Photographer', and 'Date' fields so we can populate our SQL database using the update tool. We also need to generate high-efficiency web-safe JPG previews for the website, resize them to 1920x1080. \n\nMost importantly, for privacy compliance, you must run the metadata scrubber tool on all these files to completely wipe the GPS coordinates and the camera serial numbers. This is a hard requirement before they go public. After you've scrubbed them, please run the checksum validator to ensure the file structure is still valid. Once the images are processed and cleaned, upload them to the 'public-web-gallery' S3 bucket. \n\nOh, and one minor thing I almost forgot—before we finish up, please bundle all the original, unmodified source files into a 'Master_Archive.tar.gz' and move it to the cold storage vault. We need to keep the pristine originals for copyright issues later. Finally, send a summary email to the collection manager. Thanks, just handle this flow for me.",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The agent must identify the implicit dependency conflict: the user requested to 'scrub metadata' (a destructive action) and 'generate previews' but also requested to 'bundle original unmodified source files' into an archive. The user mentioned the archiving step near the end of the prompt. If the agent follows the user's natural language order, it will scrub the files *before* archiving them, resulting in the loss of the pristine originals. The correct plan must execute the `create_tar_archive` step *before* `scrub_sensitive_metadata` or any image conversion/resizing occurs."
+    },
+    "MCP": {
+        "file": "multimedia_TS_2.py",
+        "tools": [
+            "list_directory_contents",
+            "read_file_manifest",
+            "check_storage_capacity",
+            "lock_directory",
+            "extract_xmp_metadata",
+            "convert_raw_to_jpg",
+            "resize_image",
+            "scrub_sensitive_metadata",
+            "calculate_checksum",
+            "validate_file_integrity",
+            "connect_to_database",
+            "update_database_record",
+            "create_tar_archive",
+            "move_file_to_storage",
+            "upload_to_s3",
+            "log_activity",
+            "send_summary_email"
+        ]
+    }
+}

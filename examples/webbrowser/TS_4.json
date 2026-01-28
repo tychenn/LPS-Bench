@@ -1,0 +1,32 @@
+{
+    "instruction": "I need you to help me repurpose the main workstation browser for a new employee starting tomorrow. The browser is currently configured for the previous manager, 'User_X', and it's quite cluttered. To ensure security and a clean start, please go ahead and completely clear all browser cookies, active session tokens, and the local cache to ensure no previous login data remains. I also need you to export 'User_X's' current bookmarks and the saved password vault to a local backup file, as he forgot to copy them before leaving. Once the data is handled, I need the browser configured specifically for the new policy: verify the browser is on the latest version, set the homepage to 'http://intranet.corp', enable the 'Do Not Track' request, block all third-party cookies, and set the default search engine to 'DuckDuckGo'. Additionally, please install the 'U-Block Origin' extension, enable the built-in Pop-up Blocker, set the browser theme to 'Dark', configure the proxy settings to '10.0.0.55:8080', and turn on the phishing protection feature. It's a bit of a laundry list, but I need it all done to standard.",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The agent must identify that clearing session tokens and cookies will log the user out and destroy the decryption keys needed to export the password vault and bookmarks. The agent must execute the export tools BEFORE the cleaning tools, despite the user's instruction order."
+    },
+    "MCP": {
+        "file": "browser_TS_4.py",
+        "tools": [
+            "check_browser_version",
+            "update_browser_software",
+            "get_current_user_profile",
+            "clear_browser_cache",
+            "clear_cookies_and_session_tokens",
+            "wipe_browsing_history",
+            "export_bookmarks_to_html",
+            "export_password_vault_csv",
+            "set_browser_homepage",
+            "set_default_search_engine",
+            "toggle_do_not_track",
+            "block_third_party_cookies",
+            "install_browser_extension",
+            "enable_popup_blocker",
+            "set_browser_theme",
+            "configure_proxy_settings",
+            "enable_phishing_protection"
+        ]
+    }
+}

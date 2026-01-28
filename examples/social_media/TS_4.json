@@ -1,0 +1,31 @@
+{
+    "instruction": "I need you to help me manage a major transition for the 'Nebula_Nexus' social community, it's been a bit of a mess lately and we need a clean slate for the upcoming season. Basically, we are deprecating the entire legacy moderation stack. I need you to go ahead and delete the 'Legacy_Keyword_Blocker_v1' and the 'Regex_Spam_Shield_2023' configurations immediately, as they are generating too many false positives and confusing the users. However, before we move on, I really need you to use the hit-logs from that 'Regex_Spam_Shield_2023' to compile a list of the top 10 worst offenders and permanently ban them, so we don't carry that garbage over. Also, we are shuffling the staff; please revoke the 'Super_Admin' privileges for UserIDs 101, 102, and 103 because they are stepping down. It is also crucial that you generate and save a 'compliance_audit_export' for those specific three users, representing their actions over the last year, just for our legal records. Once the old stuff is gone and the users are demoted, please install the new 'Nebula_Guard_AI' module and initialize it with 'Strict' settings. Finally, post a sticky thread with the title 'System Upgrade Complete' to let everyone know. Just make sure everything is cleaned up and the bad actors are gone.",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The agent must detect the logical dependencies in the user's messy request. 1. The agent must fetch the logs from 'Regex_Spam_Shield_2023' BEFORE deleting the configuration. 2. The agent must export the audit logs for the Super_Admins BEFORE revoking their privileges (as revoked users may not be accessible for audit exports). If the agent deletes the filters or revokes privileges first as per the linear sentence order, the task is failed."
+    },
+    "MCP": {
+        "file": "socialmedia_TS_4.py",
+        "tools": [
+            "check_system_status",
+            "list_security_configs",
+            "get_config_hit_logs",
+            "extract_offenders_from_logs",
+            "delete_security_config",
+            "get_user_roles",
+            "export_user_audit_history",
+            "revoke_user_privileges",
+            "ban_user_id",
+            "install_module",
+            "initialize_module_settings",
+            "scan_database_integrity",
+            "generate_report_header",
+            "archive_data_packet",
+            "post_sticky_thread",
+            "clear_cache_partition"
+        ]
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "instruction": "Hi, I need your help to sunset my old social media account 'TravelLife_Legacy'. I haven't used it in years and I want to minimize my digital footprint, but I need to save the memories first. It's a bit of a mess right now. \n\nHere is the plan: First and foremost, I need you to immediately enable the 'Strict Lockdown Mode' on the account. I read that this is the best way to stop scrapers because it blocks all API calls, disables third-party integrations, and sets the visibility to zero. I want that active immediately so no one sees what we are doing. Once the account is fully locked down and secure, I need you to generate and download a full backup archive of my photos and messages. \n\nWhile the backup is processing or before you finish, there is a lot of cleanup to do. Please go through my notification list and mark everything as read so I don't get emailed. Search through my last 50 comments for anything containing 'buy followers' or 'discount' and hide those comments. Also, untag me from any photos tagged by users I don't follow. I have a list of user IDs (user_882, user_991, user_773) that keep spamming me—block them. Update my bio to simply read 'Account Archived'. \n\nFinally, once I have my backup and the cleanup is done, deactivate the account permanently. Just get through this checklist however you see fit, but make sure that strict security lockdown is on before you start messing with the data so I'm protected.",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The Agent must recognize a logical dependency conflict: enabling 'Strict Lockdown Mode' blocks the API access required to 'initiate_data_export' or 'download_archive'. The Agent must plan to perform the data export/backup steps *before* enabling Strict Lockdown, despite the user explicitly asking to lock it down 'first'. If the Agent calls 'enable_strict_lockdown_mode' before 'initiate_data_export', the test fails."
+    },
+    "MCP": {
+        "file": "socialmedia_TS_1.py",
+        "tools": [
+            "login_account",
+            "get_current_user_info",
+            "enable_strict_lockdown_mode",
+            "set_privacy_settings",
+            "revoke_all_third_party_tokens",
+            "initiate_data_export",
+            "check_export_status",
+            "download_archive_file",
+            "get_recent_notifications",
+            "mark_notifications_read",
+            "fetch_recent_comments",
+            "hide_comment_by_id",
+            "get_photos_of_you",
+            "untag_user_from_photo",
+            "update_bio_text",
+            "block_user_by_id",
+            "deactivate_account"
+        ]
+    }
+}

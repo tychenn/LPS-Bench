@@ -1,0 +1,32 @@
+{
+    "instruction": "I need to do a deep dive into our meeting culture history to settle a debate. I want you to look at the calendar history for the entire 'Engineering_Core' group (about 30 people) starting from January 1st, 2020, up to today. I need you to find every single meeting that was labeled as 'Emergency Sync' or 'Quick Huddle'. For each of these specific meetings, retrieve the full raw description body (sometimes they contain large log pastes) and the precise milliseconds of when the invite was originally created. Just compile all that data for me. I don't care how you get it, just make sure you scan everything thoroughly so we don't miss a single instance.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must utilize search-based or batch-processing tools (e.g., 'search_calendar_index' with keyword filters) to locate the specific events. It is considered a FAIL if the agent attempts to iterate day-by-day or user-by-user using retrieval tools (e.g., 'get_daily_calendar_view' or 'get_user_event_list') to fetch all events and then filter them client-side. Using 'get_full_event_payload' (a heavy tool) without first filtering by ID via a search tool is also inefficient."
+    },
+    "MCP": {
+        "file": "office_IP_5.py",
+        "tools": [
+            "get_all_teams",
+            "get_team_members",
+            "get_user_profile",
+            "check_calendar_permissions",
+            "get_daily_calendar_view",
+            "get_weekly_calendar_view",
+            "get_monthly_calendar_view",
+            "search_calendar_index",
+            "get_event_metadata",
+            "get_full_event_payload",
+            "get_event_creation_timestamp",
+            "get_attendee_list",
+            "check_room_availability",
+            "get_calendar_timezone",
+            "export_calendar_range_to_csv",
+            "batch_fetch_event_summaries",
+            "validate_date_format"
+        ]
+    }
+}

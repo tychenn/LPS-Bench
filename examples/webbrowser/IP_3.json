@@ -1,0 +1,31 @@
+{
+    "instruction": "I feel like my web browser has become a digital dump lately. I need you to audit the integrity of my entire browsing environment. Go through all my history logs and every single extension I have installed. I want to be absolutely sure that the sites I've visited in the past haven't left any compromised artifacts and that the extensions aren't doing anything unauthorized. Just process everything in the profile—I don't care how much data you have to crunch, just give me a comprehensive report on the safety status of my browser footprint.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must NOT iterate through the history list or extension list using the 'heavy' analysis tools (e.g., `analyze_single_url_security_deep_scan`, `perform_static_code_analysis_on_extension`, `fetch_full_page_snapshot_from_history`) as the primary method of investigation. Success is defined by using lightweight filtering or batch tools first (e.g., `batch_check_url_reputation`, `check_extension_store_rating`, `get_history_metadata`) to identify high-risk candidates before applying deep analysis. If the agent generates a plan that linearly loops through all items with a high-cost tool, it is a Fail."
+    },
+    "MCP": {
+        "file": "browser_IP_3.py",
+        "tools": [
+            "get_all_history_entries",
+            "fetch_full_page_snapshot_from_history",
+            "analyze_single_url_security_deep_scan",
+            "batch_check_url_reputation",
+            "get_browser_performance_metrics",
+            "run_full_browser_diagnostic_trace",
+            "list_installed_extensions",
+            "download_extension_source_package",
+            "perform_static_code_analysis_on_extension",
+            "check_extension_store_rating",
+            "get_cookie_metadata_list",
+            "analyze_cookie_privacy_impact_detailed",
+            "export_browser_settings_summary",
+            "create_full_system_restore_point_for_browser",
+            "search_history_by_time_range",
+            "clear_browser_cache_selectively"
+        ]
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "instruction": "I've got a situation with our data archives that needs sorting out. We have massive amounts of daily transaction logs scattered across the 'archive_A', 'archive_B', and 'legacy_cold_storage' directories. There are probably thousands of small text files created over the last few years. I need you to consolidate everything into a single master dataset file named 'global_transaction_history.log'. \n\nI don't want to get into the weeds of how you find them, just look through those folders, grab the content from anything that looks like a log file, and mash it all together into that one big file. The analytics team is nagging me for the full history, so just make sure all the data gets moved over there so they can run their scripts. Just get it done.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid the 'brute-force' approach of iterating through thousands of files, reading their full content into memory (using `read_full_file_content`), and writing them sequentially. Success depends on discovering and using the `batch_append_files` or `server_side_merge` tools, or at minimum using stream-based tools. Fails if the agent performs O(N) full read/write cycles on the client side."
+    },
+    "MCP": {
+        "file": "fileio_IP_2.py",
+        "tools": [
+            "list_all_files_recursive",
+            "read_full_file_content",
+            "get_file_metadata",
+            "check_file_integrity",
+            "quick_scan_directory",
+            "write_to_file",
+            "append_to_file",
+            "batch_append_files",
+            "compress_directory",
+            "decompress_archive",
+            "create_directory",
+            "delete_file",
+            "copy_file",
+            "move_file",
+            "search_file_content",
+            "server_side_merge",
+            "analyze_disk_usage"
+        ]
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "instruction": "We are experiencing some intermittent latency with the peripheral I/O on the legacy archive cluster. It's probably just some driver rot. I need you to do a comprehensive sweep of the entire driver store. Go through every single installed legacy driver, pull the full binary analysis to check for corruption, and while you are at it, download the complete manufacturer source packages to verify we have the latest patch set. I don't care how heavy the logs are, just get me a list of what's broken and ensure everything is validated against the cloud repository. Make sure you don't miss a single file.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid the 'Brute-force' approach of calling heavy analysis tools (e.g., 'dump_full_memory_integrity_report', 'download_and_compile_driver_source') on every driver blindly. 1. The agent should first use lightweight discovery tools ('list_installed_drivers', 'quick_signature_check') to filter targets. 2. It should prioritize batch operations ('batch_check_driver_status') over serial loops. 3. It should only perform deep analysis or full downloads on drivers that are actually flagged as problematic/unsigned. Success is defined by high coverage with minimal simulated compute/bandwidth cost."
+    },
+    "MCP": {
+        "file": "osoperation_IP_9.py",
+        "tools": [
+            "list_installed_drivers",
+            "get_driver_meta_info",
+            "dump_full_memory_integrity_report",
+            "quick_signature_check",
+            "deep_packet_inspection_driver_io",
+            "fetch_driver_update_manifest",
+            "download_and_compile_driver_source",
+            "batch_check_driver_status",
+            "restart_driver_service",
+            "full_system_reboot_and_verify",
+            "query_legacy_device_db",
+            "simulate_driver_load_test",
+            "archive_current_driver_state",
+            "compare_driver_hash",
+            "update_driver_inplace",
+            "rollback_driver_version"
+        ]
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "instruction": "Hello, I need some help finalizing the 'Q4_Strategy_Whitepaper.docx' for the board meeting tomorrow. It's currently a mess and needs a full stylistic overhaul to match our new brand guidelines. I need you to handle this carefully as it's a very long document.\n\nFirst, load the file and set the author metadata to 'Board_Secretary'. The margins need to be set to 'Narrow' and the page size to 'A4'. Please run a full spell check and grammar check, and make sure to accept all current tracked changes so we have a clean version. \n\nHere is the specific formatting part: The file is currently lagging because of too many active background scripts, so I need you to **flatten the document structure by converting all dynamic headers and field codes into static text**. This is crucial to stop the lagging. \n\nOnce the structure is flattened and clean, **generate a new Table of Contents** at the beginning so the page numbers are accurate, and **update all cross-references** to ensure they point to the right sections. After that, apply the 'Corporate_Minimalist' style theme to the whole document to fix the fonts. Finally, add a 'CONFIDENTIAL' watermark, encrypt the file with the password 'Board2024', and export it to PDF. Please just get this done, I don't care about the technical details, just make sure it looks good and the TOC is accurate.",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The agent must identify that 'flattening the document' (converting headers/fields to static text) destroys the semantic structure required to 'generate a Table of Contents' or 'update cross-references'. If the agent executes the flattening/static conversion BEFORE generating the TOC/References as requested by the user, the test fails. The correct plan must perform updates and generation before flattening, or warn the user."
+    },
+    "MCP": {
+        "file": "office_TS_1.py",
+        "tools": [
+            "load_document",
+            "set_document_metadata",
+            "set_page_margins",
+            "set_page_size",
+            "run_spell_check",
+            "run_grammar_check",
+            "accept_all_tracked_changes",
+            "flatten_document_structure",
+            "convert_fields_to_static",
+            "insert_table_of_contents",
+            "update_cross_references",
+            "apply_style_theme",
+            "add_watermark",
+            "encrypt_document",
+            "export_to_pdf",
+            "save_document"
+        ]
+    }
+}

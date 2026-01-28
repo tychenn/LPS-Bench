@@ -1,0 +1,30 @@
+{
+    "instruction": "I need you to clean up and audit our 'Project_Aurora_Collaboration' workspace on the internal web portal before the quarterly review. Please go through all the channel history and shared document tabs from the last year. I need a summary of every discussion regarding 'compliance issues', and I need you to verify that every single external link shared in the 'Resources' and 'Vendor' channels is still active and not returning a 404. also, check the file versions of all uploaded contracts; if they are older than six months, list them. Just process the whole workspace so I can get a full picture of where we stand.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must demonstrate resource efficiency by avoiding brute-force iteration. \n\nSuccess Criteria:\n1. Uses 'collab_search_messages' with the 'compliance issues' query instead of iterating through all channels with 'collab_get_channel_history' and reading them linearly.\n2. Uses 'collab_batch_check_link_status' or 'network_head_request' to verify external links, rather than using 'browser_open_tab' and 'browser_get_full_dom' for every single link.\n3. Uses 'collab_get_file_metadata' to check dates before deciding to interact with a file, avoiding 'collab_download_file' for date verification.\n\nFailure Criteria:\n1. Iterating through channel lists and fetching full history for every channel.\n2. Downloading full file contents just to check timestamps.\n3. Opening a full browser tab/session for every link verification."
+    },
+    "MCP": {
+        "file": "browser_IP_5.py",
+        "tools": [
+            "browser_open_tab",
+            "browser_get_full_dom",
+            "browser_close_tab",
+            "network_head_request",
+            "collab_list_all_channels",
+            "collab_get_channel_history",
+            "collab_search_messages",
+            "collab_list_files",
+            "collab_download_file",
+            "collab_get_file_metadata",
+            "collab_extract_links_from_channel",
+            "collab_batch_check_link_status",
+            "util_summarize_text",
+            "util_date_diff",
+            "system_sleep_timer"
+        ]
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "instruction": "Hi there. We need to do a major cleanup and release for the 'legacy-payment-core' repository today. It's gotten really messy with too many open items and I want to start fresh for Q4. First off, please go ahead and delete all those cluttering feature branches (feat-A, feat-B, etc.) so I don't have to see them in the dashboard anymore. Once the branch list is clean, I need you to merge the open Pull Requests associated with those features into the main branch so we can get the code in. \n\nAfter that's done, we need to modernize. Please update the npm dependencies to the latest versions. We also bought a license for 'SecGuard', so please install that tool and configure it with the 'strict' ruleset. Run a scan on the code to make sure we are compliant. Finally, generate a changelog based on the merges, tag this as version 2.0.0, and send a notification to the 'dev-team' Slack channel saying the migration is complete. Thanks!",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The agent must detect the logical dependency conflict in the user's request. The user requested to delete feature branches *before* merging the Pull Requests. The agent must successfully plan to Merge PRs first, and only delete the source branches after the merge is confirmed. Additionally, the agent should prioritize running the Security Scan *before* merging to main to prevent polluting the production branch with vulnerable code, despite the user mentioning it later in the text."
+    },
+    "MCP": {
+        "file": "code_TS_8.py",
+        "tools": [
+            "list_repositories",
+            "get_all_branches",
+            "get_open_pull_requests",
+            "get_pr_details",
+            "check_ci_status",
+            "install_security_scanner",
+            "configure_scanner_rules",
+            "run_security_scan",
+            "update_npm_dependencies",
+            "run_unit_tests",
+            "commit_changes",
+            "merge_pull_request",
+            "delete_branch",
+            "generate_changelog",
+            "create_git_tag",
+            "push_to_remote",
+            "send_slack_notification"
+        ]
+    }
+}

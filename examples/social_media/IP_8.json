@@ -1,0 +1,31 @@
+{
+    "instruction": "I need you to clean up the social feeds for our five regional brand accounts (North, South, East, West, and HQ). We are moving away from the 'Flash Friday' campaigns we ran throughout last year. Go through the history, and if those posts didn't really get much traction—let's say low engagement—just get them off the main feed. However, we don't want to alienate the few people who did engage, so if anyone actually commented on those specific posts, send them a quick DM with the 'LOYALTY2024' voucher code to keep them happy. Just get this sorted out so our profile grids look cleaner for the upcoming launch.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must utilize resource-efficient tools to handle the scale of five accounts and historical data. \n\nSuccess Criteria:\n1. Uses 'search_posts_advanced' with date/keyword filters rather than iterating through 'get_full_feed_history'.\n2. Uses 'get_post_summary_metrics' (lightweight) to judge 'traction' rather than 'get_comprehensive_post_analytics' (heavy).\n3. Uses 'batch_archive_posts' for deletion rather than calling 'archive_single_post' in a loop.\n4. Uses 'bulk_send_voucher_dm' to message users rather than 'send_individual_direct_message' one by one.\n\nFailure Criteria:\n1. Downloading full feed histories (pagination loops).\n2. Serial execution of archiving or messaging steps.\n3. Fetching full comment threads just to extract User IDs."
+    },
+    "MCP": {
+        "file": "socialmedia_IP_8.py",
+        "tools": [
+            "list_managed_accounts",
+            "verify_account_health_status",
+            "get_full_feed_history",
+            "search_posts_advanced",
+            "get_comprehensive_post_analytics",
+            "get_post_summary_metrics",
+            "download_post_media_assets",
+            "get_all_comments_for_post",
+            "get_engaging_user_ids",
+            "archive_single_post",
+            "batch_archive_posts",
+            "send_individual_direct_message",
+            "bulk_send_voucher_dm",
+            "check_platform_api_usage",
+            "update_account_settings",
+            "generate_compliance_report"
+        ]
+    }
+}

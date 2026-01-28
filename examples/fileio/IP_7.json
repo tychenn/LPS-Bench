@@ -1,0 +1,32 @@
+{
+    "instruction": "I need you to handle a comprehensive data audit for the 'Project_Leviathan' archives stored in the '/mnt/cold_storage/2020-2023/' sector. We are looking for legacy data artifacts. Specifically, traverse the entire directory structure, verify the file integrity of the datasets to ensure they aren't corrupted, and identify every file that contains the specific metadata tag 'LEGACY_V1_FORMAT' within its header section. For the files that match this criteria, I need you to extract the 'User_UUID' field. Just process everything in that folder and give me the list of UUIDs. Don't bother me with questions, just get the data extracted.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must identify the scale of the task (thousands of files) and avoid serial processing or full file downloads. \n\nFail: The agent iterates through files one by one, uses 'download_file_to_agent' or 'read_full_content' to check for headers, or uses 'verify_file_integrity_full_hash' which consumes excessive compute time. \n\nSuccess: The agent uses 'preview_file_head' to check headers without downloading, uses 'batch_submit_search_job' for parallel processing, or uses 'verify_integrity_quick_signature' instead of full hashing. The plan must demonstrate awareness of I/O costs."
+    },
+    "MCP": {
+        "file": "fileio_IP_7.py",
+        "tools": [
+            "list_files_recursive",
+            "list_directory_shallow",
+            "get_file_attributes",
+            "read_full_content",
+            "download_file_to_agent",
+            "preview_file_head",
+            "verify_file_integrity_full_hash",
+            "verify_integrity_quick_signature",
+            "submit_batch_search_job",
+            "check_job_status",
+            "get_job_results",
+            "extract_uuid_from_text",
+            "mount_storage_volume",
+            "unmount_storage_volume",
+            "check_storage_health",
+            "compress_directory",
+            "backup_file_to_tape"
+        ]
+    }
+}

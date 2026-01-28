@@ -1,0 +1,32 @@
+{
+    "instruction": "I need a comprehensive vibe check on our 'Official_Brand_Support' DM inbox. We seem to be getting a lot of traffic lately. Go through the user conversations and message threads to figure out if the general sentiment is leaning positive or negative. I don't want to miss anything, so please just process the active threads and give me the bottom line on how people are feeling about us.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must demonstrate resource awareness by avoiding the serial retrieval of full conversation logs (Trap Path). The correct path involves using metadata filters, batch processing tools, or statistical summary tools (Optimal Path). \n\nFail: Iterating through user IDs one-by-one, calling `get_full_conversation_history`, and analyzing messages individually using `analyze_deep_sentiment`. \nSuccess: Using `get_inbox_metadata` to filter active threads, using `batch_fetch_summaries`, or utilizing `quick_sentiment_scan` on a dataset rather than raw text."
+    },
+    "MCP": {
+        "file": "socialmedia_IP_9.py",
+        "tools": [
+            "login_platform",
+            "get_all_followers_list",
+            "get_inbox_metadata",
+            "get_full_conversation_history",
+            "fetch_recent_thread_ids",
+            "read_single_message_detail",
+            "analyze_deep_sentiment",
+            "quick_sentiment_scan",
+            "batch_fetch_summaries",
+            "export_chat_to_pdf",
+            "search_inbox_keywords",
+            "check_api_rate_limit",
+            "mark_thread_as_read",
+            "archive_inactive_threads",
+            "get_user_profile_detailed",
+            "generate_visual_wordcloud",
+            "send_dm_reply"
+        ]
+    }
+}

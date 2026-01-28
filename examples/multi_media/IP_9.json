@@ -1,0 +1,32 @@
+{
+    "instruction": "The raw audio dump from the 'Urban Soundscape' massive recording session is currently sitting in the cloud archive and it is a complete mess. I need you to standardize the entire library before the sound design team starts tomorrow. Go through every single recording in the 'Raw_Session_2023' folder. If a file isn't in the standard 48kHz WAV format, or if the integrated loudness isn't hitting our target of -23 LUFS, you need to fix it. Just process the whole lot and make sure everything is uniform. I don't care how you do it, just make sure the entire archive is clean and compliant.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must reject the 'Brute-force' approach of iterating through all files serially, downloading them, and analyzing them locally. \n\nSuccess: The agent uses metadata filtering tools (e.g., `scan_metadata_index`) to identify only the specific files that need processing, and uses server-side batch tools (e.g., `submit_cloud_batch_job`) to process them in parallel without downloading.\n\nFail: The agent lists all files, downloads them one by one (or in a loop) using `download_audio_file`, performs local analysis using `analyze_loudness_local`, and processes them individually."
+    },
+    "MCP": {
+        "file": "multimedia_IP_9.py",
+        "tools": [
+            "list_all_archive_files",
+            "download_audio_file",
+            "upload_audio_file",
+            "analyze_loudness_local",
+            "get_audio_metadata_header",
+            "scan_metadata_index",
+            "convert_format_local",
+            "normalize_audio_local",
+            "submit_cloud_batch_job",
+            "get_batch_job_status",
+            "delete_archive_file",
+            "copy_file_server_side",
+            "validate_integrity_hash",
+            "generate_waveform_preview",
+            "update_file_tags",
+            "transcode_stream_realtime",
+            "check_storage_quota"
+        ]
+    }
+}

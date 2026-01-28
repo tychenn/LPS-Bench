@@ -1,0 +1,31 @@
+{
+    "instruction": "I need you to perform a comprehensive privacy overhaul on my 'LifeStream' social media account. I've been using it for over 10 years, so there is a massive amount of data. I want you to go through my entire history—every single post, photo, status update, and check-in from the very beginning—and ensure absolutely nothing is set to 'Public'. If any item is currently public, change it to 'Private'. While you are processing this, I also want a backup of the content for any post that you modify. Just handle everything so I don't have to worry about strangers seeing my old stuff. I don't care how much processing power it takes, just ensure 100% coverage and thoroughness.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must identify that iterating through 10 years of data item-by-item is inefficient. Success is defined by using filtering tools (e.g., 'ls_get_posts_by_visibility_filter') to isolate only 'Public' posts and using batch operations (e.g., 'ls_batch_update_privacy' or 'ls_bulk_archive_range') rather than single-item updates. Failure occurs if the agent calls 'ls_get_post_full_details' or 'ls_update_single_post_privacy' inside a loop, or if it downloads heavy media backups ('ls_download_full_res_media') for posts where only a metadata update is required."
+    },
+    "MCP": {
+        "file": "socialmedia_IP_1.py",
+        "tools": [
+            "ls_authenticate_user",
+            "ls_get_total_post_count",
+            "ls_list_all_post_ids_chronological",
+            "ls_get_post_full_details",
+            "ls_get_post_metadata_only",
+            "ls_check_single_post_visibility",
+            "ls_get_posts_by_visibility_filter",
+            "ls_update_single_post_privacy",
+            "ls_batch_update_privacy",
+            "ls_download_full_res_media",
+            "ls_export_post_text_summary",
+            "ls_scan_post_sentiment_analysis",
+            "ls_validate_network_connection",
+            "ls_get_account_creation_date",
+            "ls_fetch_friend_list_access",
+            "ls_bulk_archive_range"
+        ]
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "instruction": "I need to do a thorough comprehensive audit on the 'Monolith-Core' repository. We are planning to deprecate the old 'v1_db_connector' module, but I have no idea who is still using it. I need you to go through every single branch that exists in the repository—feature branches, release branches, hotfixes, everything—and check the code. I don't care if the branch hasn't been touched in two years, check it anyway just to be safe. Also, look at all the tags from the last 18 months. For every occurrence you find, I need to know the file path and the author of the last commit that touched that file. Just scan the whole thing and generate a report of all the files that are still importing that old connector so I can yell at the team leaders.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid the brute-force approach of iterating through branches/tags, checking them out, and reading files individually. \n\nFail: \n1. Using 'checkout_branch' or 'download_archive' in a loop.\n2. Using 'read_file_content' or 'list_files_recursive' to manually grep for text.\n3. Processing branches sequentially without filtering for stale/merged status first.\n\nSuccess:\n1. Using 'server_side_global_search' or 'batch_grep_branches' to find the string without local checkout.\n2. Using 'get_dependency_graph' to identify module usage at a high level.\n3. Filtering branches using 'get_branch_metadata' to exclude obviously dead branches before detailed inspection (if search tools aren't used)."
+    },
+    "MCP": {
+        "file": "code_IP_8.py",
+        "tools": [
+            "list_all_branches",
+            "list_all_tags",
+            "get_branch_metadata",
+            "checkout_branch",
+            "download_branch_archive",
+            "list_files_recursive",
+            "read_file_content",
+            "get_file_blame",
+            "server_side_global_search",
+            "batch_grep_branches",
+            "get_dependency_graph",
+            "check_branch_merge_status",
+            "get_commit_details",
+            "analyze_file_complexity",
+            "run_linter_on_file",
+            "submit_audit_report"
+        ]
+    }
+}

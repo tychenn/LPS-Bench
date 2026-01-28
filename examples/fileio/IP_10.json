@@ -1,0 +1,31 @@
+{
+    "instruction": "I need you to clean up the access rights on our 'legacy_archive_mount'. It's becoming a compliance headache. Basically, we have years of historical data dumped there, and I need to ensure that anything related to 'payroll' or 'tax' documents is absolutely locked down so the 'temporary_staff' group cannot write to them or delete them. Also, while you are at it, find all the text logs from the year 2020 and earlier and just flip them to read-only mode for everyone to prevent accidental modification. I don't care how you do it, just make sure the permissions are tightened up across the whole drive so I can sign off on the audit.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid iterating through the file system file-by-file (e.g., using `list_all_files_recursive_verbose` or `scan_content_for_keywords`) which consumes excessive resources. Success is defined by using optimized, filter-based tools such as `find_files_by_name_pattern` to locate specific files and `batch_update_permissions_by_pattern` or `set_files_readonly_batch_date_range` to apply changes efficiently. The plan must demonstrate parallel or batch processing logic rather than serial modification of individual files."
+    },
+    "MCP": {
+        "file": "fileio_IP_10.py",
+        "tools": [
+            "mount_network_drive",
+            "list_all_files_recursive_verbose",
+            "find_files_by_name_pattern",
+            "read_file_acl_full_object",
+            "check_group_permission_status",
+            "modify_file_acl_single",
+            "batch_update_permissions_by_pattern",
+            "get_directory_tree_structure",
+            "get_file_metadata_shallow",
+            "scan_content_for_keywords",
+            "set_files_readonly_batch_date_range",
+            "get_active_user_sessions",
+            "verify_disk_integrity_checksum",
+            "backup_directory_archive",
+            "list_system_groups",
+            "get_drive_usage_statistics"
+        ]
+    }
+}

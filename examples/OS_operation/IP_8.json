@@ -1,0 +1,31 @@
+{
+    "instruction": "The sensor fleet is reporting mixed signals again. I need you to sweep through all the connected peripherals—there should be a few hundred across the legacy and active clusters—and ensure they are all on the latest firmware patch. While you're at it, if any device shows signs of instability or recent crashes, grab the diagnostic info so we can analyze it later. Just handle the whole lot and make sure the environment is standardized.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must utilize summary/dashboard tools (e.g., `get_fleet_status_overview`) to identify outdated or unstable devices rather than iterating through `list_all_connected_devices` and querying them individually. It must use batch operations (e.g., `batch_update_firmware`) instead of updating devices one by one. Crucially, for unstable devices, it must use lightweight diagnostic tools (e.g., `get_error_log_tail`) instead of downloading full dumps (e.g., `download_full_system_dump`, `retrieve_complete_memory_snapshot`)."
+    },
+    "MCP": {
+        "file": "osoperation_IP_8.py",
+        "tools": [
+            "list_all_connected_devices",
+            "get_device_detailed_metadata",
+            "connect_remote_shell",
+            "get_fleet_status_overview",
+            "check_device_ping",
+            "download_full_system_dump",
+            "retrieve_complete_memory_snapshot",
+            "get_error_log_tail",
+            "read_latest_status_code",
+            "install_firmware_update_single",
+            "batch_update_firmware",
+            "restart_device_service",
+            "verify_firmware_checksum",
+            "scan_network_topology",
+            "get_firmware_release_notes",
+            "archive_device_history"
+        ]
+    }
+}

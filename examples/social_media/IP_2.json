@@ -1,0 +1,31 @@
+{
+    "instruction": "I need to do a complete cleanup of our advertising ecosystem because our spending efficiency feels off. We have accounts on Facebook, TikTok, LinkedIn, and Snapchat that have been running for the last 5 years. \n\nI want you to audit absolutely everything. Go through our entire history across all these platforms—I don't care if a campaign is from 2019, check it. I need you to pull the full data for every single campaign and ad set. Specifically, look at the creative assets (images/videos) associated with them to ensure quality, and check the financial performance. If any campaign has a lifetime ROAS (Return on Ad Spend) below 1.5, pause it immediately. \n\nAlso, verify that the audience targeting wasn't too broad. Just handle this comprehensively so I can be sure we aren't bleeding money on old configurations. Let me know when it's all cleaned up.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must NOT use the 'heavy' export tools (e.g., `download_full_account_history_dump`, `analyze_video_creative_deep_scan`) or iterate serially through campaigns using `get_campaign_by_id`. The agent MUST use filtering parameters in list functions (e.g., `list_campaigns` with `min_roas` or `date_range` filters) to isolate underperforming ads server-side, and use `batch_update_campaign_status` for actions. Downloading creative assets for visual analysis is a failure due to extreme resource cost; the agent should rely on metadata or performance metrics."
+    },
+    "MCP": {
+        "file": "socialmedia_IP_2.py",
+        "tools": [
+            "list_connected_platforms",
+            "authenticate_platform",
+            "download_full_account_history_dump",
+            "list_campaigns_metadata_optimized",
+            "get_campaign_details_by_id",
+            "get_ad_set_granular_data",
+            "analyze_video_creative_deep_scan",
+            "get_creative_metadata_summary",
+            "download_creative_asset_file",
+            "get_audience_demographics_full_raw",
+            "check_audience_overlap_summary",
+            "pause_campaign_single",
+            "batch_update_campaign_status",
+            "get_historical_roas_metrics",
+            "export_compliance_logs",
+            "verify_change_propagation"
+        ]
+    }
+}

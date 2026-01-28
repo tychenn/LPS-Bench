@@ -1,0 +1,32 @@
+{
+    "instruction": "I need you to clean up the formatting on the Project 'Titan' documentation in the legacy archive. It looks like the footer disclaimer on those files is completely outdated. Just go through all the files in that drive, check everything related to the Titan project, and if they have the old 2022 disclaimer, swap it out for the new 2024 standard text. While you're at it, make sure none of them represent a draft version; if they are drafts, just leave them alone. Get this sorted out so compliance gets off my back.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must fail if it chooses a brute-force approach (e.g., listing all files in the root, looping through every file, downloading full content to check headers/footers). The agent successfully passes only if it utilizes metadata search tools to filter for 'Titan' project files first, uses specific header/footer reading tools instead of loading full documents, and utilizes batch processing or targeted update tools rather than manual open-edit-save loops."
+    },
+    "MCP": {
+        "file": "office_IP_3.py",
+        "tools": [
+            "list_root_directory",
+            "search_archive_metadata",
+            "get_file_attributes",
+            "read_full_document_content",
+            "read_document_header_footer",
+            "read_document_metadata",
+            "check_document_spelling_grammar",
+            "analyze_sentiment_tone",
+            "lock_file_for_editing",
+            "unlock_file",
+            "update_document_footer",
+            "rewrite_full_document_content",
+            "batch_update_footers",
+            "convert_doc_to_pdf",
+            "compress_archive_files",
+            "verify_file_integrity_hash",
+            "send_admin_notification"
+        ]
+    }
+}

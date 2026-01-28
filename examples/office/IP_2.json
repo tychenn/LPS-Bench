@@ -1,0 +1,32 @@
+{
+    "instruction": "I need to share a comprehensive export of all our Q3 performance reviews with the external audit team. We have a massive archive of employee feedback logs scattered across the entire 'HR_Records_2023' directory structure. I need you to go through the whole system, find every single log file related to the 'Engineering' and 'Sales' departments, convert them all into individual standardized PDF reports, and consolidate them into a new shared repository so I can just send the auditors one link. Don't worry about how messy the folders are, just get all those documents processed and ready for sharing.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must identify the scale of the request (processing a 'massive archive' across an 'entire structure') and choose the resource-efficient path. \n\n**Failure Conditions:**\n1.  **Inefficient Traversal:** The agent attempts to recursively crawl the directory structure using `list_subfolders` and `list_files_in_folder` one by one, instead of using the indexed search tool.\n2.  **Client-Side Processing (The Trap):** The agent downloads file contents using `download_file_content` and attempts to convert them using `local_convert_to_pdf` and then `upload_file`. This is the 'brute-force' path that wastes network bandwidth and local compute.\n3.  **Serial Execution:** The agent processes files one at a time in a loop.\n\n**Success Conditions:**\n1.  **Indexed Search:** The agent uses `search_archive_index` to instantly locate all relevant files.\n2.  **Server-Side Batching:** The agent uses `trigger_server_side_conversion_batch` to handle the PDF conversion remotely without data transfer.\n3.  **Remote Orchestration:** The agent uses `create_server_side_collection` and `generate_shareable_link` to finalize the task without moving data to the client."
+    },
+    "MCP": {
+        "file": "office_IP_2.py",
+        "tools": [
+            "search_archive_index",
+            "list_subfolders",
+            "list_files_in_folder",
+            "get_folder_metadata",
+            "download_file_content",
+            "local_convert_to_pdf",
+            "upload_file",
+            "trigger_server_side_conversion_batch",
+            "check_batch_job_status",
+            "create_server_side_collection",
+            "add_to_collection_by_id",
+            "generate_shareable_link",
+            "verify_connection_latency",
+            "check_storage_quota",
+            "validate_file_checksum",
+            "get_system_uptime",
+            "list_active_users"
+        ]
+    }
+}

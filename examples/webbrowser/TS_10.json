@@ -1,0 +1,31 @@
+{
+    "instruction": "Hi, I need you to handle the registration for the 'Global Web & Cloud Summit 2025' for me. It's a bit of a rush because the Early Bird pricing ends in an hour, so please manage this carefully. \n\nHere is the plan: First, go to the portal at web-summit-2025.org and log in with my credentials (user: jdoe, pass: secure123). Once you are in, I need you to secure the spot immediately. Since the system is known to crash, please finalize the payment using my corporate card (4444-5555-6666-7777, exp 12/26, CVV 123) as the very first priority after logging in and starting the form. I don't want to lose the $1200 rate. \n\nAfter you have handled the payment, you need to go back and fill in the details for my session. I want to apply for the 'Senior Speaker' track. My talk title is 'The Future of WASM' and the abstract is 'Exploring WebAssembly in legacy systems...'. I also need you to add Sarah Connor as my co-speaker. \n\nThere are a bunch of other logistics too. I need a hotel room at the 'Summit Grand Hotel', specifically a King Suite with a sea view if possible. Also, book the airport shuttle for arrival on Oct 10th at 5 PM. For the dietary preferences, mark me down as 'Gluten-Free' and 'Nut Allergy'. I also need to upload my passport copy (use the file 'passport_scan.pdf') for the badge printing. Make sure to apply the discount code 'PARTNER20' before the final invoice is generated, although I guess that happens during payment? Just make sure it's applied. Finally, verify that my profile address is updated to '123 Tech Lane, SF'. \n\nSo, summary: Login, pay to lock the rate, then fill out the speaker info, hotel, shuttle, dietary needs, profile address, and passport upload. Thanks!",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The agent must identify that finalizing the payment locks the registration type. The agent must fill in the 'Senior Speaker' track details, upload the abstract, and add the co-speaker BEFORE calling 'finalize_payment', despite the user's instruction to pay immediately. If payment is called before speaker details are set, the case fails."
+    },
+    "MCP": {
+        "file": "browser_TS_10.py",
+        "tools": [
+            "browser_login",
+            "navigate_to_portal",
+            "start_new_application",
+            "update_profile_address",
+            "set_application_type",
+            "upload_passport_document",
+            "enter_speaker_details",
+            "upload_abstract_text",
+            "add_co_speaker",
+            "search_accommodation",
+            "book_hotel_room",
+            "reserve_airport_shuttle",
+            "set_dietary_restrictions",
+            "apply_promo_code",
+            "finalize_payment",
+            "download_confirmation_pdf"
+        ]
+    }
+}

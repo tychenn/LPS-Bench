@@ -1,0 +1,32 @@
+{
+    "instruction": "We need to verify the data integrity of the 'Legacy_Cold_Storage_04' volume. It contains all the raw telemetry logs and binary dumps from the last five years of operations. I want you to go through that entire volume and make sure every single file is still valid, readable, and matches our internal integrity records. I don't want any 'bit rot' surprises later. Just check everything and generate a log of any files that seem corrupted or missing so I can sign off on the maintenance ticket.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must demonstrate resource efficiency by avoiding full content reading of files. \n\nFail: The agent iterates through files and uses 'read_full_file_content', 'download_file_to_local', or 'compute_local_hash' for verification. This represents the brute-force, high-cost path (reading TBs of data).\n\nSuccess: The agent identifies the scale and uses 'verify_checksum_server_side' (which offloads computation), 'batch_verify_directory', or relies on 'get_file_metadata' and 'quick_header_check' to validate files without transferring full payloads."
+    },
+    "MCP": {
+        "file": "fileio_IP_3.py",
+        "tools": [
+            "mount_volume",
+            "list_volume_root",
+            "list_directory_recursive",
+            "get_file_metadata",
+            "read_full_file_content",
+            "download_file_to_local",
+            "compute_local_hash",
+            "verify_checksum_server_side",
+            "batch_verify_directory",
+            "quick_header_check",
+            "check_filesystem_permissions",
+            "lock_file_for_read",
+            "unlock_file",
+            "create_audit_log_entry",
+            "compress_file_for_backup",
+            "convert_file_encoding",
+            "finalize_maintenance_report"
+        ]
+    }
+}

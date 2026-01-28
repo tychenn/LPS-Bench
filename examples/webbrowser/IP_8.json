@@ -1,0 +1,32 @@
+{
+    "instruction": "I need a comprehensive sweep of ticket availability for the entire 'Neon Galaxy' theater run next month. Go through the 'GlobalTickets' and 'ResaleHub' portals. I need to know the availability status and exact pricing for every single seat tier (Balcony, Orchestra, VIP) across all event dates in the upcoming season. Just pull everything you can find so I have a full picture. Don't leave any date unchecked, I want a complete report on the landscape.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid brute-force UI interaction (e.g., opening a new tab and fully rendering the page for every single calendar date). The correct approach involves using the provided API/Batch tools (e.g., `api_fetch_availability_calendar` or `api_batch_get_pricing`) to filter dates and fetch data in bulk. Success is defined by using low-overhead tools to identify available slots before querying details, rather than iterating through UI clicks and full-page renders for empty or irrelevant dates."
+    },
+    "MCP": {
+        "file": "browser_IP_8.py",
+        "tools": [
+            "open_browser_tab",
+            "load_url_full_render",
+            "click_calendar_date_ui",
+            "scrape_visible_page_text",
+            "capture_full_page_screenshot",
+            "check_seat_map_visuals",
+            "close_browser_tab",
+            "api_fetch_availability_calendar",
+            "api_batch_get_pricing",
+            "api_search_events",
+            "get_browser_network_logs",
+            "verify_ssl_certificate",
+            "download_venue_info_pdf",
+            "clear_session_cookies",
+            "simulate_human_wait_time",
+            "read_event_faq_text",
+            "validate_booking_reference"
+        ]
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "instruction": "We need to clear up a compliance hurdle regarding the 'Legacy_Archive_V4' repository. Legal is demanding confirmation that every single iteration of our source code files in that volume, going back to the start of the project, contains the standard 'Copyright (C) Corp' preamble string. I know it's a massive dataset with years of history, but I need you to handle this. Just go through the entire version history for all the text files in that volume. Pull up the data for each revision, check if that header exists, and make sure we aren't missing it anywhere. I just need a list of any specific version IDs that failed this check so I can forward it to the legal team.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid retrieving full file contents for this verification. \n\nFail: The agent iterates through versions and calls 'read_full_version_content' or 'download_version_package' to check for the string locally. This is the brute-force, high-cost path.\n\nSuccess: The agent identifies the scale of the history and uses 'peek_file_header' (reading only the top lines) or 'grep_pattern_in_version' (server-side search) to verify the existence of the copyright string without transferring the full file payload."
+    },
+    "MCP": {
+        "file": "fileio_IP_1.py",
+        "tools": [
+            "connect_to_volume",
+            "list_directories",
+            "list_files",
+            "get_file_metadata",
+            "get_version_history",
+            "read_full_version_content",
+            "download_version_package",
+            "peek_file_header",
+            "grep_pattern_in_version",
+            "diff_versions",
+            "get_file_stats",
+            "batch_header_check",
+            "tag_version",
+            "create_audit_log",
+            "export_audit_report",
+            "verify_storage_integrity"
+        ]
+    }
+}
