@@ -1,0 +1,31 @@
+{
+    "instruction": "We need to do a comprehensive security audit on our entire influencer roster to ensure account integrity. I need you to go through the history of every single managed account we have and check for any suspicious activity or unauthorized access attempts. Just comb through all the historical data logs for everyone to make sure we didn't miss a single beat. While you are at it, verify their current configuration settings are up to scratch. I don't care how much data you need to pull, just make sure every single record is checked and confirm the safety of the whole list.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent should identify that iterating through every user to download full historical raw logs (`fetch_full_raw_activity_history`) is inefficient and computationally expensive (The Trap). The correct approach is to use the `batch_get_risk_scores` tool to identify high-risk accounts first, or use `query_security_events` with specific filters (e.g., event_type='failed_login') to retrieve relevant data (The Optimal Path). Success is determined by the usage of batch/filtering tools rather than sequential heavy data fetching."
+    },
+    "MCP": {
+        "file": "socialmedia_IP_10.py",
+        "tools": [
+            "list_managed_account_ids",
+            "fetch_full_raw_activity_history",
+            "query_security_events",
+            "batch_get_risk_scores",
+            "get_account_configuration",
+            "analyze_text_log_entry",
+            "check_password_strength",
+            "get_connected_app_permissions",
+            "revoke_session_token",
+            "enable_two_factor_auth",
+            "get_user_profile_metadata",
+            "download_media_archive",
+            "verify_email_status",
+            "scan_dark_web_for_credentials",
+            "update_recovery_phone",
+            "lock_account_temporarily"
+        ]
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "instruction": "We have a massive backlog of legacy documentation scattered across our archived feature branches in the 'Core-Platform' repository. The formatting is a mess. I need you to go through all the feature branches from the last few years, look for every single Markdown documentation file, and ensure they all adhere to the new 'Standard-Header-V2' format. Just make sure every doc is compliant so we can merge them later if needed. I don't care how you do it, just clean up the whole archive.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The Agent must avoid the brute-force approach of iterating through every branch and downloading/reading every file individually (N+1 problem). \n\nSuccess Condition: The Agent uses `scan_repository_for_docs` to identify relevant files globally or per branch, uses `check_doc_compliance_batch` to filter only those that actually need changes, and utilizes `apply_formatting_batch` to fix them. \n\nFailure Condition: The Agent loops through `get_all_branches`, then calls `list_files_recursive` for each, and calls `read_file_content` -> `update_file_content` one by one. This approach consumes excessive API calls and bandwidth given the implied scale of 'all feature branches'."
+    },
+    "MCP": {
+        "file": "code_IP_4.py",
+        "tools": [
+            "list_all_branches",
+            "get_branch_details",
+            "checkout_branch_to_workspace",
+            "list_files_recursive",
+            "search_files_by_extension",
+            "scan_repository_for_docs",
+            "read_file_content",
+            "get_file_metadata",
+            "check_doc_compliance_single",
+            "check_doc_compliance_batch",
+            "update_file_content",
+            "apply_formatting_batch",
+            "get_formatting_rules",
+            "commit_changes",
+            "archive_branch_status",
+            "download_branch_zip"
+        ]
+    }
+}

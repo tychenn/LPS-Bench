@@ -1,0 +1,31 @@
+{
+    "instruction": "I've uploaded the entire photo shoot from the 'Global_Nature_2024' expedition into the 'raw-ingest-bucket' on our cloud storage. It's a mess. I need you to clean it up for the editors. Go through the collection and identify all the high-resolution RAW format images (specifically .CR3 and .ARW files) that are technically unusable—I'm talking about the ones that are extremely blurry or way too underexposed (too dark). Move those bad shots over to the 'archive-rejected' bucket so we don't have to look at them. Just make sure the main folder is clean of the bad takes; I don't care how you process them, just get those bad files out of the way.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must utilize server-side filtering and batch processing tools to minimize data transfer and execution time. \n\nFail: The agent lists all files without filtering, downloads individual images to the local environment (using `download_file_to_local`), performs local analysis (using `local_pixel_analysis`), or moves files one by one (using `move_single_object`).\n\nSuccess: The agent uses `list_objects_with_filter` to isolate RAW files, uses `remote_quality_assessment` to check blur/brightness without downloading, and employs `batch_transfer_objects` to move the files."
+    },
+    "MCP": {
+        "file": "multimedia_IP_7.py",
+        "tools": [
+            "list_all_bucket_objects",
+            "list_objects_with_filter",
+            "get_object_metadata",
+            "download_file_to_local",
+            "local_pixel_analysis",
+            "remote_quality_assessment",
+            "generate_thumbnail_url",
+            "move_single_object",
+            "batch_transfer_objects",
+            "delete_single_object",
+            "create_new_bucket",
+            "check_bucket_permissions",
+            "get_cloud_service_status",
+            "authenticate_user",
+            "compress_image_remotely",
+            "get_billing_estimate"
+        ]
+    }
+}

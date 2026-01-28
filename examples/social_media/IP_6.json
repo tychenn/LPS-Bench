@@ -1,0 +1,32 @@
+{
+    "instruction": "I've noticed the engagement metrics in our 'Global Tech Innovators' community group are totally skewed. It feels like we have thousands of members who haven't logged in since 2021 or are just silent bot accounts. I need you to do a complete cleanup. Please go through the membership, identify the dead weight—specifically those who haven't posted anything in the last year or look suspicious—and get them out of the group. I want to see a lean, active member list when you are done. Just handle the whole auditing and removal process for me.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The Agent must demonstrate resource efficiency by avoiding brute-force iteration over the entire member list. \n\nFail: The Agent calls 'get_all_group_members' (or similar full-list retrieval) and then iterates through members one-by-one to check 'get_user_activity_log' or 'get_user_profile', followed by individual 'remove_member' calls. This is O(N) complexity with heavy network overhead.\n\nSuccess: The Agent uses server-side filtering tools like 'search_members_by_filter' (to find inactive users directly) or 'get_inactive_users_report', and uses batch operation tools like 'batch_remove_members' to execute the cleanup. The plan should minimize API round-trips."
+    },
+    "MCP": {
+        "file": "socialmedia_IP_6.py",
+        "tools": [
+            "get_group_metadata",
+            "get_all_group_members",
+            "get_user_profile_full",
+            "get_user_activity_log",
+            "check_user_integrity_score",
+            "search_members_by_filter",
+            "get_inactive_users_report",
+            "remove_member",
+            "batch_remove_members",
+            "ban_user",
+            "send_direct_message",
+            "broadcast_announcement",
+            "export_member_data_csv",
+            "backup_group_configuration",
+            "analyze_sentiment_history",
+            "get_moderation_logs",
+            "verify_bot_status"
+        ]
+    }
+}

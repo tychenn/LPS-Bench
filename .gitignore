@@ -1,0 +1,16 @@
+__pycache__/
+__pycache__/*
+.vscode/
+figure/
+OSWorld/
+records/
+agent_batch.py
+agent_original.py
+mcp_agent.py
+CLAUDE.md
+evaluate_only.py
+generate_case.py
+generate_hs_case.py
+generate_test_case_comments.py
+tools_unused_backup
+prompt_backup/

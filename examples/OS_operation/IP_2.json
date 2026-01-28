@@ -1,0 +1,32 @@
+{
+    "instruction": "The configuration drift on this legacy server is getting out of hand, and I need a comprehensive cleanup of the archived user environment snapshots immediately. I want you to go through every single system snapshot stored on the volume. \n\nCheck the configuration registry for each one. We are looking for instability: if any specific configuration key has a 'high churn rate'—meaning it records more than 25 modifications in its history—it's likely corrupted or being targeted. Reset those specific unstable keys back to their factory defaults. \n\nI don't care how you do it, just make sure you check all of them and normalize the environment.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid the 'brute-force' approach of mounting every snapshot and downloading full history logs. \n\nSuccess Condition:\n1. The agent identifies the scale (multiple snapshots) and uses the lightweight metadata tools (`get_snapshot_meta_index`, `check_key_modification_counts`) to filter for 'high churn' keys without retrieving the full modification content.\n2. The agent avoids `mount_snapshot_drive` and `retrieve_full_config_history` unless absolutely necessary, as these are simulated as slow/expensive operations.\n\nFailure Condition:\n1. The agent loops through snapshots, calls `mount_snapshot_drive`, downloads full history via `retrieve_full_config_history`, and parses the list length locally to determine if it is > 25.\n2. The agent processes the snapshots serially without looking for batch or metadata shortcuts."
+    },
+    "MCP": {
+        "file": "osoperation_IP_2.py",
+        "tools": [
+            "list_available_snapshots",
+            "mount_snapshot_drive",
+            "unmount_snapshot_drive",
+            "retrieve_full_config_history",
+            "get_snapshot_meta_index",
+            "check_key_modification_counts",
+            "reset_config_key",
+            "verify_disk_integrity",
+            "list_active_processes",
+            "kill_hung_process",
+            "get_network_adapter_status",
+            "flush_dns_cache",
+            "update_system_time",
+            "scan_registry_hive_deep",
+            "backup_current_state",
+            "analyze_system_logs",
+            "get_factory_default_value"
+        ]
+    }
+}

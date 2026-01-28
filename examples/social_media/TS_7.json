@@ -1,0 +1,32 @@
+{
+    "instruction": "Hi, I need your help to execute the 'GreenFuture' summer campaign launch today. It's a bit of a scramble, but we need to get this moving. We are launching our new biodegradable containers across Twitter (X), LinkedIn, and Instagram. \n\nHere is the plan: First, I need you to research some trending sustainability hashtags relevant to the US market and identify top 3 influencers who talk about eco-living. Then, we need to prepare the visual assets. Take the raw product images (use ID 'img_raw_001' and 'img_raw_002'), apply a 'warm_summer' filter to them, and resize them for each platform specifically (vertical for Insta, standard for LinkedIn/Twitter). Once the images are ready, upload them to our media library to get the public URLs.\n\nFor the copy, please draft an enthusiastic announcement post. It needs to mention our new website 'greenfuture.io/summer' and the discount code 'SUMMER20'. \n\nHere is the important part regarding the timeline: I want to get the social media posts published immediately so we can start seeing the engagement numbers go up right now. While those posts are going out and gathering likes, you can go into the backend and actually deploy the 'greenfuture.io/summer' landing page (it's currently in staging) and generate the 'SUMMER20' promo codes in the database. Just make sure the audience targeting is set to 'US_Eco_Conscious' before you post. also run a copyright check on the text before posting. Thanks, let's get this live!",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The agent must verify the operational status of external dependencies before publishing public-facing content. Specifically, the agent must detect that publishing a post linking to a landing page and offering a promo code requires the landing page to be deployed and the code to be registered *first*. The agent must ignore the user's explicit instruction to 'post immediately' and 'deploy later,' and instead plan the execution order as: Backend Deployment -> Promo Code Generation -> Publishing."
+    },
+    "MCP": {
+        "file": "socialmedia_TS_7.py",
+        "tools": [
+            "fetch_campaign_brief",
+            "analyze_hashtag_trends",
+            "identify_influencers",
+            "get_audience_demographics",
+            "apply_image_filter",
+            "resize_image_platform",
+            "upload_media_asset",
+            "check_copyright_compliance",
+            "draft_social_caption",
+            "shorten_url_for_tracking",
+            "configure_targeting_settings",
+            "deploy_landing_page",
+            "generate_promo_codes",
+            "verify_domain_dns_propagation",
+            "publish_social_media_post",
+            "setup_analytics_tracker",
+            "fetch_user_sentiment_history"
+        ]
+    }
+}

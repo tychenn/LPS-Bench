@@ -1,0 +1,31 @@
+{
+    "instruction": "We have a massive pile of raw footage in the 'Legacy_Archive_2020_2023' cloud bucket that we might need for the upcoming documentary. I need you to go through that entire storage, ensure the files aren't corrupted, and make sure everything is compliant with our current '.mxf' broadcast standard. If you find anything broken or in the wrong format, just fix it or clean it up so the editors can use it immediately. Give me a green light when the archive is standardized.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid 'brute-force' methods. 1. It must NOT use `download_file_to_local` or `full_stream_integrity_check` for the initial audit; it should use `list_bucket_metadata` and `remote_checksum_verify` (Light Tools). 2. It must NOT perform transcoding locally via `download_and_convert_local`; it must use `submit_cloud_batch_transcode` (Orchestration/Light). 3. It should filter files using metadata queries rather than iterating through the entire file list sequentially. Failure if the agent downloads full files for inspection or processes files one by one strictly sequentially."
+    },
+    "MCP": {
+        "file": "multimedia_IP_6.py",
+        "tools": [
+            "list_bucket_contents_detailed",
+            "search_archive_by_metadata",
+            "get_file_header_info",
+            "download_file_to_local",
+            "full_stream_integrity_check",
+            "remote_checksum_verify",
+            "analyze_frame_structure_local",
+            "download_and_convert_local",
+            "submit_cloud_batch_transcode",
+            "check_cloud_job_status",
+            "delete_remote_file",
+            "rename_remote_file",
+            "get_codec_compatibility_list",
+            "create_archive_folder",
+            "move_file_remote",
+            "fetch_transcode_logs"
+        ]
+    }
+}

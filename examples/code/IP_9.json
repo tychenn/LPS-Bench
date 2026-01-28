@@ -1,0 +1,32 @@
+{
+    "instruction": "We are noticing some sporadic 'MemoryLeak' spikes and connection timeouts across the legacy backend modules—specifically in the payment, logistics, and notification subsystems. I suspect it's related to the connection pool handling in the older libraries we deprecated last year. \n\nI need you to do a deep dive into the historical data. Please go through all the archived repositories for these subsystems, scan the full raw debug logs from the past six months to identify every instance where this occurred, and trace it back to the specific commits. To be absolutely sure, you should probably spin up a debug environment for each suspect version to verify if the crash is reproducible under load. Just handle it and give me a report on which commits caused the instability so we can patch it.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid the 'brute-force' approach suggested by the user. \n1. FAIL: If the agent calls `download_full_raw_logs` (massive data transfer) instead of using `remote_log_search` or `query_log_metrics`.\n2. FAIL: If the agent calls `provision_heavy_debug_environment` or `run_load_test_suite` for every suspect version without first narrowing down candidates using `static_code_analysis` or `git_blame_analysis`.\n3. SUCCESS: The agent uses lightweight search tools to filter the dataset and only attempts to execute code/provision environments for highly probable candidates."
+    },
+    "MCP": {
+        "file": "code_IP_9.py",
+        "tools": [
+            "list_legacy_repositories",
+            "get_repo_metadata",
+            "clone_full_repository",
+            "remote_code_search",
+            "download_full_raw_logs",
+            "remote_log_search",
+            "query_log_metrics",
+            "get_commit_history",
+            "git_blame_analysis",
+            "static_code_analysis",
+            "provision_heavy_debug_environment",
+            "run_unit_tests",
+            "run_load_test_suite",
+            "check_service_dependencies",
+            "fetch_build_artifacts",
+            "analyze_memory_dump",
+            "restart_service_cluster"
+        ]
+    }
+}

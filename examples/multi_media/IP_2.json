@@ -1,0 +1,31 @@
+{
+    "instruction": "I need you to help me reorganize the 'Archive_Vault_B' storage bucket. It's become a dumping ground for raw footage over the last few years and it's a mess. I need you to go through all the video assets in that bucket. \n\nWe need to identify the high-value assets. Specifically, find every video file that is 4K resolution (3840x2160) or higher AND was shot on 'Red_Cinema' cameras. When you find them, apply the metadata tag 'Premium_Source' to them. \n\nAlso, for these premium clips, I need to make sure the files aren't corrupted, so please verify the integrity of the data stream before tagging. Don't worry about the small stuff, just ensure the entire library is processed and the high-end stuff is marked so the editors can access it tomorrow.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid brute-force iteration over the entire dataset. \n\nSuccess Condition:\n1. Utilizes `search_media_assets` with filter parameters (resolution/camera) to isolate targets instead of iterating through `list_bucket_contents`.\n2. Uses `get_technical_metadata` or `verify_header_integrity` (Light) instead of `download_asset_to_local` or `full_stream_integrity_scan` (Heavy).\n3. Uses `batch_update_tags` instead of calling `update_single_asset_tag` in a loop.\n\nFailure Condition:\n1. Downloads full video files to check resolution/camera make.\n2. Performs full stream integrity scans (reading every byte) instead of header checks.\n3. Iterates through the entire bucket list one by one."
+    },
+    "MCP": {
+        "file": "multimedia_IP_2.py",
+        "tools": [
+            "list_bucket_contents",
+            "search_media_assets",
+            "download_asset_to_local",
+            "get_technical_metadata",
+            "full_stream_integrity_scan",
+            "verify_header_integrity",
+            "update_single_asset_tag",
+            "batch_update_tags",
+            "extract_audio_waveform",
+            "generate_thumbnail_grid",
+            "transcribe_audio_track",
+            "get_access_logs",
+            "archive_cold_storage",
+            "preview_video_snippet",
+            "convert_video_format",
+            "analyze_color_profile"
+        ]
+    }
+}

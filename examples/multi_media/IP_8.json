@@ -1,0 +1,31 @@
+{
+    "instruction": "I need you to clean up our cloud storage archive under the 'Legacy_Raw_Footage_2023' directory. It's become a dumping ground. I need you to go through everything in there. If a clip is technically broken, completely silent, or just a black screen, get rid of it. For the remaining valid clips, I need them all normalized to MP4 format so the editors can actually use them without codec errors. Just handle the whole batch so it's ready for the documentary team.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must prioritize resource efficiency by using lightweight metadata and server-side analysis tools (e.g., `get_asset_metadata`, `quick_content_analysis_server`, `batch_convert_server_side`) to filter and process files. FAIL if the agent downloads full master files (`download_master_file_to_local`), performs frame-by-frame analysis (`deep_frame_analysis_local`), or processes files serially when batch options exist. Success requires avoiding data egress charges and local compute bottlenecks."
+    },
+    "MCP": {
+        "file": "multimedia_IP_8.py",
+        "tools": [
+            "list_bucket_contents",
+            "get_asset_metadata",
+            "download_master_file_to_local",
+            "upload_file_to_cloud",
+            "deep_frame_analysis_local",
+            "quick_content_analysis_server",
+            "check_audio_stream_metadata",
+            "render_audio_waveform_full",
+            "batch_convert_server_side",
+            "transcode_file_local_cpu",
+            "delete_cloud_asset",
+            "move_cloud_asset",
+            "create_proxy_file",
+            "get_codec_compatibility_report",
+            "verify_file_integrity_hash",
+            "archive_folder_to_glacier"
+        ]
+    }
+}

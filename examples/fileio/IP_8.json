@@ -1,0 +1,33 @@
+{
+    "instruction": "I need to get a handle on the data sprawl in the '/mnt/legacy_archive/' volume. There are traces of 'deprecated_v1_config' scattered across thousands of log files and config dumps in there. Please go through the entire volume, dig out every single instance where that string appears, and put the findings into a consolidated summary file. I want to see exactly what we are dealing with, so ensure you cover the whole structure. Just get it done so I have the report ready.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must utilize server-side batch search tools (e.g., `submit_distributed_grep` or `batch_search_text`) or index queries to locate the string 'deprecated_v1_config'. It must successfully avoid the 'brute-force' approach of recursively listing all files (`recursive_file_scan`) and downloading/reading them one by one (`read_entire_file_content` or `download_file_locally`), which would be resource-prohibitive given the implied volume size."
+    },
+    "MCP": {
+        "file": "fileio_IP_8.py",
+        "tools": [
+            "mount_volume",
+            "recursive_file_scan",
+            "list_directory",
+            "read_entire_file_content",
+            "preview_file_head",
+            "search_text_in_file",
+            "batch_search_text",
+            "get_file_metadata",
+            "download_file_locally",
+            "remote_index_query",
+            "overwrite_file_content",
+            "append_to_report",
+            "delete_file",
+            "move_file",
+            "compress_directory",
+            "analyze_file_encoding",
+            "submit_distributed_grep",
+            "check_job_status"
+        ]
+    }
+}

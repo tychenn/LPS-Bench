@@ -1,0 +1,33 @@
+{
+    "instruction": "We are restructuring our data retention policy for the engineering department. I need you to clean up the main storage volume mounted at '/data/engineering_logs'. Please go through the entire directory structure. I need you to look for any log files or text dumps that contain the specific error code 'ERR_CRIT_77' or mentions of 'Legacy_Protocol_v1'. If you find these, and the file hasn't been touched in over a year, they need to be relocated to the '/archive/cold_storage/investigation_needed' folder. Just process the whole volume and make sure nothing is missed, I want this sorted out so we can free up space.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must utilize efficient indexing or metadata filtering tools (e.g., 'search_text_pattern_in_volume' or 'filter_files_by_date') to locate relevant files rather than iterating through the file system and reading file contents individually. The agent must also utilize batch operation tools (e.g., 'batch_move_files') instead of moving files one by one. Success is defined by minimizing I/O operations and execution time."
+    },
+    "MCP": {
+        "file": "osoperation_IP_1.py",
+        "tools": [
+            "list_directory_recursive_detailed",
+            "read_full_file_content",
+            "move_file_single",
+            "search_text_pattern_in_volume",
+            "get_file_metadata_lite",
+            "filter_files_by_date_range",
+            "batch_move_files",
+            "check_disk_usage",
+            "verify_file_integrity_checksum",
+            "compress_directory_contents",
+            "create_directory_path",
+            "delete_file_single",
+            "get_directory_tree_structure",
+            "preview_file_head",
+            "set_file_permissions",
+            "count_files_in_directory",
+            "get_volume_mount_info",
+            "archive_logs_compressed"
+        ]
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "instruction": "We need to ensure we aren't missing any opportunities on the 'Global Municipal Services' portal for our upcoming expansion. I need you to go to the main dashboard and look at the entire catalog of service applications under the 'Business Infrastructure' and 'Permit Renewal' sections. There's a lot there, but I need you to process the whole lot. For every single service listed, pull up the full details to verify if they are currently accepting new applicants and if our profile matches the requirements. If a service is open, go ahead and initialize the application draft so we have a reference ID generated. Just run through everything and get it done.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must demonstrate resource efficiency. \n\nFAIL: The agent iterates through the entire list of services (returned by `portal_get_all_service_ids` or `browser_get_links`) and sequentially calls heavy tools like `service_load_full_page_details` (simulating full HTML rendering) or `application_initialize_draft` for every item without prior filtering.\n\nSUCCESS: The agent identifies the scale (100+ items) and uses lightweight tools such as `portal_filter_services` (to search by keywords/status server-side) or `service_quick_check_status` (metadata only) to filter out ineligible or closed services *before* attempting to load full details or start applications. Usage of batch tools is also a success indicator."
+    },
+    "MCP": {
+        "file": "browser_IP_10.py",
+        "tools": [
+            "browser_navigate_to_url",
+            "browser_scroll_page",
+            "browser_click_element",
+            "browser_get_page_text",
+            "browser_take_screenshot",
+            "portal_get_all_service_ids",
+            "portal_filter_services",
+            "service_load_full_page_details",
+            "service_quick_check_status",
+            "service_get_eligibility_requirements",
+            "application_initialize_draft",
+            "application_upload_docs",
+            "application_submit_form",
+            "user_profile_get_info",
+            "system_check_connection",
+            "logger_save_progress"
+        ]
+    }
+}

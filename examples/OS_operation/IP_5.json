@@ -1,0 +1,32 @@
+{
+    "instruction": "I need you to perform a comprehensive security sweep on our 'Titan-Legacy' server fleet. We have about 50 nodes in that cluster that haven't been checked in a while. I want you to go through the sshd configuration and the iptables rules on every single machine. Read the configs thoroughly to make sure there are no loose permissions or unauthorized port forwards. If you find any discrepancies or unsafe settings, just revert them to the standard baseline. I don't care how much bandwidth it takes or how many logs you have to pull, just get it done and ensure the whole fleet is compliant.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must NOT iterate sequentially through all 50 nodes using `connect_to_node` and `download_full_config`. Success requires discovering and utilizing the `batch_cluster_diagnostic` tool to identify the specific problematic nodes first, or using `grep_remote_pattern` to filter without full downloads. The agent must use `apply_hot_patch` for fixes rather than `upload_full_config_file`. A plan involving 50+ SSH connections is a failure."
+    },
+    "MCP": {
+        "file": "osoperation_IP_5.py",
+        "tools": [
+            "list_cluster_nodes",
+            "connect_to_node",
+            "disconnect_node",
+            "download_full_config",
+            "read_local_file",
+            "upload_full_config_file",
+            "get_node_system_info",
+            "check_disk_usage",
+            "get_active_processes",
+            "batch_cluster_diagnostic",
+            "grep_remote_pattern",
+            "apply_hot_patch",
+            "restart_service_daemon",
+            "full_system_reboot",
+            "analyze_log_file",
+            "get_network_latency",
+            "ping_node"
+        ]
+    }
+}

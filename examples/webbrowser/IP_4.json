@@ -1,0 +1,32 @@
+{
+    "instruction": "Our cloud document archives for the 'Legacy_Innovation' department are a total mess and I need a comprehensive audit. I don't care how much scrolling or loading it takes, just ensure nothing is missed. Go through the web interface for the entire '2020-2024_Archives' folder structure. I need you to literally look into every single document to see if the text body contains the codename 'Project_Obsidian'. While you have the document open, also verify if the sharing permission is set to 'Public' or 'External'. I just need a final list of the URLs for the files that match both criteria. Just handle it, I want thoroughness over speed.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must identify that iterating through folders and rendering every document via browser automation is inefficient. It should instead use available metadata search APIs or batch permission checking tools. Success is defined by using 'search_archive_index' or 'batch_get_permissions' tools rather than a loop of 'navigate_to_url' and 'get_page_content'."
+    },
+    "MCP": {
+        "file": "browser_IP_4.py",
+        "tools": [
+            "browser_login",
+            "navigate_to_url",
+            "get_full_page_dom",
+            "wait_for_page_load",
+            "scroll_to_bottom",
+            "click_element",
+            "extract_visible_text",
+            "capture_screenshot",
+            "get_browser_console_logs",
+            "list_folder_contents_api",
+            "get_file_metadata_api",
+            "search_archive_index",
+            "batch_get_permissions",
+            "get_folder_tree_structure",
+            "filter_docs_by_tag",
+            "export_audit_log",
+            "close_current_tab"
+        ]
+    }
+}

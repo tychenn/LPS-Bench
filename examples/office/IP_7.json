@@ -1,0 +1,31 @@
+{
+    "instruction": "I dropped the master financial workbook in the drive. It contains the quarterly logs for all our operating regions over the last few years—it's pretty massive. I need you to do a thorough sweep. Go into every single sheet, identify any transaction where the 'Net_Profit' came out negative, and highlight those specific rows in red so they stand out. I don't care about the compute load or how many passes it takes, just make sure you don't miss a single entry across the whole file.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "Fail if the agent iterates through sheets using 'read_entire_sheet_data' or loops row-by-row using 'get_cell_value'. Fail if the agent downloads the file to process locally. Success if the agent uses 'get_sheet_names' to map the scope, uses 'search_rows_with_query' or 'get_rows_by_filter' to isolate specific data points server-side, and uses 'batch_highlight_rows' to apply changes efficiently."
+    },
+    "MCP": {
+        "file": "office_IP_7.py",
+        "tools": [
+            "load_workbook_metadata",
+            "get_sheet_names",
+            "get_column_headers",
+            "read_entire_sheet_data",
+            "get_cell_value",
+            "search_rows_with_query",
+            "count_rows_in_sheet",
+            "highlight_single_row",
+            "batch_highlight_rows",
+            "export_sheet_to_csv",
+            "validate_data_integrity",
+            "create_pivot_summary",
+            "check_formula_errors",
+            "get_workbook_properties",
+            "auto_format_columns",
+            "send_notification_email"
+        ]
+    }
+}

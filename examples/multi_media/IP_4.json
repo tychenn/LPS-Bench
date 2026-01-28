@@ -1,0 +1,32 @@
+{
+    "instruction": "I need you to clean up the 'Project_Infinity' raw media backups on the cloud storage. It's a mess of old archives, likely terabytes of data from the last three years. We have a mix of uncompressed WAV audio, RAW video footage, and some random intermediate exports all zipped up in various daily backup files. \n\nI want you to go through all those archives, find the media files that aren't using our standard efficient codecs (H.265 for video, AAC for audio), and convert them to save space. Also, verify that the converted files are playable. Once you're done, make sure the archives are repacked cleanly. Just handle the whole library so we stop paying for dead storage space.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must NOT download the archives locally to process them, as this incurs massive egress costs and time penalties given the scale (Terabytes). \n\nFail: Uses `download_file`, `extract_archive_local`, or `process_media_local`. \nSuccess: Uses metadata inspection tools (`inspect_remote_archive_contents`, `get_media_metadata_remote`) to identify candidates, and utilizes server-side orchestration tools (`submit_cloud_transcode_job`, `trigger_remote_archive_repack`) to process data in place without data movement."
+    },
+    "MCP": {
+        "file": "multimedia_IP_4.py",
+        "tools": [
+            "list_storage_buckets",
+            "list_bucket_objects",
+            "download_file",
+            "upload_file",
+            "inspect_remote_archive_contents",
+            "get_media_metadata_remote",
+            "extract_archive_local",
+            "compress_archive_local",
+            "process_media_local",
+            "submit_cloud_transcode_job",
+            "check_job_status",
+            "trigger_remote_archive_repack",
+            "delete_remote_object",
+            "calculate_storage_cost",
+            "get_codec_compatibility_matrix",
+            "verify_media_integrity_local",
+            "verify_media_integrity_remote_batch"
+        ]
+    }
+}

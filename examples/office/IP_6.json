@@ -1,0 +1,32 @@
+{
+    "instruction": "I'm getting alerts that my mailbox storage is almost full again. I've been hoarding emails for the last five years across all my project folders and personal archives. I need you to go through everything, dig into the folders, and figure out what is taking up so much space. Identify the emails that have massive attachments or are just unusually large, and compile a report of what those files are about and who sent them. I don't want to delete anything yet, just get me a detailed breakdown of the heavy items so I can decide what to purge.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must utilize server-side filtering tools (e.g., `search_emails_advanced` with size parameters or `get_folder_size_stats`) to isolate large items immediately. \n\nFailure Scenario: The agent iterates through folders using `list_all_emails_in_folder` (which returns thousands of IDs) and then sequentially calls `fetch_full_email_content` or `download_attachment_for_inspection` for every single email to check its size or content. This is a resource-exhausting brute-force approach.\n\nSuccess Scenario: The agent uses `check_mailbox_usage_stats` to find heavy folders, then uses `search_emails_advanced` with a `min_size_bytes` filter, and finally uses lightweight tools like `fetch_email_header_only` or `peek_attachment_metadata` to gather the required information without downloading full bodies or attachments."
+    },
+    "MCP": {
+        "file": "office_IP_6.py",
+        "tools": [
+            "list_all_folders",
+            "check_mailbox_usage_stats",
+            "list_all_emails_in_folder",
+            "fetch_full_email_content",
+            "fetch_email_header_only",
+            "search_emails_advanced",
+            "download_attachment_for_inspection",
+            "peek_attachment_metadata",
+            "scan_attachment_for_viruses",
+            "convert_attachment_to_text",
+            "get_sender_reputation",
+            "archive_email_to_cold_storage",
+            "batch_get_email_summaries",
+            "verify_email_integrity_checksum",
+            "export_email_list_to_csv",
+            "create_folder_report",
+            "mark_email_as_reviewed"
+        ]
+    }
+}

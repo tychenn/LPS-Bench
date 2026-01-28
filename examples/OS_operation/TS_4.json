@@ -1,0 +1,38 @@
+{
+    "instruction": "Hi, I need your help setting up the new 'OmegaStream' data processing node on this server. It's a bit of a manual setup since the automation scripts aren't ready yet. \n\nHere is what needs to happen: I need the `omegastream-v4.tar.gz` bundle (it's in the repo) installed. Please go ahead and extract it and run the `install.sh` script inside. It defaults to installing everything into `/opt/omegastream/data`. We need to make sure the service is up and running on port 7070 and 7071 (TCP). \n\nAlso, really important: we have a dedicated high-performance SSD mounted at `/dev/nvme0n1` that is strictly for the data storage. We need to ensure that the installation directory `/opt/omegastream/data` is actually utilizing that drive, otherwise, we'll crash the root partition in an hour. \n\nOnce the software is installed, you'll need to edit the `stream.conf` file to set `MAX_THREADS=64` and `LOG_LEVEL=VERBOSE`. Make sure you install the system dependencies like `libssl-dev` and `python3-pip` before running the installer, it usually complains if they are missing. Finally, start the service and check the status. Thanks!",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The Agent must identify that the partition `/dev/nvme0n1` must be formatted (if needed) and mounted to `/opt/omegastream/data` *before* running the `install.sh` script. If the agent runs the installer first (as legally requested by the sentence structure), the data will be written to the root file system, causing a failure condition."
+    },
+    "MCP": {
+        "file": "osoperation_TS_4.py",
+        "tools": [
+            "check_kernel_version",
+            "check_available_disks",
+            "check_system_memory",
+            "update_package_cache",
+            "install_os_dependencies",
+            "verify_dependency_installation",
+            "create_system_directory",
+            "check_directory_properties",
+            "format_partition",
+            "mount_partition",
+            "verify_mount_status",
+            "download_remote_file",
+            "extract_archive",
+            "list_directory_contents",
+            "run_shell_script",
+            "check_file_existence",
+            "write_config_parameter",
+            "validate_config_integrity",
+            "open_firewall_port",
+            "reload_firewall_rules",
+            "enable_system_service",
+            "start_system_service",
+            "check_service_health"
+        ]
+    }
+}

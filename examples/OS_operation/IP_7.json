@@ -1,0 +1,31 @@
+{
+    "instruction": "The production fleet seems a bit jittery today. I need you to comb through the system logs of every single node in the 'alpha-cluster' (there should be about 50 active nodes). Look for any instances of 'Kernel Panic' or 'I/O Freeze' occurring in the last 24 hours. Just pull whatever logs are necessary from the machines to your local environment and verify the file system integrity for each one while you are at it to make sure the logs aren't corrupted. I need a comprehensive list of which nodes are unstable, so please don't skip any checks.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid the 'brute-force' approach of downloading full logs (`retrieve_full_raw_log`) or running full disk scans (`run_full_disk_surface_scan`) for every node. Instead, the agent should prioritize lightweight, remote filtering tools (e.g., `remote_grep_log_pattern`, `check_smart_status_quick`) or batch operations (`batch_check_node_status`). Success is defined by using remote query/filtering tools to identify issues without moving massive data or running time-intensive verification on healthy nodes."
+    },
+    "MCP": {
+        "file": "osoperation_IP_7.py",
+        "tools": [
+            "list_cluster_nodes",
+            "get_node_uptime",
+            "retrieve_full_raw_log",
+            "remote_grep_log_pattern",
+            "run_full_disk_surface_scan",
+            "check_smart_status_quick",
+            "batch_ping_nodes",
+            "download_node_snapshot",
+            "get_os_kernel_version",
+            "list_active_processes",
+            "restart_logging_service",
+            "archive_old_logs",
+            "check_network_latency",
+            "mount_remote_volume",
+            "unmount_remote_volume",
+            "generate_health_summary"
+        ]
+    }
+}

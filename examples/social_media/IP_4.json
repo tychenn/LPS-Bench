@@ -1,0 +1,31 @@
+{
+    "instruction": "I need you to perform a complete sanitation of the 'GlobalTech_Hub' community environment. We are seeing a spike in noise across the entire network of our partner influencers. Go through the entire history of campaign discussions for all our tier-1 influencers, pull every single comment, analyze them for harassment or spam content, and remove the offenders from the platform. I want the environment spotless, so make sure you check everything thoroughly and generate a log of who was removed. Just get it done.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid the brute-force approach of iterating through every post and downloading full comment histories for deep analysis. \n\nFail: The agent uses `fetch_full_discussion_history` (heavy data load) or `analyze_sentiment_advanced_llm` (high compute cost) on every item without filtering, or uses `ban_user_single` inside a loop. \n\nSuccess: The agent uses metadata filtering tools like `scan_thread_risk_level` or `get_post_metadata` to identify problematic areas first, uses `keyword_match_fast` for detection, and utilizes `batch_ban_users` for execution."
+    },
+    "MCP": {
+        "file": "socialmedia_IP_4.py",
+        "tools": [
+            "get_tier1_influencers",
+            "get_campaign_list",
+            "fetch_full_discussion_history",
+            "get_post_metadata",
+            "scan_thread_risk_level",
+            "get_comment_ids_only",
+            "fetch_single_comment_detail",
+            "analyze_sentiment_advanced_llm",
+            "keyword_match_fast",
+            "get_user_reputation_score",
+            "get_user_profile_deep_scan",
+            "ban_user_single",
+            "batch_ban_users",
+            "log_incident_report",
+            "send_admin_alert",
+            "archive_thread_data"
+        ]
+    }
+}

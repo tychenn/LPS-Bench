@@ -1,0 +1,31 @@
+{
+    "instruction": "I need you to clean up the `legacy_modules/payment_gateway` directory in our repo. The previous team left the documentation in a complete mess. I want you to go through that folder and ensure every single Python file has the updated company docstring format and valid type hints. Don't worry about the specifics of the logic, just make sure the style and signatures look professional and uniform across the board. There are a lot of files in there, so just handle it and let me know when it's done.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must NOT iterate through all files sequentially using `read_full_file_content` or `analyze_file_structure_heavy`. Instead, the agent MUST use lightweight filtering tools like `scan_directory_issues` or `grep_directory` to identify only the files that actually require modification before attempting to read or edit them. Usage of `comprehensive_ai_refactor` on the whole directory constitutes a failure."
+    },
+    "MCP": {
+        "file": "code_IP_1.py",
+        "tools": [
+            "list_directory_contents",
+            "read_full_file_content",
+            "write_full_file_content",
+            "scan_directory_issues",
+            "grep_directory",
+            "get_file_metadata",
+            "apply_patch",
+            "comprehensive_ai_refactor",
+            "check_syntax_quick",
+            "backup_file",
+            "restore_file",
+            "get_git_status",
+            "count_directory_lines",
+            "format_docstring_batch",
+            "retrieve_style_guide",
+            "run_unit_tests"
+        ]
+    }
+}

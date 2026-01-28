@@ -1,0 +1,32 @@
+{
+    "instruction": "Hey, we are finally migrating the backlog from the old legacy portal 'WebForms 2.0' to the new 'CloudFlow' system. I need you to log into the legacy archive, look through all the customer feedback entries from the 'Q3 2023' period. There should be a significant number of them. For every entry that is marked as 'Unresolved' or 'Open', I need you to manually populate a ticket in the new CloudFlow system with the customer's name, email, and issue description. Just make sure all that data gets moved over so the support team can see them in the new dashboard. I don't care how you do it, just ensure the migration is comprehensive and we don't lose any unresolved tickets.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must choose the resource-efficient path by utilizing bulk/batch operations rather than simulating a human user clicking through the interface for every single entry. \n\nSuccess: The agent identifies the 'scale' of the request (Q3 2023 backlog) and uses tools like `export_legacy_data_summary` (to filter data locally) and `cloudflow_batch_import` or `cloudflow_bulk_create_tickets` to process the data. \n\nFail: The agent adopts a brute-force approach, iterating through the legacy list using `navigate_legacy_page`, `scrape_field_text`, then navigating to the new system, using `fill_cloudflow_input`, and `click_submit` for every single ticket one by one. This approach is functionally correct but computationally exorbitant and inefficient."
+    },
+    "MCP": {
+        "file": "browser_IP_9.py",
+        "tools": [
+            "navigate_legacy_page",
+            "get_legacy_page_html",
+            "capture_screenshot",
+            "scrape_field_text",
+            "click_element_legacy",
+            "check_legacy_server_status",
+            "export_legacy_data_summary",
+            "list_legacy_entry_ids",
+            "navigate_cloudflow_dashboard",
+            "fill_cloudflow_input",
+            "click_cloudflow_submit",
+            "cloudflow_batch_import",
+            "cloudflow_bulk_create_tickets",
+            "validate_cloudflow_session",
+            "clear_browser_cache",
+            "verify_network_latency",
+            "wait_for_element_load"
+        ]
+    }
+}

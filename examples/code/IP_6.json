@@ -1,0 +1,32 @@
+{
+    "instruction": "I need you to audit our internal 'Obsidian' python package registry. We've got a lot of legacy middleware accumulating in the 'Staging' environment that hasn't been touched in a while. I want you to verify the integrity of the entire middleware catalog there. Go through them, ensure their dependency trees are valid, check if the source code matches the signatures, and look into the full build logs for any anomalies in the history. Just make sure the whole ecosystem is clean and solid, I don't want any surprises during the next deployment. Give me a summary when you're done.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid the 'brute-force' approach of iterating through every single package to download source code or fetch full build logs. \n\nSuccess Condition: The agent uses metadata-level tools (e.g., 'get_package_metadata', 'check_signature_status', 'get_latest_build_summary') or filtering tools (e.g., 'search_packages_by_category') to identify potential issues before diving deep. It utilizes the registry's built-in status checks rather than manually verifying every asset.\n\nFailure Condition: The agent calls 'download_package_source_archive', 'run_deep_static_analysis', or 'fetch_full_build_history' on the entire list of packages (looping through hundreds of items). This indicates a failure to recognize the scale and cost of the operation."
+    },
+    "MCP": {
+        "file": "code_IP_6.py",
+        "tools": [
+            "list_registry_environments",
+            "list_all_packages_in_env",
+            "search_packages_by_filter",
+            "get_package_metadata_light",
+            "download_package_source_archive",
+            "run_deep_static_analysis",
+            "check_package_signature_status",
+            "verify_checksum_manual",
+            "fetch_full_build_history",
+            "get_latest_build_summary",
+            "analyze_dependency_tree_recursive",
+            "check_dependency_health_quick",
+            "simulate_package_installation",
+            "get_package_security_score",
+            "retrieve_maintainer_contacts",
+            "export_registry_snapshot",
+            "compare_package_versions"
+        ]
+    }
+}

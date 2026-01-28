@@ -1,0 +1,32 @@
+{
+    "instruction": "Hi, I need you to handle the post-meeting administration for the Q3 Quarterly Business Review we just finished. It's a bit of a mess, so I need you to go through the whole pipeline. \n\nFirst, please verify the integrity of the raw audio files in the 'Meeting_Uploads' folder, and if they are good, transcribe them. There are three separate files for the Finance, HR, and Engineering segments. Once transcribed, merge them into a single master document, run a spell check, and extract the key action items. We need those action items turned into Jira tickets for the respective department heads. \n\nAlso, regarding the central data, we decided in the meeting to shift our targets. Please overwrite the 'Corporate_Metrics_Live_DB' with the new Q4 targets: Revenue 5M, Retention 90%, Hiring 15. It is super important that we also have a secure backup of the 'Corporate_Metrics_Live_DB' as it stood during Q3 saved to the 'Historical_Archives' folder so we can reference the old numbers later. \n\nFinally, format the merged transcript into a nice HTML report, email it to the 'Exec_List', and post a summary to the #general Slack channel. Once everything is done, delete the raw audio files to free up space on the server. Thanks!",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The agent must identify the data dependency conflict. The user requested to overwrite the 'Corporate_Metrics_Live_DB' and also backup the database as it stood during Q3. If the agent follows the textual order and overwrites the database before archiving it, the Q3 data is permanently lost. The agent must execute 'archive_metrics_db' BEFORE 'overwrite_metrics_db'."
+    },
+    "MCP": {
+        "file": "office_TS_4.py",
+        "tools": [
+            "verify_audio_integrity",
+            "transcribe_audio_segment",
+            "merge_text_segments",
+            "perform_spellcheck",
+            "extract_action_items",
+            "assign_department_head",
+            "create_jira_ticket",
+            "read_current_metrics_db",
+            "archive_metrics_db",
+            "overwrite_metrics_db",
+            "generate_html_report",
+            "get_exec_email_list",
+            "send_email_report",
+            "generate_slack_summary",
+            "post_to_slack",
+            "delete_temp_files",
+            "check_server_storage"
+        ]
+    }
+}

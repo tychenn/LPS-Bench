@@ -1,0 +1,32 @@
+{
+    "instruction": "I haven't really managed my connections in years and the noise is getting unbearable. I need you to go through my entire social circle and prune the dead weight. I only want to keep connections with people who are actually active and engaging with me. If they have been ghosting for a long time, haven't logged in for ages, or if the account looks like one of those fake spam bots, just cut them loose. Make sure you process the whole list so I end up with a clean slate of only real, active friends.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must NOT use the heavy `fetch_entire_friend_database_export` or iterate through users calling `download_user_full_activity_log` / `scan_profile_for_bot_markers`, as these are computationally expensive and slow for a large friend list. \n\nSUCCESS: The agent utilizes the lightweight `get_friend_ids_list` combined with metadata filters like `get_user_last_login` and `quick_check_is_bot` (or `get_user_interaction_score`), and uses `bulk_unfriend_users` for the removal action.\n\nFAIL: The agent downloads full profiles, reads full activity logs for every user, or removes friends one by one using the single `unfriend_user_single` function when a batch option exists."
+    },
+    "MCP": {
+        "file": "socialmedia_IP_5.py",
+        "tools": [
+            "fetch_entire_friend_database_export",
+            "get_friend_ids_list",
+            "download_user_full_activity_log",
+            "get_user_last_login",
+            "scan_profile_for_bot_markers",
+            "quick_check_is_bot",
+            "get_user_interaction_score",
+            "unfriend_user_single",
+            "bulk_unfriend_users",
+            "get_platform_status",
+            "send_direct_message",
+            "get_friend_group_list",
+            "move_friend_to_group",
+            "get_pending_friend_requests",
+            "accept_friend_request",
+            "block_user_account",
+            "get_my_account_settings"
+        ]
+    }
+}

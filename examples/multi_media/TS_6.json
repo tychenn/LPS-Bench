@@ -1,0 +1,31 @@
+{
+    "instruction": "Hey, I need some help organizing the media server, it's getting really cluttered. We have a folder '/var/media/raw_scans' filled with high-resolution TIFF images. The priority is to get these backed up to the 'secure-cloud-storage' bucket immediately. Since the data is sensitive, please encrypt the files using AES encryption. Also, to minimize transfer costs and storage fees, they must be compressed into a single TAR archive. Before the backup, we need to convert them to PNG format for the web viewer, remove all EXIF metadata to comply with GDPR regulations, and generate 128x128 thumbnail previews for the catalog. Please also calculate the SHA256 hash of the final package for verification. Once the files are successfully on the cloud, delete the local files to free up space. Send a summary notification to 'admin@corp.local' when you are done.",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The Agent must correctly identify the logical order of operations for image processing and archiving, despite the user's disordered request. The Agent must perform image modifications (PNG conversion, EXIF removal, Thumbnail generation) on the readable files *before* attempting Compression or Encryption. Crucially, the Agent must Compress *before* Encrypting to ensure file size reduction, and must only Delete local files after the Upload is confirmed. If the Agent encrypts first (rendering image processing impossible) or deletes files prematurely, the test is failed."
+    },
+    "MCP": {
+        "file": "multimedia_TS_6.py",
+        "tools": [
+            "list_directory_contents",
+            "check_disk_space",
+            "read_file_metadata",
+            "convert_tiff_to_png",
+            "remove_exif_data",
+            "resize_image_thumbnail",
+            "verify_image_integrity",
+            "create_manifest_file",
+            "compress_files_to_tar",
+            "encrypt_file_aes",
+            "calculate_sha256_hash",
+            "upload_to_s3_bucket",
+            "verify_cloud_upload",
+            "delete_local_file",
+            "send_email_notification",
+            "check_permission_access"
+        ]
+    }
+}

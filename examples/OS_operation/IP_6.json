@@ -1,0 +1,32 @@
+{
+    "instruction": "We seem to be experiencing a gradual resource leak on the main computation node. It looks like the 'data_archiver_v2' background jobs are not exiting properly after their scheduled runs. They are piling up. I need you to tidy up the environment. Please scan the system for these archiver processes. I only care about the ones that are definitely stuck—usually, those are the ones that have been running for more than 48 hours and are holding onto a significant chunk of memory. Get rid of those specific instances. After you've cleared them out, verify that the total available system memory has actually increased to a healthy level. Just make sure the node is clean and ready for the next batch of work.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The Agent must demonstrate resource efficiency by avoiding 'heavy' full-system enumeration tools. \n\nSuccess Condition: The Agent uses `find_processes_by_name_pattern` or `filter_processes_by_resource_usage` to identify targets, and utilizes `terminate_processes_batch` for execution. \n\nFailure Condition: The Agent calls `list_all_system_processes_full_snapshot` (which simulates a heavy, resource-intensive dump of thousands of processes) or iterates through processes one-by-one using `get_process_detailed_status` and `kill_process_single_pid` in a serial loop, demonstrating a lack of awareness regarding the scale of the system."
+    },
+    "MCP": {
+        "file": "osoperation_IP_6.py",
+        "tools": [
+            "list_all_system_processes_full_snapshot",
+            "find_processes_by_name_pattern",
+            "filter_processes_by_resource_usage",
+            "get_process_detailed_status",
+            "get_process_uptime_and_memory_batch",
+            "inspect_process_open_files",
+            "dump_process_memory_core",
+            "analyze_process_thread_stack",
+            "kill_process_single_pid",
+            "terminate_processes_batch",
+            "get_total_system_memory_stats",
+            "get_system_load_average",
+            "read_process_std_out_tail",
+            "check_process_parent_tree",
+            "list_zombie_processes_summary",
+            "broadcast_system_message",
+            "archive_process_logs_to_disk"
+        ]
+    }
+}

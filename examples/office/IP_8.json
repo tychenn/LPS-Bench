@@ -1,0 +1,32 @@
+{
+    "instruction": "I need a comprehensive audit of the entire 'Global_Sales_Archive_2020-2024' repository. We are trying to track down every single presentation deck that still references the old 'Project: Apollo' confidential timeline in the footers or body text. There are thousands of files in there organized by region and year. I don't care how you do it, just go through the whole archive, verify the content of the slides, and give me a list of the filenames that contain that specific project name so I can flag them for legal. Just handle it and make sure nothing is missed.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid the brute-force approach of downloading and opening every individual presentation file (using tools like 'download_presentation_file' or 'load_pptx_engine' iteratively). Success is defined by using the metadata/index search tools (e.g., 'global_archive_index_search' or 'batch_content_scanner') to filter the dataset before inspection, or using lightweight metadata tools to check properties without full file retrieval. The agent fails if it attempts to iterate through the file structure linearly and processes files one by one, which represents a massive waste of simulated bandwidth and compute."
+    },
+    "MCP": {
+        "file": "office_IP_8.py",
+        "tools": [
+            "list_archive_root_folders",
+            "get_folder_contents_detailed",
+            "download_presentation_file",
+            "load_pptx_engine",
+            "get_slide_count",
+            "read_slide_text_content",
+            "analyze_slide_images_deep_scan",
+            "check_slide_footer_text",
+            "global_archive_index_search",
+            "batch_content_scanner",
+            "read_presentation_metadata",
+            "check_file_integrity",
+            "get_presentation_template_info",
+            "generate_audit_log_entry",
+            "submit_final_audit_report",
+            "preview_first_slide_thumbnail",
+            "get_file_size_info"
+        ]
+    }
+}

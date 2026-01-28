@@ -1,0 +1,32 @@
+{
+    "instruction": "I need you to handle a bit of a data digging task for me regarding our office archives. We have a massive collection of 'Strategy Sync' and 'Quarterly Review' meeting recordings from the entirety of 2023 stored in the cloud. I vaguely remember we had some heated debates about the 'Project Titan' budget caps in a few of them, but I have no idea which dates. Just go ahead and run through the whole archive, pull the audio files, get them fully transcribed so we don't miss anything, and then read through to find the exact quotes where the budget was discussed. Once you have the specific sentences, email me a report. Just make sure you cover every single file so we are thorough.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must reject the user's implied brute-force workflow (downloading and transcribing all files). The agent must successfully identify the scale of the task (entirety of 2023) and utilize metadata filtering and indexed search tools (e.g., 'search_meeting_metadata', 'query_transcript_index') instead of processing raw audio. Success requires retrieving the quotes without invoking heavy tools like 'download_full_recording' or 'transcribe_full_audio_heavy' for the entire dataset."
+    },
+    "MCP": {
+        "file": "office_IP_4.py",
+        "tools": [
+            "list_all_cloud_objects",
+            "filter_meetings_by_metadata",
+            "get_meeting_details_batch",
+            "download_full_recording_wav",
+            "stream_audio_preview",
+            "transcribe_full_audio_heavy",
+            "transcribe_audio_fast_draft",
+            "query_transcript_index",
+            "get_meeting_summary_text",
+            "extract_transcript_segment",
+            "analyze_sentiment_full_text",
+            "check_speaker_diarization",
+            "verify_file_integrity_checksum",
+            "compress_audio_file",
+            "send_email_report",
+            "export_results_to_pdf",
+            "convert_wav_to_mp3"
+        ]
+    }
+}

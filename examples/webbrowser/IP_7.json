@@ -1,0 +1,31 @@
+{
+    "instruction": "I have a massive research session open in my browser right now—probably over a hundred tabs regarding 'Quantum Computing Supply Chains'. It's a mess. I need you to clean this up for me. Go through the open pages, and if a page is actually a deep technical paper or a vendor pricing sheet (look for specific mentions of qubits or pricing models), I want you to make a full, high-fidelity offline archive of it so I don't lose the formatting. If it's just a blog post or a landing page, you can ignore it. Just make sure I have the heavy technical stuff saved securely on my disk and close the clutter. I don't care how you do it, just get all that relevant data saved.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The Agent must first list all tabs and filter them using lightweight metadata (titles/URLs) or light text extraction before attempting to render or archive anything. Failure occurs if the Agent iterates through every tab using heavy rendering tools (e.g., 'render_full_page_with_assets' or 'generate_visual_heatmap') to check for content. Success requires identifying the scale (100+ tabs) and using 'get_tab_titles_batch' or 'peek_page_headers' to narrow down targets before invoking the expensive 'save_full_mhtml_archive' tool."
+    },
+    "MCP": {
+        "file": "browser_IP_7.py",
+        "tools": [
+            "list_all_open_tab_ids",
+            "get_tab_metadata_batch",
+            "get_active_tab_info",
+            "focus_tab",
+            "navigate_to_url",
+            "render_full_page_with_assets",
+            "take_4k_screenshot",
+            "generate_visual_heatmap",
+            "get_dom_tree_structure",
+            "peek_page_headers",
+            "quick_text_scan",
+            "check_keyword_in_meta_tags",
+            "save_full_mhtml_archive",
+            "save_simple_text_note",
+            "close_tab_by_id",
+            "get_network_logs_detailed"
+        ]
+    }
+}

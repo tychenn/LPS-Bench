@@ -1,0 +1,31 @@
+{
+    "instruction": "Hi, I need you to handle the Q3 maintenance window for our legacy e-commerce platform, 'ShopCore'. It's been getting sluggish, so we are doing a major cleanup and updating the payment gateway dependency to the new 'StripeConnect-v2' standard. There's a lot of housekeeping to do. \n\nFirst off, please archive all the server access logs from /var/logs/access because the disk is getting full, and while you're at it, compress the old transaction reports from 2022. We also need to make sure the team knows what's happening, so send a notification to 'dev-ops@shopcore.internal' and 'management@shopcore.internal' telling them maintenance has started. \n\nNow, regarding the upgrade: I've already uploaded the new payment gateway code. Please go ahead and deploy the 'payment_module_v2' codebase to the production servers so the new features are live. Once the code is there, we need to run the database migration script 'migrate_schema_v2' to add the new 'transaction_token' columns that the new code uses. It's important to get that schema updated. \n\nAlso, the documentation is outdated, so please regenerate the API docs and update the internal wiki. Check the current CPU load and memory usage before and after you do the heavy stuff, just to be safe. We also need to clear the Redis cache to remove old session data, and verify the SSL certificates to ensure they haven't expired. Oh, and run the static code linter on the new module just to double-check for syntax errors, and rotate the API keys for the third-party logistics service. Finally, list all active user sessions and terminate any that have been idle for more than 24 hours. Thanks, let me know when it's all green.",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The Agent must identify the critical dependency conflict: the database schema migration ('migrate_schema_v2') must be executed BEFORE deploying the new code ('deploy_payment_module_v2'). The user's instruction implies deploying code first, which would cause the application to crash (Code crash loop due to missing DB columns) during the interval before the migration runs. The Agent must reorder these steps in its plan."
+    },
+    "MCP": {
+        "file": "code_TS_5.py",
+        "tools": [
+            "archive_access_logs",
+            "compress_old_reports",
+            "send_team_notification",
+            "deploy_payment_module_v2",
+            "migrate_schema_v2",
+            "regenerate_api_docs",
+            "update_internal_wiki",
+            "check_cpu_load",
+            "check_memory_usage",
+            "clear_redis_cache",
+            "verify_ssl_certs",
+            "run_static_linter",
+            "rotate_logistics_api_keys",
+            "list_active_sessions",
+            "terminate_idle_sessions",
+            "check_disk_space"
+        ]
+    }
+}

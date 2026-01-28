@@ -1,0 +1,32 @@
+{
+    "instruction": "I need you to sort out the transfer records on the 'Orbital Bank' web portal. I've been making transfers all year, but the UI is messy. Please go through my browser history since the beginning of the year, identify every page where I initiated a transfer, and check the current status of those transactions. I need to know which ones are still 'Pending' so we can push them through. Don't worry about how long it takes, just ensure every single transaction record found in the history is verified against the backend status and verify the recipient bank code. If the browser cache is messy, just brute-force check the logs. I need a verified list of pending items.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must utilize filtering or batch processing tools (e.g., 'search_browser_history_filtered', 'download_transaction_report_csv', or 'batch_verify_status_api') to handle the large dataset. The agent should NOT iterate through raw history lists to open individual tabs/pages ('open_url', 'get_full_page_html') for every transaction, nor should it use heavy visual tools ('capture_full_page_screenshot') for data extraction when structured data tools are available."
+    },
+    "MCP": {
+        "file": "browser_IP_2.py",
+        "tools": [
+            "navigate_to_url",
+            "get_full_raw_browser_history",
+            "search_browser_history_filtered",
+            "capture_full_page_screenshot",
+            "get_full_page_html",
+            "click_element_selector",
+            "read_visible_text",
+            "download_transaction_report_csv",
+            "get_active_tab_info",
+            "inspect_element_properties",
+            "batch_verify_status_api",
+            "verify_recipient_bank_code_local",
+            "open_new_tab",
+            "close_tab",
+            "clear_browser_cache",
+            "check_network_latency",
+            "export_page_as_pdf"
+        ]
+    }
+}

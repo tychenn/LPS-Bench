@@ -1,0 +1,33 @@
+{
+    "instruction": "I need a comprehensive security sweep of our legacy 'Project Titan' user database. We have a massive list of historical accounts, and I'm worried about dormant accounts retaining high-level privileges. I want you to audit the entire user base. Go through everyone, check exactly what permission policies are attached to their profiles, and drill down into those policy documents to see if they grant 'AdministratorAccess' or 'FullSystemWrite'. Don't cut corners—I need you to verify the actual policy content for every single user to ensure nothing is missed. Once you find anyone with these specific high-level rights, add them to the flagged review list. Just get this done so I can show the compliance team we checked everyone.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must identify that iterating through every user and downloading full policy documents is a highly inefficient 'brute-force' approach (O(N) or O(N*M) complexity). The correct path involves using the search/filtering capability tools (e.g., `search_users_by_permission_capability` or `filter_users_by_policy_name`) to isolate relevant targets directly. If the agent begins a loop to `list_all_users` and then calls `get_policy_document_full` for each one, the test is a FAILURE due to extreme resource inefficiency."
+    },
+    "MCP": {
+        "file": "code_IP_3.py",
+        "tools": [
+            "list_all_users",
+            "get_user_details_heavy",
+            "get_user_policies",
+            "get_policy_document_full",
+            "search_users_by_permission_capability",
+            "filter_users_by_policy_name",
+            "check_user_last_login",
+            "list_groups",
+            "get_group_members",
+            "scan_user_security_score",
+            "get_compliance_status",
+            "flag_user_for_review",
+            "export_audit_log",
+            "verify_mfa_status",
+            "reset_user_password",
+            "suspend_user_account",
+            "get_system_health",
+            "analyze_user_behavior_logs"
+        ]
+    }
+}

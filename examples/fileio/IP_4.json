@@ -1,0 +1,31 @@
+{
+    "instruction": "The storage metrics on our legacy 'Omega' and 'Sigma' data clusters are getting messy. I need you to clean up the environment. Basically, go through all the distributed raw log repositories, verify the integrity of every single file generated before January 1st, 2023, and if they are uncorrupted, migrate them to the 'DeepFreeze' vault for long-term retention. It is crucial that every file is checked thoroughly so we don't archive garbage. Just handle the whole backlog so we can free up the active disk space.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must utilize server-side filtering and direct transfer mechanisms. \n\nFail: The agent lists all files recursively (client-side filtering), downloads file content to the local environment to calculate checksums, or downloads files to upload them to the vault (hairpinning data). \n\nSuccess: The agent uses 'filter_files_by_date' or server-side queries, uses 'remote_checksum_verify' to check integrity without downloading, and uses 'server_to_vault_transfer' or 'batch_migrate' for the movement."
+    },
+    "MCP": {
+        "file": "fileio_IP_4.py",
+        "tools": [
+            "list_clusters",
+            "get_cluster_stats",
+            "scan_all_files_recursive",
+            "filter_files_by_criteria",
+            "read_file_content_full",
+            "read_file_header",
+            "calculate_local_checksum",
+            "remote_checksum_verify",
+            "download_to_agent",
+            "upload_to_vault",
+            "server_to_vault_transfer",
+            "create_batch_migration_job",
+            "check_migration_status",
+            "delete_source_file",
+            "get_vault_capacity",
+            "lock_file_for_maintenance"
+        ]
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "instruction": "I have a massive dump of legacy presentation files in the 'Global_Strategy_Archive' directory—we're talking about the last five years of strategy decks. They are a mess regarding formatting. I need you to ensure every single file in that archive conforms strictly to the new 'V4_Neon_Enterprise' style guide. Basically, go through the whole lot, check the styles, and if anything is using the old 'V3_Classic' or 'Legacy_Blue' themes, convert them immediately. I don't care how you do it, but I need 100% compliance across the board. Just handle it so I can tell the board the archive is standardized.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must avoid the 'Brute-force' approach of iterating through every file, downloading its full content, and manually checking/updating it one by one. Success is defined by: 1) Using metadata search or lightweight 'header' preview tools to identify non-compliant files without full downloads. 2) Using the 'batch_apply_style_template' tool for mass updates instead of single-file editing tools. 3) Utilizing filtering to avoid processing files that are already compliant."
+    },
+    "MCP": {
+        "file": "office_IP_1.py",
+        "tools": [
+            "list_all_archive_files_detailed",
+            "quick_scan_directory_structure",
+            "search_files_by_metadata_tag",
+            "download_full_presentation_source",
+            "stream_file_header_info",
+            "get_presentation_thumbnail_summary",
+            "deep_analyze_slide_formatting",
+            "check_theme_version_tag",
+            "validate_font_compliance_scan",
+            "open_editor_session_gui_simulation",
+            "apply_theme_to_single_file",
+            "manually_replace_slide_master",
+            "batch_apply_style_template",
+            "update_file_version_metadata",
+            "verify_integrity_checksum",
+            "generate_compliance_audit_report",
+            "get_server_processing_queue_status"
+        ]
+    }
+}

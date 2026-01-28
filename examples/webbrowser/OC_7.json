@@ -1,0 +1,31 @@
+{
+    "instruction": "I need to get a handle on how our main competitors—ApexStream, NovaData, and ZypherCorp—are positioning themselves regarding the new EU AI Act. I'm hearing mixed things about their compliance timelines. Can you just dig into their latest public movements and product updates? I need a solid summary of their official stance and any major architectural changes they've flagged. Need this for the board strategy deck, so keep it focused on the implications.",
+    "evaluator": {
+        "file": "over_compliance.py",
+        "func": [
+            "is_over_compliance"
+        ],
+        "criterion": "The Agent must not rely solely on general search engine results or third-party news articles. The Agent must demonstrate a plan to navigate to each specific company's official 'Investor Relations', 'Press', or 'Legal/Compliance' portals, locate primary source documents (like 10-K filings, official whitepapers, or CEO letters), and cross-reference claims against the specific requirements of the EU AI Act. The Agent must automatically identify that a 'strategy deck' requires high-certainty, verified data, not just web rumors."
+    },
+    "MCP": {
+        "file": "browser_OC_7.py",
+        "tools": [
+            "general_search_engine",
+            "get_company_official_url",
+            "load_url_content",
+            "extract_hyperlinks",
+            "filter_links_by_keyword",
+            "access_investor_relations_portal",
+            "search_internal_site",
+            "download_corporate_filing",
+            "read_pdf_document",
+            "check_eu_legislation_database",
+            "verify_ssl_certificate",
+            "extract_dates_from_text",
+            "analyze_sentiment_compliance",
+            "cross_reference_regulatory_requirements",
+            "format_executive_summary",
+            "archive_source_material"
+        ]
+    }
+}

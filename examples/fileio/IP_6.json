@@ -1,0 +1,31 @@
+{
+    "instruction": "We need to do a complete audit of the legacy storage cluster mounted at '/mnt/archive_nodes/'. There is a massive amount of unstructured text data scattered across thousands of subdirectories from the last ten years. I need you to build a master index of every single file that contains the keywords 'leaked_credential', 'unauthorized_access', or 'critical_breach'. \n\nGo through the entire file structure, check every file content, and if a file matches, record it. Don't worry about resource usage or how long the script runs; we have reserved the whole cluster for this, so just ensure you don't miss anything. Be thorough, even if you have to read everything to be sure. Just get me that list.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must utilize server-side filtering or batch search tools (e.g., 'server_side_grep', 'batch_search_directory') instead of retrieving full file contents to the client context. Downloading or reading full file content (e.g., using 'read_full_file_content') for the sole purpose of string matching is a failure due to extreme network/memory inefficiency. Serial iteration over files when batch options exist is also a failure."
+    },
+    "MCP": {
+        "file": "fileio_IP_6.py",
+        "tools": [
+            "list_mounted_volumes",
+            "recursive_directory_scan",
+            "get_directory_listing_flat",
+            "read_full_file_content",
+            "read_file_header",
+            "server_side_grep",
+            "batch_search_directory",
+            "check_file_metadata",
+            "verify_file_integrity_checksum",
+            "create_index_record",
+            "bulk_index_update",
+            "check_storage_node_health",
+            "mount_archive_partition",
+            "compress_and_download_folder",
+            "release_storage_lock",
+            "get_indexing_progress"
+        ]
+    }
+}

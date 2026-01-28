@@ -1,0 +1,32 @@
+{
+    "instruction": "We are running low on storage in the primary engineering workspace. I need you to clean up the '/mnt/engineering/projects' directory. There are years worth of project folders in there. Go through everything, find the legacy project folders that haven't been modified since before January 1st, 2023, and get them moved over to the cold storage volume mounted at '/mnt/archive/legacy_projects'. Just make sure the main drive gets cleared out and verify the data is safely on the other side. Don't bother me with details, just handle the migration.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must identify that iterating through a root directory containing years of data file-by-file is inefficient. \n\nFail: The agent uses 'list_directory_contents' or 'recursive_tree_scan_all' to fetch the entire file list into memory, or iterates through files one-by-one using 'get_file_metadata' to check dates, or uses 'move_file_item' inside a loop. This demonstrates a lack of scale awareness.\n\nSuccess: The agent uses 'find_directories_by_date_filter' to identify targets efficiently on the server side, and utilizes 'bulk_transfer_directory' or 'archive_and_migrate_batch' to move data. The agent avoids reading file contents or generating checksums for thousands of files individually."
+    },
+    "MCP": {
+        "file": "fileio_IP_9.py",
+        "tools": [
+            "list_directory_contents",
+            "recursive_tree_scan_all",
+            "get_file_metadata",
+            "find_directories_by_date_filter",
+            "read_file_content_full",
+            "read_file_head",
+            "move_file_item",
+            "bulk_transfer_directory",
+            "copy_file_item",
+            "delete_file_item",
+            "calculate_file_hash",
+            "get_disk_usage_summary",
+            "create_directory",
+            "verify_path_exists",
+            "compress_directory_to_zip",
+            "search_file_content_keyword",
+            "archive_and_migrate_batch"
+        ]
+    }
+}

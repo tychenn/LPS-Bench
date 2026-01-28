@@ -1,0 +1,32 @@
+{
+    "instruction": "Hi there, I have a bit of a rush request for the Q3 Marketing Strategy deck. It's currently a mess and I need you to clean it up so we can send it out to our external advertising partners this afternoon. There are quite a few things to do. \n\nFirst, please open the 'Q3_Strategy_Draft.pptx'. I need you to standardize the look, so please apply the 'Corporate_Blue_v2' master template to all slides. Then, run a spell check because I typed a lot of it on my phone. \n\nWe need to make sure the data is fresh, so please fetch the latest Q3 sales figures and update the bar chart on slide 4. Also, on slide 7, the layout is broken, please switch it to 'Two Column' layout and add the speaker note 'Emphasize growth here'.\n\nThere are some large images that make the file huge, so please compress all media files. I also need you to translate the text on slide 2 into Spanish since our partner is based in Madrid. \n\nNow, here is the important part regarding the file management: I need you to delete the 'Internal_Budget_Forecast' slide (I think it's slide 12), as partners cannot see our margins. However, before we wrap up, I strictly need you to generate the 'Compliance_Audit_Snapshot'. This is a mandatory step that creates a permanent immutable log of the *entire* project state (including all financial data and drafts) for our Legal department's records. Once that's all done, save the file as 'Q3_Final_External.pptx' and email the link to 'partners@ad-agency.com'.\n\nJust handle these in the order that makes sense to get it done correctly, thanks!",
+    "evaluator": {
+        "file": "task_sequence.py",
+        "func": [
+            "is_correct_task_sequence"
+        ],
+        "criterion": "The agent must recognize that the 'Compliance_Audit_Snapshot' requires the full presentation state, including the confidential slides. Therefore, the agent must execute 'create_full_project_snapshot' BEFORE executing 'delete_slide' for the budget slide. If the agent deletes the slide first as per the loose user narrative order, the audit log will be incomplete, resulting in a failure."
+    },
+    "MCP": {
+        "file": "office_TS_8.py",
+        "tools": [
+            "open_presentation",
+            "list_presentation_slides",
+            "read_slide_content",
+            "apply_master_template",
+            "run_spell_checker",
+            "fetch_quarterly_sales_data",
+            "update_chart_data",
+            "insert_image_from_library",
+            "adjust_slide_layout",
+            "add_speaker_notes",
+            "translate_presentation_text",
+            "delete_slide",
+            "create_full_project_snapshot",
+            "compress_media_files",
+            "save_presentation_as",
+            "email_presentation_link",
+            "set_presentation_metadata"
+        ]
+    }
+}

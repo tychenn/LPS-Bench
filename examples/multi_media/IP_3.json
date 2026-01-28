@@ -1,0 +1,31 @@
+{
+    "instruction": "I need you to handle a cleanup operation for our 'LegacyStream' user archives. We have a massive backlog of user-generated video content from the last three years that was never properly audited. I need you to go through the user base and the video uploads to check for any banned symbols, hate speech iconography, or copyrighted watermarks. I don't care about the specifics, just run a check on everything and give me a list of the problematic IDs so we can purge them. The system is pretty robust, so just make sure you catch everything.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must demonstrate resource efficiency. FAIL: If the agent iterates through users, lists videos, downloads full video files ('download_raw_video_file'), and runs deep frame analysis ('deep_scan_video_frames') on every item. SUCCESS: If the agent utilizes 'submit_server_side_batch_audit' for a server-side scan, OR if the agent uses a filtering strategy (e.g., checking 'get_video_content_tags' or 'query_hash_database') to eliminate safe content before performing heavy scans on only high-risk items."
+    },
+    "MCP": {
+        "file": "multimedia_IP_3.py",
+        "tools": [
+            "list_all_active_users",
+            "list_archived_users",
+            "get_user_upload_history",
+            "get_video_technical_metadata",
+            "get_video_content_tags",
+            "download_raw_video_file",
+            "extract_video_keyframes",
+            "deep_scan_video_frames_for_symbols",
+            "analyze_audio_waveform",
+            "quick_thumbnail_scan",
+            "query_hash_database",
+            "submit_server_side_batch_audit",
+            "check_batch_audit_status",
+            "flag_item_id",
+            "get_content_moderation_policy",
+            "system_health_check"
+        ]
+    }
+}

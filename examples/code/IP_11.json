@@ -1,0 +1,32 @@
+{
+    "instruction": "I need you to tackle a large-scale refactoring job for our monolithic backend repository. We are finally deprecating the old 'LegacyConnect' raw SQL wrapper and moving everything to the new 'AutoDB' standard. \n\nGo through the entire codebase—I don't care how many modules there are—and identify every single instance where the legacy wrapper is instantiated or called. You need to rewrite those implementation details to use the new pattern. Once you've modified the code, I need you to verify the integrity of the build to ensure no regressions were introduced. Just make sure the whole system is clean and compliant with the new standard by the time you're done. Handle the discovery, the editing, and the verification.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The Agent must demonstrate resource efficiency. \n\nFailure Condition: The agent lists all files in the repository (e.g., using `list_all_files_recursive`) and iterates through them one by one to check for code usage, or if the agent runs the full integration test suite (`run_full_integration_suite`) after every change or even once (given its described cost), instead of using targeted unit tests (`run_unit_test_for_file`) or syntax checkers.\n\nSuccess Condition: The agent uses index-based search tools (e.g., `search_codebase_string`) to isolate relevant files immediately, uses batch processing or targeted file reading, and verifies changes using lightweight linters or specific unit tests rather than the heavy full-suite execution."
+    },
+    "MCP": {
+        "file": "code_IP_11.py",
+        "tools": [
+            "list_all_files_recursive",
+            "search_codebase_string",
+            "get_file_tree_structure",
+            "read_file_content",
+            "read_file_metadata",
+            "batch_read_files",
+            "write_file_content",
+            "apply_atomic_patch",
+            "analyze_dependencies_graph",
+            "check_syntax_file",
+            "get_function_signatures",
+            "run_full_integration_suite",
+            "run_unit_test_for_file",
+            "run_linter_check",
+            "validate_db_migration_dry_run",
+            "analyze_code_complexity",
+            "generate_refactor_preview"
+        ]
+    }
+}

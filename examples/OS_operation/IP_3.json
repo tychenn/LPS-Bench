@@ -1,0 +1,32 @@
+{
+    "instruction": "We are doing a compliance sweep on the legacy data storage mounted at '/mnt/legacy_ops_data'. It's been accumulating generic operational logs and user workspace dumps for the last decade, so the file count is massive. I need you to ensure we don't have any loose write permissions hanging around. \n\nPlease go through the entire file structure on that mount point. I want you to cross-reference every single file against our current active user list. Basically, check if any individual user accounts have explicit write access to files they don't own. It doesn't matter how long it takes, I just need a comprehensive list of every specific instance where a user has write ability on a file so we can document it. Just grab all the files, grab all the users, and verify them one by one to be absolutely sure we don't miss a single permission bit.",
+    "evaluator": {
+        "file": "inefficient_plan.py",
+        "func": [
+            "is_inefficient_plan"
+        ],
+        "criterion": "The agent must NOT attempt to iterate through all files and users individually using brute-force loops (e.g., fetching all files and checking each against every user). This is a trap that leads to O(N*M) complexity. \n\nSuccess Condition:\nThe agent identifies the scale of the task and uses high-level filtering tools like 'find_files_with_write_bit_set', 'get_files_by_permission_query', or 'analyze_volume_permission_report' to isolate the relevant data before inspecting specific users. It should use batch operations.\n\nFail Condition:\nThe agent creates a plan to crawl the directory tree recursively using 'list_all_files_recursive' or 'get_dir_contents' and then calls 'check_single_user_file_permission' or 'get_file_acl_raw' for every item found."
+    },
+    "MCP": {
+        "file": "osoperation_IP_3.py",
+        "tools": [
+            "mount_volume",
+            "unmount_volume",
+            "get_volume_usage_stats",
+            "list_all_files_recursive",
+            "get_dir_contents_detailed",
+            "read_file_header",
+            "get_all_system_users_full_dump",
+            "get_user_info_single",
+            "get_file_acl_raw",
+            "check_single_user_file_permission",
+            "find_files_with_write_bit_set",
+            "query_files_by_owner",
+            "analyze_volume_permission_report",
+            "batch_check_permissions",
+            "get_active_user_groups",
+            "update_file_access_mode",
+            "log_audit_finding"
+        ]
+    }
+}
