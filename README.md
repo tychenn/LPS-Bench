@@ -17,7 +17,7 @@ As LLM-based agents are increasingly deployed for autonomous computer-use tasks�
 **LPS-Bench** fills this gap by providing:
 
 - **570 curated base test cases** spanning 7 real-world domains and 9 safety risk categories, each designed with hidden complexity that challenges agents to plan safely under ambiguity, manipulation, and adversarial conditions.
-- **41 skill-augmented cases** for evaluating higher-level reusable skill abstractions under `tool-only`, `skill-only`, and `hybrid` capability surfaces.
+- **40 evaluated skill-related cases** for studying higher-level reusable skill abstractions under `tool-only`, `skill-only`, and `hybrid` capability surfaces.
 - **Simulated tool environments** with 600+ granular mock tools (via LangChain `@tool`) that return realistic, ambiguous outputs—no actual system calls, fully safe to run.
 - **Automated evaluation pipeline** using LLM-as-judge to score agent execution traces against fine-grained safety criteria.
 - **Multi-agent case synthesis** pipeline for scalable benchmark expansion.
@@ -96,7 +96,7 @@ python agent.py \
 
 ### Skill Capability Modes
 
-Skill-aware cases can be run under three capability surfaces:
+The 40 evaluated skill-related cases can be run under three capability surfaces:
 
 ```bash
 # Baseline: expose only the original MCP tools, with no skill prompt or skill reader.
@@ -149,41 +149,6 @@ python agent.py --use-defaults --models gpt-4o-mini --evaluate
 |------|--------|
 | **API** | GPT-5, GPT-5.1, GPT-4o-mini, GPT-4.1-mini, Claude-4.5-Sonnet, Claude-4-Sonnet, Gemini-3-Pro, Gemini-2.5-Pro, DeepSeek-v3.1, DeepSeek-v3.2 |
 | **Local (Ollama)** | Qwen3-32B-Instruct, Qwen3-8B-Instruct, Llama-3.1-70B-Instruct, Llama-3.1-8B-Instruct, Mistral-Small-3.2 |
-
-## Architecture
-
-LPS-Bench evaluates agents through a **Plan → Execute → Evaluate** pipeline:
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                         LPS-Bench Pipeline                       │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│   Test Case (JSON)                                               │
-│       │                                                          │
-│       ▼                                                          │
-│   ┌─────────┐     ┌──────────┐     ┌──────────┐                │
-│   │ Planner │────▶│ Executor │────▶│ ToolNode │──┐             │
-│   │  (LLM)  │◀───│  (LLM)   │◀────│  (Mock)  │  │             │
-│   └─────────┘     └──────────┘     └──────────┘  │             │
-│       │               Plan-Execute-Replan Loop ◀──┘             │
-│       │                                                          │
-│       ▼                                                          │
-│   Execution Trace (.txt)                                         │
-│       │                                                          │
-│       ▼                                                          │
-│   ┌────────────┐                                                │
-│   │ Evaluator  │──▶  Safety Score (Pass / Fail)                 │
-│   │ (LLM Judge)│                                                │
-│   └────────────┘                                                │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
-
-### Agent Implementations
-
-- **`agent.py`** — Simple LangChain agent with direct tool calling. Supports batch execution across multiple models and automatic evaluation.
-- **`multi-agent_pipeline.py`** — Multi-agent case synthesis pipeline used to generate new benchmark cases from risk-specific prompt templates.
 
 ## Test Case Design
 
@@ -243,7 +208,7 @@ LPS-Bench/
 ├── agent.py                        # Simple LangChain agent runner
 ├── multi-agent_pipeline.py         # Multi-agent case synthesis pipeline
 │
-├── examples/                       # 570 base cases + 41 skill cases (JSON)
+├── examples/                       # 570 base cases + 40 evaluated skill-related cases
 │   ├── webbrowser/                 #   Browser tasks and skill variants
 │   ├── code/                       #   Code modification and deployment tasks
 │   ├── fileio/                     #   File migration, versioning, compliance
@@ -312,20 +277,3 @@ Each evaluator constructs a structured prompt containing the full execution trac
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
-## Citation
-
-If you find LPS-Bench useful in your research, please consider citing:
-
-```bibtex
-@misc{lpsbench2026,
-  title={LPS-Bench: A Long-horizon Plan Safety Benchmark for LLM-based Agents},
-  author={Chen, Tianyu and others},
-  year={2026},
-  url={https://github.com/tychenn/LPS-Bench}
-}
-```
-
-## Acknowledgements
-
-We thank the open-source community and the developers of LangChain, LangGraph, and the LLM providers whose models are evaluated in this benchmark.
