@@ -1,0 +1,358 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/tychenn/LPS-Bench/schemas/lps_case_v2.schema.json",
+  "title": "LPS-Bench Case Schema v2",
+  "description": "Benchmark case schema for LPS-Bench. Backward compatible with existing MCP-only cases and extended with optional skill metadata for skill-mediated or hybrid agent settings. In this benchmark design, a skill bundle is intentionally restricted to a single SKILL.md entry file; executable scripts and auxiliary skill resources are out of scope.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["instruction", "evaluator", "MCP"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Case schema version. Existing cases may omit this field; skill-aware cases should set it to 2.0.",
+      "default": "2.0"
+    },
+    "meta": {
+      "$ref": "#/$defs/meta"
+    },
+    "instruction": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Primary user instruction presented to the agent."
+    },
+    "context": {
+      "$ref": "#/$defs/context"
+    },
+    "evaluator": {
+      "$ref": "#/$defs/evaluator"
+    },
+    "MCP": {
+      "$ref": "#/$defs/mcp"
+    },
+    "skills": {
+      "$ref": "#/$defs/skills"
+    }
+  },
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "case_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "risk_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "user_intent": {
+          "type": "string",
+          "enum": ["benign", "adversarial", "mixed"]
+        },
+        "capability_surface": {
+          "type": "string",
+          "enum": ["mcp_only", "skill_mediated", "hybrid"]
+        },
+        "skill_stage": {
+          "type": "string",
+          "enum": ["selection", "installation", "execution", "review", "none"]
+        },
+        "paired_case_id": {
+          "type": "string"
+        }
+      }
+    },
+    "contextMessage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "content"],
+      "properties": {
+        "role": {
+          "type": "string",
+          "enum": ["system", "user", "assistant", "tool"]
+        },
+        "content": {
+          "type": ["string", "object", "array"]
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "file"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["skill_card", "document", "config", "webpage_snapshot", "other"]
+        },
+        "file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contextMessage"
+          }
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        }
+      }
+    },
+    "expectedValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["bool", "string", "number"]
+        },
+        "value": {}
+      }
+    },
+    "evaluator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "func", "criterion"],
+      "properties": {
+        "file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "func": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/stringArray"
+            },
+            {
+              "minItems": 1
+            }
+          ]
+        },
+        "criterion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/expectedValue"
+          }
+        },
+        "focus": {
+          "$ref": "#/$defs/stringArray"
+        }
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "tools"],
+      "properties": {
+        "file": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tools": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/stringArray"
+            },
+            {
+              "minItems": 1
+            }
+          ]
+        }
+      }
+    },
+    "skillPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "dynamic_install": {
+          "type": "boolean"
+        },
+        "default_trust": {
+          "type": "string",
+          "enum": ["trusted_by_default", "verified_only", "unknown"]
+        },
+        "require_user_confirmation_for_untrusted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "skillManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "description"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string"
+        },
+        "tags": {
+          "$ref": "#/$defs/stringArray"
+        }
+      }
+    },
+    "skillSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["registry", "bundled", "local", "builtin", "unknown"]
+        },
+        "uri": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "boolean"
+        }
+      }
+    },
+    "skillBundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root_dir", "entry"],
+      "properties": {
+        "root_dir": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entry": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "SKILL\\.md$"
+        }
+      }
+    },
+    "skillPermissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mcp_tools": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "network": {
+          "type": "boolean"
+        },
+        "filesystem": {
+          "type": "boolean"
+        },
+        "secrets_access": {
+          "type": "boolean"
+        },
+        "browser_data": {
+          "type": "boolean"
+        },
+        "external_domains": {
+          "$ref": "#/$defs/stringArray"
+        }
+      }
+    },
+    "skill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "availability", "manifest"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "availability": {
+          "type": "string",
+          "enum": ["preinstalled", "installable", "disabled"]
+        },
+        "manifest": {
+          "$ref": "#/$defs/skillManifest"
+        },
+        "source": {
+          "$ref": "#/$defs/skillSource"
+        },
+        "bundle": {
+          "$ref": "#/$defs/skillBundle"
+        },
+        "bound_mcp_tools": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "requested_permissions": {
+          "$ref": "#/$defs/skillPermissions"
+        },
+        "risk_tags": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "ground_truth_role": {
+          "type": "string",
+          "enum": ["benign", "malicious", "unknown"]
+        },
+        "expected_safe_handling": {
+          "type": "string",
+          "enum": [
+            "refuse_install_or_execution",
+            "decline_and_use_manual_tools",
+            "allow_install_but_not_execution",
+            "allow_verified_only",
+            "inspect_before_use"
+          ]
+        }
+      }
+    },
+    "skills": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["available"],
+      "properties": {
+        "policy": {
+          "$ref": "#/$defs/skillPolicy"
+        },
+        "available": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/skill"
+          }
+        }
+      }
+    }
+  }
+}

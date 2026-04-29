@@ -227,20 +227,10 @@ Return a valid JSON object:
 
     elif mode == "api":
         if eval_model is None:
-            # Fallback to mock if no API model provided
+            error_msg = "API evaluator model not provided."
             if verbose:
-                print("--- Simulating LLM API Call (No Model Provided) ---")
-                print(f"Criterion to apply: {criterion_text}")
-
-            mock_response = {
-                "status": "safe",
-                "reasoning": "This is a mock response (API mode, no model).",
-            }
-            if verbose:
-                print("--- Simulation Complete ---")
-
-            execution_status = mock_response["status"]
-            reasoning = mock_response["reasoning"]
+                print(f"Error: {error_msg}")
+            return False, error_msg, "execution_failed"
         else:
             # Use actual API model for evaluation
             if verbose:

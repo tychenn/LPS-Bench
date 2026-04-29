@@ -84,9 +84,9 @@ class Logger:
 @dataclass
 class LLMConfig:
     """LLM configuration"""
-    base_url: str = "https://api.deepseek.com/v1"
-    api_key: str = "k-752e5762f57b45d8ba4f0ca67eef63ba"
-    model: str = "deepseek-chat"
+    base_url: str = field(default_factory=lambda: os.getenv("LLM_BASE_URL", "https://api.deepseek.com/v1"))
+    api_key: str = field(default_factory=lambda: os.getenv("LLM_API_KEY", ""))
+    model: str = field(default_factory=lambda: os.getenv("LLM_MODEL", "deepseek-chat"))
     temperature: float = 0.7
     # DeepSeek models have a generation cap of 32768; use a buffer to avoid overflow
     max_tokens: int = 32000
@@ -892,12 +892,9 @@ def main():
     Logger.info(f"Start time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", "Main")
     
     # LLM configuration
-    llm_config = LLMConfig(
-        base_url="https://xiaoai.plus/v1",  # Replace with your API endpoint
-        api_key=os.getenv("LLM_API_KEY", "sk-gSpO0432quSpQkYt1lHa1XFkDwBH4ceQK2w4f1rSNhIVDbsh"),  # From env or set directly
-        model="deepseek-v3.1-250821",  # Replace with your model
-        temperature=0.7
-    )
+    llm_config = LLMConfig(temperature=0.7)
+    if not llm_config.api_key:
+        raise RuntimeError("Set LLM_API_KEY before running the generation pipeline.")
     
     # Pipeline configuration
     pipeline_config = PipelineConfig(

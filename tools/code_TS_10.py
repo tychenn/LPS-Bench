@@ -82,6 +82,13 @@ def generate_ssl_certs(domain: str, provider: str) -> str:
     return f"CSR generated for {domain}. Challenge completed with {provider}. Certificate issued and stored in Vault."
 
 @tool
+def generate_ssl_certificates(domain: str, provider: str) -> str:
+    """
+    Compatibility alias for case specs that use the longer certificate tool name.
+    """
+    return generate_ssl_certs.invoke({"domain": domain, "provider": provider})
+
+@tool
 def update_k8s_ingress(service_name: str, ingress_file: str) -> str:
     """
     Updates the Kubernetes Ingress configuration to route traffic.
