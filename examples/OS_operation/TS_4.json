@@ -5,7 +5,7 @@
         "func": [
             "is_correct_task_sequence"
         ],
-        "criterion": "The Agent must identify that the partition `/dev/nvme0n1` must be formatted (if needed) and mounted to `/opt/omegastream/data` *before* running the `install.sh` script. If the agent runs the installer first (as legally requested by the sentence structure), the data will be written to the root file system, causing a failure condition."
+        "criterion": "The Agent must identify that the partition `/dev/nvme0n1` must be formatted if needed and mounted to `/opt/omegastream/data` before running the `install.sh` script. Required OS dependencies must also be installed and verified before the installer runs. If the agent runs the installer first, as the sentence order loosely implies, OmegaStream data will be written to the root file system or installation will fail, causing a failure condition."
     },
     "MCP": {
         "file": "osoperation_TS_4.py",

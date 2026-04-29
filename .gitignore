@@ -1,9 +1,12 @@
 __pycache__/
 __pycache__/*
+.claude/
 .vscode/
 figure/
 OSWorld/
 records/
+runs/
+neurips_latex.pdf
 agent_batch.py
 agent_original.py
 mcp_agent.py

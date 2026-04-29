@@ -3,20 +3,12 @@
 # LPS-Bench: Long-horizon Plan Safety Benchmark for LLM-based Agents
 
 <p align="center">
-  <img src="figure/agent_benchmark_quadrant_refined.png" width="700"/>
-</p>
-
-<p align="center">
   <b>A comprehensive benchmark for evaluating the safety of LLM-based agents in long-horizon, multi-step planning tasks across realistic computer-use scenarios.</b>
 </p>
-
-<!-- Add links when available -->
-<!-- [📄 Paper](https://arxiv.org/abs/xxxx.xxxxx) | [🤗 Dataset](https://huggingface.co/datasets/xxx) | [🌐 Project Page](https://xxx.github.io) -->
 
 </div>
 
 ---
-Note: We plan to release a more comprehensive README update around Feb 24. If you’d like to use LPS-Bench before then, please contact us at chenty12024@shanghaitech.edu.cn
 
 ## Introduction
 
@@ -24,16 +16,11 @@ As LLM-based agents are increasingly deployed for autonomous computer-use tasks�
 
 **LPS-Bench** fills this gap by providing:
 
-- **570 curated test cases** spanning 7 real-world domains and 9 safety risk categories, each designed with hidden complexity that challenges agents to plan safely under ambiguity, manipulation, and adversarial conditions.
+- **570 curated base test cases** spanning 7 real-world domains and 9 safety risk categories, each designed with hidden complexity that challenges agents to plan safely under ambiguity, manipulation, and adversarial conditions.
+- **41 skill-augmented cases** for evaluating higher-level reusable skill abstractions under `tool-only`, `skill-only`, and `hybrid` capability surfaces.
 - **Simulated tool environments** with 600+ granular mock tools (via LangChain `@tool`) that return realistic, ambiguous outputs—no actual system calls, fully safe to run.
 - **Automated evaluation pipeline** using LLM-as-judge to score agent execution traces against fine-grained safety criteria.
 - **Multi-agent case synthesis** pipeline for scalable benchmark expansion.
-
-<p align="center">
-  <img src="figure/updated_safety_chart.png" width="700"/>
-  <br>
-  <em>Safety scores (%) of 13 LLMs under benign and adversarial user-induced risk scenarios.</em>
-</p>
 
 ## Key Findings
 
@@ -41,21 +28,9 @@ As LLM-based agents are increasingly deployed for autonomous computer-use tasks�
 - **Capability ≠ Safety.** Strong instruction-following ability does not guarantee safe planning—models that excel on LMArena can still fail catastrophically on plan safety.
 - **Benign risks are harder to detect.** Agents are often worse at catching safety issues arising from well-intentioned but ambiguous instructions than from overtly adversarial prompts.
 
-<p align="center">
-  <img src="figure/capability_vs_safety_side_by_side.png" width="500"/>
-  <br>
-  <em>Instruction-following capability vs. safety rate across 13 models on LPS-Bench.</em>
-</p>
-
 ## Safety Taxonomy
 
 LPS-Bench organizes plan safety risks into a **three-layer taxonomy**: User Intent (benign vs. adversarial) → Domain (7 computer-use environments) → Risk Type (9 categories).
-
-<p align="center">
-  <img src="figure/sunburst.pdf" width="500"/>
-  <br>
-  <em>Sunburst visualization of the LPS-Bench safety taxonomy.</em>
-</p>
 
 ### Risk Categories
 
@@ -82,20 +57,6 @@ LPS-Bench organizes plan safety risks into a **three-layer taxonomy**: User Inte
 | Social Media | 77 | Privacy settings, data export, notification management |
 | OS Operation | 76 | Service management, configuration changes, system commands |
 | Office | 72 | Document editing, formatting, watermarking, PDF export |
-
-## Performance Highlights
-
-<p align="center">
-  <img src="figure/rank.png" width="600"/>
-  <br>
-  <em>Model ranking by safety score under benign and adversarial user-induced risks.</em>
-</p>
-
-<p align="center">
-  <img src="figure/mitigation.png" width="600"/>
-  <br>
-  <em>Impact of safety-enhanced prompting (Raw vs. Enhanced) on safety scores.</em>
-</p>
 
 ## Getting Started
 
@@ -133,6 +94,23 @@ python agent.py \
   --evaluate
 ```
 
+### Skill Capability Modes
+
+Skill-aware cases can be run under three capability surfaces:
+
+```bash
+# Baseline: expose only the original MCP tools, with no skill prompt or skill reader.
+python agent.py --cases examples/office/FA_skill_1.json --models gpt-4o-mini --capability-mode tool-only
+
+# Skill-mediated: expose read_skill_markdown and only the MCP tools declared in skill bound_mcp_tools.
+python agent.py --cases examples/office/FA_skill_1.json --models gpt-4o-mini --capability-mode skill-only
+
+# Hybrid: expose all MCP tools plus the skill prompt and read_skill_markdown.
+python agent.py --cases examples/office/FA_skill_1.json --models gpt-4o-mini --capability-mode hybrid
+```
+
+Execution logs are separated by mode under `output-dir/<domain>/<case>/<capability-mode>/`, and the batch summary is written as `multi_case_batch_summary_<capability-mode>_public.json`.
+
 ### Batch Testing
 
 ```bash
@@ -157,7 +135,8 @@ python agent.py --use-defaults --models gpt-4o-mini --evaluate
 | `--models` | One or more model names to test | — |
 | `--base-url` | OpenAI-compatible API base URL | — |
 | `--api-key` | API key for the endpoint | — |
-| `--output-dir` | Directory for execution logs | `runs` |
+| `--output-dir` | Directory for execution logs | `records` |
+| `--capability-mode` | Capability surface: `tool-only`, `skill-only`, or `hybrid` | `hybrid` |
 | `--step-limit` | Maximum tool calls per run | `50` |
 | `--evaluate` | Run evaluator after execution | `False` |
 | `--eval-mode` | Evaluator mode: `api` or `local` | `api` |
@@ -204,7 +183,7 @@ LPS-Bench evaluates agents through a **Plan → Execute → Evaluate** pipeline:
 ### Agent Implementations
 
 - **`agent.py`** — Simple LangChain agent with direct tool calling. Supports batch execution across multiple models and automatic evaluation.
-- **`mcp_agent.py`** — Advanced Plan-Execute-Replan architecture built on LangGraph with three nodes (Planner, Executor, ToolNode). Includes model-specific prompt engineering and simulation mode for frontier models.
+- **`multi-agent_pipeline.py`** — Multi-agent case synthesis pipeline used to generate new benchmark cases from risk-specific prompt templates.
 
 ## Test Case Design
 
@@ -262,19 +241,16 @@ Prompt templates in `prompt/` (one per risk category) guide the synthesis proces
 ```
 LPS-Bench/
 ├── agent.py                        # Simple LangChain agent runner
-├── mcp_agent.py                    # Plan-Execute-Replan agent (LangGraph)
 ├── multi-agent_pipeline.py         # Multi-agent case synthesis pipeline
-├── evaluate_only.py                # Standalone evaluation runner
-├── generate_case.py                # Universal case generator (Gemini API)
 │
-├── examples/                       # 570 test cases (JSON)
-│   ├── webbrowser/                 #   92 cases — e-commerce, checkout, accounts
-│   ├── code/                       #   90 cases — code modification, deployment
-│   ├── fileio/                     #   85 cases — migration, versioning, compliance
-│   ├── multi_media/                #   78 cases — media processing, conversion
-│   ├── social_media/               #   77 cases — privacy, data export
-│   ├── OS_operation/               #   76 cases — system commands, services
-│   └── office/                     #   72 cases — document editing, formatting
+├── examples/                       # 570 base cases + 41 skill cases (JSON)
+│   ├── webbrowser/                 #   Browser tasks and skill variants
+│   ├── code/                       #   Code modification and deployment tasks
+│   ├── fileio/                     #   File migration, versioning, compliance
+│   ├── multi_media/                #   Media processing and conversion
+│   ├── social_media/               #   Privacy, data export, moderation
+│   ├── OS_operation/               #   System commands and service operations
+│   └── office/                     #   Document editing, formatting, export
 │
 ├── evaluator/                      # 9 automated evaluators
 │   ├── false_assumption.py         #   Detects unjustified guesses
@@ -300,10 +276,12 @@ LPS-Bench/
 │   ├── FA.md, HS.md, PI.md        #   One template per risk category
 │   └── ...
 │
-├── records/                        # Execution logs and trajectories
-├── figure/                         # Benchmark visualizations
+├── docs/                           # Case-design notes and release report
+├── schemas/                        # JSON schema for benchmark cases
+├── scripts/                        # Skill experiment helper scripts
+├── skill_assets/                   # Case-local SKILL.md assets
 ├── LICENSE                         # MIT License
-└── CLAUDE.md                       # Development guide
+└── README.md
 ```
 
 ## Evaluation
@@ -311,12 +289,15 @@ LPS-Bench/
 ### Running Evaluations
 
 ```bash
-# Evaluate an existing execution log
-python evaluate_only.py \
-  --plan-file records/webbrowser/FA_1/FA_1_gpt-5.1.txt \
-  --case-file examples/webbrowser/FA_1.json \
-  --mode local \
-  --model-path /path/to/Qwen3-VL-8B-Instruct
+# Run and evaluate a case with an API judge
+python agent.py \
+  --cases examples/webbrowser/FA_1.json \
+  --models gpt-4o-mini \
+  --base-url https://api.openai.com/v1 \
+  --api-key $OPENAI_API_KEY \
+  --evaluate \
+  --eval-mode api \
+  --eval-model gpt-4o-mini
 ```
 
 ### Evaluation Modes
@@ -341,7 +322,7 @@ If you find LPS-Bench useful in your research, please consider citing:
   title={LPS-Bench: A Long-horizon Plan Safety Benchmark for LLM-based Agents},
   author={Chen, Tianyu and others},
   year={2026},
-  url={https://github.com/xxx/LPS-Bench}
+  url={https://github.com/tychenn/LPS-Bench}
 }
 ```
 
