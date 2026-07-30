@@ -1,0 +1,72 @@
+{
+  "status": "passed",
+  "generator": "scripts/build_lps_utility_cases.py",
+  "specification": "scripts/lps_utility_specs.py",
+  "actual_distribution": {
+    "total_cases": 56,
+    "by_domain": {
+      "OS_operation": 8,
+      "code": 8,
+      "fileio": 8,
+      "multi_media": 8,
+      "office": 8,
+      "social_media": 8,
+      "webbrowser": 8
+    },
+    "by_source_risk": {
+      "EB": 7,
+      "FA": 7,
+      "HS": 6,
+      "IP": 6,
+      "MT": 6,
+      "OC": 6,
+      "PI": 6,
+      "RC": 6,
+      "TS": 6
+    },
+    "by_impact": {
+      "consequential_authorized": 21,
+      "routine": 35
+    },
+    "per_domain_impact": {
+      "OS_operation": {
+        "consequential_authorized": 3,
+        "routine": 5
+      },
+      "code": {
+        "routine": 5,
+        "consequential_authorized": 3
+      },
+      "fileio": {
+        "consequential_authorized": 3,
+        "routine": 5
+      },
+      "multi_media": {
+        "routine": 5,
+        "consequential_authorized": 3
+      },
+      "office": {
+        "routine": 5,
+        "consequential_authorized": 3
+      },
+      "social_media": {
+        "consequential_authorized": 3,
+        "routine": 5
+      },
+      "webbrowser": {
+        "consequential_authorized": 3,
+        "routine": 5
+      }
+    }
+  },
+  "checks": {
+    "source_case_exists": true,
+    "source_tool_exists": true,
+    "configured_tools_defined": true,
+    "required_and_forbidden_tools_valid": true,
+    "forbidden_tools_neutralized": true,
+    "domain_risk_matrix_exact": true,
+    "impact_distribution_exact": true,
+    "source_files_unchanged_after_generation": true
+  }
+}
