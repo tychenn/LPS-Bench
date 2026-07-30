@@ -1,0 +1,129 @@
+{
+  "total_cases": 56,
+  "by_domain": {
+    "OS_operation": 8,
+    "code": 8,
+    "fileio": 8,
+    "multi_media": 8,
+    "office": 8,
+    "social_media": 8,
+    "webbrowser": 8
+  },
+  "by_source_risk": {
+    "FA": 7,
+    "HS": 6,
+    "PI": 6,
+    "IP": 6,
+    "MT": 6,
+    "EB": 7,
+    "OC": 6,
+    "TS": 6,
+    "RC": 6
+  },
+  "by_impact": {
+    "routine": 35,
+    "consequential_authorized": 21
+  },
+  "per_domain_impact": {
+    "OS_operation": {
+      "routine": 5,
+      "consequential_authorized": 3
+    },
+    "code": {
+      "routine": 5,
+      "consequential_authorized": 3
+    },
+    "fileio": {
+      "routine": 5,
+      "consequential_authorized": 3
+    },
+    "multi_media": {
+      "routine": 5,
+      "consequential_authorized": 3
+    },
+    "office": {
+      "routine": 5,
+      "consequential_authorized": 3
+    },
+    "social_media": {
+      "routine": 5,
+      "consequential_authorized": 3
+    },
+    "webbrowser": {
+      "routine": 5,
+      "consequential_authorized": 3
+    }
+  },
+  "domain_risk_matrix": {
+    "OS_operation": [
+      "FA",
+      "HS",
+      "PI",
+      "IP",
+      "EB",
+      "OC",
+      "TS",
+      "RC"
+    ],
+    "code": [
+      "FA",
+      "PI",
+      "IP",
+      "MT",
+      "EB",
+      "OC",
+      "TS",
+      "RC"
+    ],
+    "fileio": [
+      "FA",
+      "HS",
+      "IP",
+      "MT",
+      "EB",
+      "OC",
+      "TS",
+      "RC"
+    ],
+    "multi_media": [
+      "FA",
+      "HS",
+      "PI",
+      "IP",
+      "MT",
+      "EB",
+      "TS",
+      "RC"
+    ],
+    "office": [
+      "FA",
+      "HS",
+      "PI",
+      "IP",
+      "MT",
+      "EB",
+      "OC",
+      "RC"
+    ],
+    "social_media": [
+      "FA",
+      "HS",
+      "PI",
+      "IP",
+      "MT",
+      "EB",
+      "OC",
+      "TS"
+    ],
+    "webbrowser": [
+      "FA",
+      "HS",
+      "PI",
+      "MT",
+      "EB",
+      "OC",
+      "TS",
+      "RC"
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "dataset_root": "utility_cases/lps_bench_derived",
+  "checks": {
+    "case_count": 56,
+    "dedicated_tool_copy_count": 56,
+    "schema_validated_cases": 56,
+    "tool_interfaces_validated": 931,
+    "fresh_module_imports_validated": 56,
+    "deterministic_tool_invocations": 931,
+    "neutralized_tool_invocations": 141,
+    "deterministic_override_invocations": 61,
+    "source_hashes_unchanged": true,
+    "source_tool_prefixes_preserved": true,
+    "configured_tool_lists_preserved": true,
+    "state_paths_unchanged": true,
+    "distribution_exact": true,
+    "paired_prompt_files_present": true,
+    "session_ids_preserved": 3,
+    "unique_image_buffer_ids": 5,
+    "unique_archive_references": 2
+  }
+}
