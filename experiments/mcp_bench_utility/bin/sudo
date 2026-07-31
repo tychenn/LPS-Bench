@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Narrow setup shim: the upstream installer always runs apt even when the
+# required system tools already exist. No privilege escalation is performed.
+
+set -euo pipefail
+
+if [[ "$#" -eq 2 && "$1" == "apt-get" && "$2" == "update" ]]; then
+  echo "[mcp-bench setup] skipping apt-get update; prerequisites were prechecked"
+  exit 0
+fi
+
+if [[ "$#" -eq 8 &&
+  "$1" == "apt-get" &&
+  "$2" == "install" &&
+  "$3" == "-y" &&
+  "$4" == "git" &&
+  "$5" == "curl" &&
+  "$6" == "wget" &&
+  "$7" == "build-essential" &&
+  "$8" == "gcc" ]]; then
+  for command_name in git curl wget gcc make; do
+    command -v "$command_name" >/dev/null || {
+      echo "Missing prechecked command: $command_name" >&2
+      exit 1
+    }
+  done
+  echo "[mcp-bench setup] skipping apt-get install; prerequisites are present"
+  exit 0
+fi
+
+echo "Refusing unexpected privileged command from upstream installer: $*" >&2
+exit 97

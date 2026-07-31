@@ -1,0 +1,12 @@
+# Dependencies imported by the MCP-Bench runner but omitted from the upstream
+# mcp_servers/requirements.txt. Server-specific dependencies are installed by
+# the upstream mcp_servers/install.sh.
+openai>=1.0,<3
+PyYAML>=6,<7
+jsonschema>=4,<5
+# Match the SDK generation in the pinned server uv.lock files. MCP SDK 2.x
+# removed mcp.server.fastmcp, which the benchmark imports.
+mcp[cli]==1.12.4
+fastmcp==2.12.5
+aiohttp==3.12.15
+json-repair==0.47.4
