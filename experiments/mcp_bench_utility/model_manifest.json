@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "provider": "ollama",
+  "models": {
+    "llama31_8b": {
+      "display_name": "Llama-3.1-8B-Instruct",
+      "served_model": "llama3.1:8b",
+      "context_length": 131072,
+      "gpu_count": 1
+    },
+    "llama31_70b": {
+      "display_name": "Llama-3.1-70B-Instruct",
+      "served_model": "llama3.1:70b",
+      "context_length": 131072,
+      "gpu_count": 2
+    },
+    "qwen3_8b": {
+      "display_name": "Qwen3-8B-Instruct",
+      "served_model": "qwen3:8b",
+      "context_length": 40960,
+      "gpu_count": 1
+    },
+    "qwen3_32b": {
+      "display_name": "Qwen3-32B-Instruct",
+      "served_model": "qwen3:32b",
+      "context_length": 40960,
+      "gpu_count": 1
+    }
+  }
+}

@@ -6,6 +6,13 @@ figure/
 OSWorld/
 records/
 runs/
+# Pinned third-party benchmark checkouts and their local runtime assets.
+external/
+experiments/mcpmark_verified_utility/.venv/
+experiments/mcpmark_verified_utility/.postgres-client/
+experiments/mcpmark_verified_utility/.node-runtime/
+experiments/mcp_bench_utility/.venv/
+experiments/mcp_bench_utility/.npm-prefix/
 neurips_latex.pdf
 agent_batch.py
 agent_original.py
