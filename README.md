@@ -137,17 +137,30 @@ python agent.py --use-defaults --models gpt-4o-mini --evaluate
 | `--api-key` | API key for the endpoint | — |
 | `--output-dir` | Directory for execution logs | `records` |
 | `--capability-mode` | Capability surface: `tool-only`, `skill-only`, or `hybrid` | `hybrid` |
-| `--step-limit` | Maximum tool calls per run | `50` |
+| `--temperature` | Sampling temperature | `1` |
+| `--top-p` | Nucleus-sampling probability | `0.9` |
+| `--top-k` | Top-k truncation | `50` |
+| `--step-limit` | Maximum tool calls per run | `100` |
 | `--evaluate` | Run evaluator after execution | `False` |
 | `--eval-mode` | Evaluator mode: `api` or `local` | `api` |
-| `--eval-model` | Model path for local evaluation | — |
+| `--eval-model` | Evaluator model name or local path | `deepseek-reasoner` (DeepSeek-R1) |
 | `--use-defaults` | Run the built-in default case list | `False` |
+
+The defaults reproduce the paper's exploration setting: temperature `1`, top-p
+`0.9`, top-k `50`, and at most `100` tool-call steps per episode. For
+OpenAI-compatible endpoints, `top_k` is sent as a provider extension; the
+selected endpoint must support that parameter. Run summaries and trajectory
+logs record the effective decoding configuration.
+
+`deepseek-reasoner` is the API identifier used for the paper's DeepSeek-R1
+judge. If a reproduction endpoint exposes a pinned R1 deployment under a
+different name, pass that identifier with `--eval-model`.
 
 ### Supported Models
 
 | Type | Models |
 |------|--------|
-| **API** | GPT-5, GPT-5.1, GPT-4o-mini, GPT-4.1-mini, Claude-4.5-Sonnet, Claude-4-Sonnet, Gemini-3-Pro, Gemini-2.5-Pro, DeepSeek-v3.1, DeepSeek-v3.2 |
+| **API** | GPT-5, GPT-5.1, GPT-4o-mini, GPT-4.1-mini, Claude-4.5-Sonnet, Claude-4-Sonnet, Gemini-3-Pro, Gemini-2.5-Pro, DeepSeek-R1, DeepSeek-v3.1, DeepSeek-v3.2 |
 | **Local (Ollama)** | Qwen3-32B-Instruct, Qwen3-8B-Instruct, Llama-3.1-70B-Instruct, Llama-3.1-8B-Instruct, Mistral-Small-3.2 |
 
 ## Test Case Design
@@ -262,7 +275,9 @@ python agent.py \
   --api-key $OPENAI_API_KEY \
   --evaluate \
   --eval-mode api \
-  --eval-model gpt-4o-mini
+  --eval-model deepseek-reasoner \
+  --eval-base-url $DEEPSEEK_BASE_URL \
+  --eval-api-key $DEEPSEEK_API_KEY
 ```
 
 ### Evaluation Modes
@@ -270,7 +285,7 @@ python agent.py \
 | Mode | Description |
 |------|-------------|
 | `local` | Uses a local Qwen3-VL-8B-Instruct model on GPU for evaluation |
-| `api` | Uses an OpenAI-compatible API as the judge model |
+| `api` | Uses DeepSeek-R1 (`deepseek-reasoner`) by default through an OpenAI-compatible API |
 
 Each evaluator constructs a structured prompt containing the full execution trace and the case-specific safety criterion, then parses the judge model's JSON response for a `meets_criterion` boolean verdict.
 

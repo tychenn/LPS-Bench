@@ -39,18 +39,41 @@ LOG = logging.getLogger("agent_batch_public")
 DEFAULT_API_KEY = os.getenv("AGENT_API_KEY") or os.getenv("OPENAI_API_KEY") or "YOUR_API_KEY_HERE"
 DEFAULT_BASE_URL = os.getenv("AGENT_BASE_URL") or "https://xiaoai.plus/v1"
 
+# Paper reproduction defaults (Appendix B, "Decoding Settings for Exploration").
+DEFAULT_TEMPERATURE = 1.0
+DEFAULT_TOP_P = 0.9
+DEFAULT_TOP_K = 50
+DEFAULT_STEP_LIMIT = 100
+DEFAULT_EVAL_MODEL = "deepseek-reasoner"  # DeepSeek-R1 API identifier.
+
 @dataclass
 class ModelConfig:
     name: str
     base_url: Optional[str] = None
     api_key: Optional[str] = None
+    temperature: float = DEFAULT_TEMPERATURE
+    top_p: float = DEFAULT_TOP_P
+    top_k: Optional[int] = DEFAULT_TOP_K
 
     @classmethod
     def from_name(
-        cls, name: str, base_url: Optional[str], api_key: Optional[str]
+        cls,
+        name: str,
+        base_url: Optional[str],
+        api_key: Optional[str],
+        temperature: float = DEFAULT_TEMPERATURE,
+        top_p: float = DEFAULT_TOP_P,
+        top_k: Optional[int] = DEFAULT_TOP_K,
     ) -> "ModelConfig":
         """Factory to keep CLI plumbing small."""
-        return cls(name=name, base_url=base_url, api_key=api_key)
+        return cls(
+            name=name,
+            base_url=base_url,
+            api_key=api_key,
+            temperature=temperature,
+            top_p=top_p,
+            top_k=top_k,
+        )
 
 
 def parse_args() -> argparse.Namespace:
@@ -92,8 +115,32 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--step-limit",
         type=int,
-        default=50,
-        help="Maximum tool-call steps per model run before aborting (default: 50).",
+        default=DEFAULT_STEP_LIMIT,
+        help=(
+            "Maximum tool-call steps per model run before aborting "
+            f"(default: {DEFAULT_STEP_LIMIT}, matching the paper)."
+        ),
+    )
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=DEFAULT_TEMPERATURE,
+        help=f"Agent sampling temperature (default: {DEFAULT_TEMPERATURE:g}).",
+    )
+    parser.add_argument(
+        "--top-p",
+        type=float,
+        default=DEFAULT_TOP_P,
+        help=f"Agent nucleus-sampling probability (default: {DEFAULT_TOP_P:g}).",
+    )
+    parser.add_argument(
+        "--top-k",
+        type=int,
+        default=DEFAULT_TOP_K,
+        help=(
+            "Agent top-k truncation (default: "
+            f"{DEFAULT_TOP_K}; sent as an extension to OpenAI-compatible APIs)."
+        ),
     )
     parser.add_argument(
         "--output-dir",
@@ -146,8 +193,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--eval-model",
-        default="gpt-4o-mini",
-        help="Judge model name/path for evaluation (used when --evaluate).",
+        default=DEFAULT_EVAL_MODEL,
+        help=(
+            "Judge model name/path for evaluation "
+            f"(default: {DEFAULT_EVAL_MODEL}, the DeepSeek-R1 evaluator used in the paper)."
+        ),
     )
     parser.add_argument(
         "--eval-base-url",
@@ -504,15 +554,24 @@ def get_ollama_base_url() -> Optional[str]:
     return f"http://{host}"
 
 
-def create_ollama_chat(model_name: str) -> Any:
+def create_ollama_chat(
+    model_name: str,
+    *,
+    temperature: float = DEFAULT_TEMPERATURE,
+    top_p: float = DEFAULT_TOP_P,
+    top_k: Optional[int] = DEFAULT_TOP_K,
+) -> Any:
     if ChatOllama is None:
         raise ImportError("langchain-ollama not installed; cannot use local Ollama model.")
     kwargs: Dict[str, Any] = {
         "model": model_name,
-        "temperature": 0,
+        "temperature": temperature,
+        "top_p": top_p,
         "num_predict": int(os.getenv("OLLAMA_NUM_PREDICT", "768")),
         "reasoning": os.getenv("OLLAMA_REASONING", "false").lower() in {"1", "true", "yes"},
     }
+    if top_k is not None:
+        kwargs["top_k"] = top_k
     context_length = os.getenv("OLLAMA_CONTEXT_LENGTH")
     if context_length:
         parsed_context_length = int(context_length)
@@ -534,10 +593,29 @@ def create_ollama_chat(model_name: str) -> Any:
 def create_llm_instance(model: ModelConfig) -> Tuple[Any, str]:
     """Return (llm, model_type). model_type is 'remote' or 'ollama'."""
     name_lower = model.name.lower()
+    remote_kwargs: Dict[str, Any] = {
+        "model": model.name,
+        "temperature": model.temperature,
+        "top_p": model.top_p,
+        "base_url": model.base_url,
+        "api_key": model.api_key,
+    }
+    if model.top_k is not None:
+        # top_k is not part of the OpenAI API schema. LangChain's extra_body
+        # forwards provider-specific parameters in the JSON request body.
+        remote_kwargs["extra_body"] = {"top_k": model.top_k}
 
     # Ollama (local)
     if model.base_url is None and ("gpt-oss" in name_lower or "llama" in name_lower or "qwen" in name_lower):
-        return create_ollama_chat(model.name), "ollama"
+        return (
+            create_ollama_chat(
+                model.name,
+                temperature=model.temperature,
+                top_p=model.top_p,
+                top_k=model.top_k,
+            ),
+            "ollama",
+        )
 
     # DeepSeek: prefer user-supplied OpenAI-compatible gateway if given; otherwise use official endpoint
     if "deepseek" in name_lower:
@@ -545,27 +623,26 @@ def create_llm_instance(model: ModelConfig) -> Tuple[Any, str]:
             raise ValueError("DeepSeek model requires --api-key or env AGENT_API_KEY.")
         if model.base_url:
             # Route through custom gateway (OpenAI-compatible)
-            return (
-                ChatOpenAI(model=model.name, temperature=0, base_url=model.base_url, api_key=model.api_key),
-                "remote",
-            )
+            return ChatOpenAI(**remote_kwargs), "remote"
         # Fallback to official DeepSeek endpoint
-        return (
-            ChatDeepSeek(model=model.name, temperature=0, base_url=model.base_url, api_key=model.api_key),
-            "remote",
-        )
+        return ChatDeepSeek(**remote_kwargs), "remote"
 
     # OpenAI-compatible remote (GPT/Claude/Gemini/others)
     if "gpt" in name_lower or "claude" in name_lower or "gemini" in name_lower:
         if not model.api_key:
             raise ValueError(f"Model {model.name} requires --api-key or env AGENT_API_KEY/OPENAI_API_KEY.")
-        return (
-            ChatOpenAI(model=model.name, temperature=0, base_url=model.base_url, api_key=model.api_key),
-            "remote",
-        )
+        return ChatOpenAI(**remote_kwargs), "remote"
 
     # Fallback: treat as Ollama
-    return create_ollama_chat(model.name), "ollama"
+    return (
+        create_ollama_chat(
+            model.name,
+            temperature=model.temperature,
+            top_p=model.top_p,
+            top_k=model.top_k,
+        ),
+        "ollama",
+    )
 
 
 DEFAULT_TEST_CASES: List[Path] = [
@@ -981,6 +1058,12 @@ def run_single_model(
     result: Dict[str, Any] = {
         "model_name": model_config.name,
         "case": str(case_path),
+        "decoding": {
+            "temperature": model_config.temperature,
+            "top_p": model_config.top_p,
+            "top_k": model_config.top_k,
+            "step_limit": step_limit,
+        },
         "capability_mode": capability_mode,
         "system_prompt_mode": system_prompt_mode,
         "exposed_tools": tool_names,
@@ -1048,6 +1131,10 @@ def run_single_model(
 
             log_line(f"# Model: {model_config.name}")
             log_line(f"# Case: {case_path}")
+            log_line(f"# Temperature: {model_config.temperature}")
+            log_line(f"# Top-p: {model_config.top_p}")
+            log_line(f"# Top-k: {model_config.top_k}")
+            log_line(f"# Step Limit: {step_limit}")
             log_line(f"# Capability Mode: {capability_mode}")
             log_line(f"# System Prompt Mode: {system_prompt_mode}")
             log_line(f"# Exposed Tools: {', '.join(tool_names) if tool_names else '(none)'}")
@@ -1412,11 +1499,7 @@ def maybe_run_evaluator(
         eval_model = None
         eval_processor = None
         if args.eval_mode == "api":
-            judge_config = ModelConfig.from_name(
-                name=args.eval_model,
-                base_url=args.eval_base_url or args.base_url,
-                api_key=args.eval_api_key or args.api_key,
-            )
+            judge_config = resolve_evaluator_model_config(args)
             eval_model, _ = create_llm_instance(judge_config)
 
         evaluation = batch_eval(
@@ -1442,8 +1525,29 @@ def maybe_run_evaluator(
 def resolve_model_configs(args: argparse.Namespace) -> List[ModelConfig]:
     configs = []
     for name in args.models:
-        configs.append(ModelConfig.from_name(name=name, base_url=args.base_url, api_key=args.api_key))
+        configs.append(
+            ModelConfig.from_name(
+                name=name,
+                base_url=args.base_url,
+                api_key=args.api_key,
+                temperature=args.temperature,
+                top_p=args.top_p,
+                top_k=args.top_k,
+            )
+        )
     return configs
+
+
+def resolve_evaluator_model_config(args: argparse.Namespace) -> ModelConfig:
+    """Build the judge config without agent-only top-k truncation."""
+    return ModelConfig.from_name(
+        name=args.eval_model,
+        base_url=args.eval_base_url or args.base_url,
+        api_key=args.eval_api_key or args.api_key,
+        temperature=args.temperature,
+        top_p=args.top_p,
+        top_k=None,
+    )
 
 
 def main() -> None:
@@ -1480,6 +1584,13 @@ def main() -> None:
         "summary_type": "agent_batch_public",
         "capability_mode": args.capability_mode,
         "system_prompt_mode": args.system_prompt_mode,
+        "decoding": {
+            "temperature": args.temperature,
+            "top_p": args.top_p,
+            "top_k": args.top_k,
+            "step_limit": args.step_limit,
+        },
+        "evaluator_model": args.eval_model if args.evaluate else None,
         "cases": cases and [str(c) for c in cases],
         "models": [cfg.name for cfg in models],
         "duration_seconds": overall_duration,
