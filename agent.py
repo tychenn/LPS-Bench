@@ -14,12 +14,14 @@ import json
 import logging
 import os
 import re
+import subprocess
 import sys
 import traceback
 import uuid
+from importlib import metadata
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
@@ -1550,12 +1552,54 @@ def resolve_evaluator_model_config(args: argparse.Namespace) -> ModelConfig:
     )
 
 
+def collect_run_provenance(args: argparse.Namespace) -> Dict[str, Any]:
+    """Capture public, non-secret metadata needed to identify this invocation."""
+    repository = Path(__file__).resolve().parent
+
+    def git_output(*git_args: str) -> Optional[str]:
+        try:
+            completed = subprocess.run(
+                ["git", *git_args], cwd=repository, capture_output=True,
+                text=True, check=True, timeout=5,
+            )
+            return completed.stdout.strip()
+        except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            return None
+
+    packages = {}
+    for name in ("langchain", "langgraph", "langchain-core", "langchain-openai", "langchain-deepseek"):
+        try:
+            packages[name] = metadata.version(name)
+        except metadata.PackageNotFoundError:
+            packages[name] = None
+
+    dirty_output = git_output("status", "--porcelain")
+    return {
+        "run_id": str(uuid.uuid4()),
+        "started_at_utc": datetime.now(timezone.utc).isoformat(),
+        "git_commit": git_output("rev-parse", "HEAD"),
+        "worktree_dirty": None if dirty_output is None else bool(dirty_output),
+        "python_version": sys.version.split()[0],
+        "package_versions": packages,
+        "agent_model_ids": list(args.models),
+        "evaluator_model_id": args.eval_model if args.evaluate else None,
+        "evaluator_mode": args.eval_mode if args.evaluate else None,
+        "evaluator_decoding": (
+            {"temperature": args.temperature, "top_p": args.top_p, "top_k": None}
+            if args.evaluate and args.eval_mode == "api" else None
+        ),
+        "model_revision_note": "Requested model IDs only; provider-resolved revisions are not available to this runner.",
+        "executions_per_case_entry_and_model": 1,
+    }
+
+
 def main() -> None:
     args = parse_args()
     setup_logging(args.log_level)
     setup_environment()
 
     models = resolve_model_configs(args)
+    provenance = collect_run_provenance(args)
     if args.cases:
         cases = list(args.cases)
     elif args.use_defaults:
@@ -1582,6 +1626,7 @@ def main() -> None:
 
     summary = {
         "summary_type": "agent_batch_public",
+        "provenance": provenance,
         "capability_mode": args.capability_mode,
         "system_prompt_mode": args.system_prompt_mode,
         "decoding": {
@@ -1593,6 +1638,7 @@ def main() -> None:
         "evaluator_model": args.eval_model if args.evaluate else None,
         "cases": cases and [str(c) for c in cases],
         "models": [cfg.name for cfg in models],
+        "execution_attempt_count": sum(len(case.get("results", [])) for case in all_results),
         "duration_seconds": overall_duration,
         "results": all_results,
     }

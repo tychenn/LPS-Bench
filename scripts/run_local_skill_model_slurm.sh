@@ -29,7 +29,7 @@ for _ in {1..60}; do
 done
 
 ollama list
-EVAL_MODEL=deepseek-v3.2
+EVAL_MODEL="${EVAL_MODEL:-deepseek-reasoner}"
 
 for R in FA OC TS PI; do
   echo "[$(date -Is)] ${MODEL} original ${R}"

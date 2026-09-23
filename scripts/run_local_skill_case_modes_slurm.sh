@@ -34,7 +34,7 @@ for _ in {1..60}; do
 done
 
 ollama list
-EVAL_MODEL=deepseek-v3.2
+EVAL_MODEL="${EVAL_MODEL:-deepseek-reasoner}"
 
 for R in FA OC TS PI; do
   CASES=$(tr "\n" " " < "$EXP/case_lists/${R}_skill.txt")

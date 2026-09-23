@@ -156,6 +156,9 @@ logs record the effective decoding configuration.
 judge. If a reproduction endpoint exposes a pinned R1 deployment under a
 different name, pass that identifier with `--eval-model`.
 
+For the distinction between paper settings, historical run evidence and new
+run provenance, see [experiment configuration and provenance](docs/experiment_reproducibility.md).
+
 ### Supported Models
 
 | Type | Models |

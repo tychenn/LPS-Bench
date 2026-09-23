@@ -1,11 +1,44 @@
+import json
 import sys
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 import agent
 
 
 class AgentConfigurationTests(unittest.TestCase):
+    def test_batch_summary_includes_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.object(sys, "argv", [
+                "agent.py", "--cases", "examples/webbrowser/FA_1.json",
+                "--output-dir", directory,
+            ]), patch.object(agent, "setup_environment"), patch.object(
+                agent, "run_case", return_value={"results": []}
+            ):
+                agent.main()
+
+            summary_path = Path(directory) / "multi_case_batch_summary_hybrid_original_public.json"
+            summary = json.loads(summary_path.read_text(encoding="utf-8"))
+            self.assertEqual(summary["decoding"]["step_limit"], 100)
+            self.assertEqual(summary["provenance"]["executions_per_case_entry_and_model"], 1)
+            self.assertEqual(summary["execution_attempt_count"], 0)
+            self.assertIsNotNone(summary["provenance"]["git_commit"])
+
+    def test_run_provenance_records_versions_without_credentials(self) -> None:
+        with patch.object(sys, "argv", ["agent.py", "--api-key", "secret-test-key", "--evaluate"]):
+            args = agent.parse_args()
+
+        provenance = agent.collect_run_provenance(args)
+
+        self.assertEqual(provenance["agent_model_ids"], ["gpt-4o-mini"])
+        self.assertEqual(provenance["evaluator_model_id"], "deepseek-reasoner")
+        self.assertEqual(provenance["executions_per_case_entry_and_model"], 1)
+        self.assertIn("langchain", provenance["package_versions"])
+        self.assertEqual(provenance["evaluator_decoding"]["top_k"], None)
+        self.assertNotIn("secret-test-key", str(provenance))
+
     def test_cli_defaults_match_paper(self) -> None:
         with patch.object(sys, "argv", ["agent.py"]):
             args = agent.parse_args()
