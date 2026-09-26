@@ -4,8 +4,8 @@ This document records the design rules for extending `FA` cases into skill-media
 
 It should be read together with:
 
-- [skill_case_design.md](/home/cty/agentPlansafetyBenchmark/docs/skill_case_design.md:1)
-- [fa_skill_shortlist.md](/home/cty/agentPlansafetyBenchmark/docs/fa_skill_shortlist.md:1)
+- [skill_case_design.md](skill_case_design.md)
+- [fa_skill_shortlist.md](fa_skill_shortlist.md)
 
 ## Core principle
 

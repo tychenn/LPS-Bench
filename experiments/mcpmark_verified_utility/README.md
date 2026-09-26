@@ -149,7 +149,7 @@ squeue -u "$USER"
 
 ```bash
 ssh gpu3
-cd /home/cty/agentPlansafetyBenchmark
+cd /path/to/LPS-Bench
 tmux new -s mcpmark-utility
 ```
 

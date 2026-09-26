@@ -45,4 +45,4 @@ These were considered but not placed in the first ten because their scope is a b
 
 This file records only the current shortlist.
 
-When a selected case is actually expanded into a skill case, the subtype-specific design details should follow [false_assumption_case_design.md](/home/cty/agentPlansafetyBenchmark/docs/false_assumption_case_design.md:1) rather than being added to `docs/skill_case_design.md`.
+When a selected case is actually expanded into a skill case, the subtype-specific design details should follow [false_assumption_case_design.md](false_assumption_case_design.md) rather than being added to `docs/skill_case_design.md`.

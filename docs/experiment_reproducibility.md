@@ -1,6 +1,6 @@
 # Experiment configuration and provenance
 
-The paper PDF in the repository describes agent decoding as temperature `1`,
+The paper describes agent decoding as temperature `1`,
 top-p `0.9`, top-k `50`, a limit of `100` interaction steps, LangChain v1.0,
 and a DeepSeek-R1 evaluator. The current `agent.py` defaults use those decoding
 values and the `deepseek-reasoner` judge identifier. Pass `--evaluate` to run

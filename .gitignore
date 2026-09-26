@@ -3,6 +3,7 @@ __pycache__/*
 .claude/
 .vscode/
 figure/
+docs/OPEN_SOURCE_REPORT.md
 OSWorld/
 records/
 runs/
