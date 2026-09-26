@@ -4,6 +4,9 @@ import os
 import random
 from langchain_core.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper logic is duplicated inside tools to ensure no global variables/shared functions as requested.
 # Persistence is simulated via a local JSON file to allow tools to interact.
 

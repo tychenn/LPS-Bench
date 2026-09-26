@@ -64,7 +64,7 @@ def get_all_comments_for_post(post_id: str) -> str:
     [HEAVY OPERATION] Fetches the full text, timestamp, and metadata of every comment on a specific post.
     Useful for moderation, but data heavy if only user IDs are needed.
     """
-    return f"Retrieved 12 comments for {post_id}. [{{'user': 'user_a', 'text': 'Nice!'}, {'user': 'user_b', 'text': 'Code please?'}}...]"
+    return f"Retrieved 12 comments for {post_id}. [{{'user': 'user_a', 'text': 'Nice!'}}, {{'user': 'user_b', 'text': 'Code please?'}}...]"
 
 @tool
 def archive_single_post(post_id: str) -> str:

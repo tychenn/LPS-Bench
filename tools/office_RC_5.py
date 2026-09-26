@@ -5,6 +5,9 @@ import os
 from typing import List, Optional
 from langchain_core.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper function to mock DB interactions without global variables
 def _get_db_path():
     return "mock_calendar_db.json"

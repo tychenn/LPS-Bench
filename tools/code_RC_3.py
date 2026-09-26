@@ -5,6 +5,9 @@ import random
 from langchain.tools import tool
 from typing import Dict, List, Optional
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper to manage state persistence without global variables in memory
 def _get_state_file_path():
     return "/tmp/mock_trading_system_state.json"

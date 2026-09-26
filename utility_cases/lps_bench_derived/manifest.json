@@ -1,6 +1,7 @@
 {
   "dataset": "LPS-Bench-derived utility cases",
   "version": "1.0",
+  "source_case_revision": "5b31f30ac7e49c11d3707713f8518f20f28a2320",
   "generator": "scripts/build_lps_utility_cases.py",
   "specification": "scripts/lps_utility_specs.py",
   "case_count": 56,
@@ -349,7 +350,7 @@
       "source_tool": "tools/osoperation_RC_1.py",
       "source_tool_sha256": "597447ae0cec5eac170892bbb566fd2b68d42def00e3c0982e9bd7dbdcde2214",
       "dedicated_tool_copy": "utility_cases/lps_bench_derived/tools/os_operation_u_rc_01.py",
-      "dedicated_tool_copy_sha256": "f600fbaff0f20d80d9c1caed1abe5cd82dd2a607448f8f6d89f9bae0b3acda2b",
+      "dedicated_tool_copy_sha256": "4341ac132de26b0330bdd7cb2e24b69f1e5ea25c13a3e2ca6600b54563f55234",
       "configured_tool_count": 16,
       "required_tools": [
         "os_get_disk_usage",
@@ -669,7 +670,7 @@
       "source_tool": "tools/code_RC_4.py",
       "source_tool_sha256": "01fe8ba646c710b7c0b91da6ed6727d277b4fb257379ddd88df6647dbe78065e",
       "dedicated_tool_copy": "utility_cases/lps_bench_derived/tools/code_u_rc_01.py",
-      "dedicated_tool_copy_sha256": "7eecdcdc8af912ed1ff7b565c646bd85a0bf393b8bb61a7dae45e0470e1cc993",
+      "dedicated_tool_copy_sha256": "6f86682d52a255e1fbef8b335376774b552fa026eb8ddaf80f53f49f25d02537",
       "configured_tool_count": 16,
       "required_tools": [
         "verify_admin_authorization",
@@ -988,7 +989,7 @@
       "source_tool": "tools/fileio_RC_8.py",
       "source_tool_sha256": "932d81b7a74288926089e0f6b4e798fb32e15237e907fe93471fa3fb381ca630",
       "dedicated_tool_copy": "utility_cases/lps_bench_derived/tools/fileio_u_rc_01.py",
-      "dedicated_tool_copy_sha256": "6a8df3a3f060ab64d7184a8c84bf286565fdabe9ecce22fa8b41afd3d42e9798",
+      "dedicated_tool_copy_sha256": "0f00841e19d0a2818e07883e1456f5726b1101846b5d797bc49f332f1108cc0d",
       "configured_tool_count": 16,
       "required_tools": [
         "list_directory_files",
@@ -1318,7 +1319,7 @@
       "source_tool": "tools/multimedia_RC_6.py",
       "source_tool_sha256": "4631a89fecc9858685378684bf743844cef231f99eb52d21a74f8b64894e9c36",
       "dedicated_tool_copy": "utility_cases/lps_bench_derived/tools/multi_media_u_rc_01.py",
-      "dedicated_tool_copy_sha256": "dad26749dc26b83afc225a1fd18e9d352e7bd2416f0f64c914441a1f3f0ee4c9",
+      "dedicated_tool_copy_sha256": "359c2548dde2239bffa7e5052ec7d06dadc3e3447c33fc7617c48fe87487ea97",
       "configured_tool_count": 17,
       "required_tools": [
         "list_storage_assets",
@@ -1652,7 +1653,7 @@
       "source_tool": "tools/office_RC_7.py",
       "source_tool_sha256": "98eaba01bb3a325727e200cb4b98d9850c9dfef72ea15d69c8e07463aad8ccf0",
       "dedicated_tool_copy": "utility_cases/lps_bench_derived/tools/office_u_rc_01.py",
-      "dedicated_tool_copy_sha256": "78a130fce797c2de684c262ad7fc2fa0a9506e81904bf6120139f2a495261dff",
+      "dedicated_tool_copy_sha256": "9fe05f11019bef52e1cad04fc5b235e3902e6ad50c9cf43537d0fe9dd0924377",
       "configured_tool_count": 17,
       "required_tools": [
         "backup_master_ledger",

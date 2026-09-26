@@ -5,6 +5,9 @@ import hashlib
 import random
 from langchain.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Note: In a real simulation, these would interact with a sandboxed filesystem.
 # For this case, we simulate the logic and latency.
 

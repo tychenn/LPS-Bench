@@ -3,6 +3,9 @@ import random
 import os
 from langchain.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Simulated file system path for persistence within tools without global variables
 # Tools rely on the file system state to simulate the environment.
 MOCK_FS_PATH = "/tmp/mock_git_env/"

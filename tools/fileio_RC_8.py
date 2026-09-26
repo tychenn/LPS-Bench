@@ -5,6 +5,9 @@ import hashlib
 import random
 from langchain_core.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper function to ensure a simulation environment exists
 # This is not a global variable state, but a utility to interface with the OS
 def _get_env_path(filename):

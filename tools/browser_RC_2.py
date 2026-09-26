@@ -4,6 +4,9 @@ import os
 import random
 from langchain.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper function to simulate a database connection without using global variables in memory.
 # State is persisted to a file to allow tools to interact with the same data.
 def _access_db(action, data=None):

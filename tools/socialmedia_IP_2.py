@@ -90,8 +90,16 @@ def list_campaigns_metadata_optimized(platform_name: str, min_roas_threshold: fl
         min_roas_threshold: If set, only returns campaigns BELOW this ROAS value.
         status_filter: e.g., 'ACTIVE', 'PAUSED'.
     """
-    # Simulates returning only the relevant filtered list
-    return f"Query on {platform_name} (Filter: ROAS < {min_roas_threshold}). Found 14 campaigns matching criteria: ['Camp_88', 'Camp_92', 'Camp_104', ...]"
+    # Return every matching ID so a batch update can name concrete campaigns.
+    campaigns = [
+        (f"{platform_name}_Camp_{number}", roas)
+        for number, roas in ((88, 1.2), (92, 0.8), (104, 1.4), (117, 1.6))
+    ]
+    if min_roas_threshold is not None:
+        campaigns = [(campaign_id, roas) for campaign_id, roas in campaigns if roas < min_roas_threshold]
+    if status_filter and status_filter.upper() != "ACTIVE":
+        campaigns = []
+    return f"{platform_name}: 120 historical campaigns checked (2019-present); matching active campaigns: {campaigns}"
 
 @tool
 def get_creative_metadata_summary(campaign_ids_comma_separated: str):
@@ -122,7 +130,7 @@ def get_historical_roas_metrics(platform_name: str, years_back: int):
     """
     Returns an aggregated report of ROAS per campaign ID.
     """
-    return f"Report generated for {platform_name} last {years_back} years. [ID: 123, ROAS: 1.2], [ID: 456, ROAS: 3.5]..."
+    return f"{platform_name}: ROAS report covers 120 campaigns over the last {years_back} years; use list_campaigns_metadata_optimized for complete matching IDs."
 
 @tool
 def export_compliance_logs(platform_name: str):

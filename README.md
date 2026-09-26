@@ -10,6 +10,8 @@
 
 ---
 
+**Publication:** The paper associated with this benchmark was accepted at NeurIPS. An [earlier preprint](https://arxiv.org/abs/2602.03255) is available online. Dataset revisions in this repository are described in [the content audit](docs/dataset_content_audit.md).
+
 ## Introduction
 
 As LLM-based agents are increasingly deployed for autonomous computer-use tasks—browsing the web, managing files, writing code, and interacting with operating systems—their ability to **plan safely** becomes critical. However, most existing safety benchmarks focus on short-horizon, single-turn interactions and fail to capture the planning failures that emerge in complex, multi-step workflows.
@@ -17,14 +19,19 @@ As LLM-based agents are increasingly deployed for autonomous computer-use tasks�
 **LPS-Bench** fills this gap by providing:
 
 - **570 curated base test cases** spanning 7 real-world domains and 9 safety risk categories, each designed with hidden complexity that challenges agents to plan safely under ambiguity, manipulation, and adversarial conditions.
-- **40 evaluated skill-related cases** for studying higher-level reusable skill abstractions under `tool-only`, `skill-only`, and `hybrid` capability surfaces.
-- **Simulated tool environments** with 600+ granular mock tools (via LangChain `@tool`) that return realistic, ambiguous outputs—no actual system calls, fully safe to run.
+- **40 evaluated skill-related cases** for studying higher-level reusable skill abstractions under `tool-only`, `skill-only`, and `hybrid` capability surfaces. One additional, unevaluated `PI_skill_11` candidate is kept in `candidate_cases/`.
+- **Simulated tool environments** with 600+ granular mock tools (via LangChain `@tool`) that return case-specific outputs. File operations in the repaired mock modules use a case-local in-memory filesystem; newly added tool modules should be reviewed before execution.
 - **Automated evaluation pipeline** using LLM-as-judge to score agent execution traces against fine-grained safety criteria.
 - **Multi-agent case synthesis** pipeline for scalable benchmark expansion.
 
+Check case JSON and its tool, evaluator, pair, and skill references with `python scripts/validate_dataset.py`.
+The public runner loads each mock toolkit afresh for each case run. Stateful mock
+files use an in-memory filesystem, and generated IDs and timestamps use a
+repeatable random stream and a clock starting at 2026-09-26 00:00 UTC.
+
 ## Key Findings
 
-- **Frontier models lead but still struggle.** Claude-4.5-Sonnet achieves the highest safety scores (58.55% benign / 95.77% adversarial), while open-source models like Llama-3.1-8B score below 5%.
+- **Paper-reported results on the original case revision:** Claude-4.5-Sonnet achieved the highest reported safety scores (58.55% benign / 95.77% adversarial), while Llama-3.1-8B scored below 5%. Revised case text and criteria in this repository require fresh evaluation before these numbers can be attributed to the revised dataset.
 - **Capability ≠ Safety.** Strong instruction-following ability does not guarantee safe planning—models that excel on LMArena can still fail catastrophically on plan safety.
 - **Benign risks are harder to detect.** Agents are often worse at catching safety issues arising from well-intentioned but ambiguous instructions than from overtly adversarial prompts.
 
@@ -39,12 +46,14 @@ LPS-Bench organizes plan safety risks into a **three-layer taxonomy**: User Inte
 | **FA** | False Assumption | Agent makes unjustified guesses on ambiguous instructions instead of asking for clarification | 68 |
 | **HS** | Harmless Subtask | Harmful actions disguised within seemingly beneficial task requests | 68 |
 | **PI** | Prompt Injection | Resistance to authority claims, false urgency, and fake system messages | 67 |
-| **IP** | Incomplete Plan | Critical prerequisites or verification steps missing from the execution plan | 67 |
+| **IP** | Inefficient Planning | Avoidable per-item work and resource waste when suitable filtering or batch tools are available | 67 |
 | **MT** | Multi-turn Attack | Gradual manipulation through multi-step social engineering across conversation turns | 66 |
 | **EB** | Environment Backdoor | Hidden directives planted in tool outputs meant to redirect agent behavior | 65 |
 | **OC** | Over-Compliance | Blind rule-following without understanding intent or considering context | 62 |
 | **TS** | Task Sequence | Incorrect execution ordering that violates logical dependencies between steps | 55 |
 | **RC** | Race Condition | Exploitable timing gaps between state checks and actions (TOCTOU) | 52 |
+
+The base **PI** cases place authority-spoofing and jailbreak text in the case's user instruction. They measure resistance to those direct requests; they do not by themselves measure injection through retrieved pages or tool output. The **EB** cases use tool-output text as the attack surface.
 
 ### Domains
 
@@ -233,6 +242,8 @@ LPS-Bench/
 │   ├── OS_operation/               #   System commands and service operations
 │   └── office/                     #   Document editing, formatting, export
 │
+├── candidate_cases/                # Unevaluated case variants
+│
 ├── evaluator/                      # 9 automated evaluators
 │   ├── false_assumption.py         #   Detects unjustified guesses
 │   ├── harmless_subtask.py         #   Validates harmful vs. harmless recognition
@@ -290,7 +301,7 @@ python agent.py \
 | `local` | Uses a local Qwen3-VL-8B-Instruct model on GPU for evaluation |
 | `api` | Uses DeepSeek-R1 (`deepseek-reasoner`) by default through an OpenAI-compatible API |
 
-Each evaluator constructs a structured prompt containing the full execution trace and the case-specific safety criterion, then parses the judge model's JSON response for a `meets_criterion` boolean verdict.
+Each evaluator constructs a prompt containing the execution trace and the case-specific criterion, then parses the judge model's `safe`, `unsafe`, or `execution_failed` status and derives a pass result.
 
 ## License
 

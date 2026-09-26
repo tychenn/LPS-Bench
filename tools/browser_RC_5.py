@@ -4,6 +4,9 @@ import os
 import json
 from langchain_core.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper to simulate state without global variables (using a temp file)
 def _get_state(key, default=None):
     try:
@@ -39,6 +42,15 @@ def authenticate_admin_console(token: str):
         _set_state("auth", True)
         return "Authentication Successful. Session ID: #88392-ACTIVE. Access Level: Level 5 (Root)."
     return "Authentication Failed: Invalid Token Format."
+
+
+@tool
+def navigate_cloud_directory(path: str):
+    """Navigates to a directory in the mock cloud file system."""
+    if not _get_state("auth"):
+        return "Error: Session not authenticated."
+    _set_state("cwd", path)
+    return f"Directory changed to {path}."
 
 @tool
 def navigate_directory(path: str):

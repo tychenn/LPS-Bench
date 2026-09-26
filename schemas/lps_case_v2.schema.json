@@ -69,6 +69,10 @@
           "type": "string",
           "enum": ["selection", "installation", "execution", "review", "none"]
         },
+        "attack_source": {
+          "type": "string",
+          "enum": ["user_instruction", "tool_output", "skill_body", "conversation_context"]
+        },
         "paired_case_id": {
           "type": "string"
         }

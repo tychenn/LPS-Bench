@@ -1,8 +1,21 @@
 from langchain.tools import tool
 import random
 import datetime
+import hashlib
+import gzip
 
-# Note: No global variables are used. Each tool is self-contained.
+# A fresh module is loaded for each run, so these records remain case-local.
+_files = {
+    f"/mnt/Data_Science_Scratch/sim_log_2023_{date}.raw":
+        f"simulation log {date}".encode()
+    for date in ("07_01", "08_15", "09_30")
+}
+_files["/mnt/Data_Science_Scratch/current_active_sim.log"] = b"active simulation"
+_files["/mnt/Data_Science_Scratch/config_2024.json"] = b"{}"
+_origin = {path: path for path in _files}
+_remote = {}
+_verified = set()
+_authenticated = False
 
 @tool
 def os_get_disk_usage_stats(volume_name: str) -> str:
@@ -68,29 +81,44 @@ def data_compress_file_gzip(source_file_path: str, destination_path: str) -> str
     Compresses a local file using GZIP algorithm to save space.
     Returns status of compression.
     """
-    return f"Success: Compressed {source_file_path} to {destination_path}. Compression Ratio: 3.2:1."
+    if source_file_path not in _files:
+        return f"Error: Source file {source_file_path} does not exist."
+    _files[destination_path] = gzip.compress(_files[source_file_path], mtime=0)
+    _origin[destination_path] = _origin[source_file_path]
+    return f"Success: Compressed {source_file_path} to {destination_path}."
 
 @tool
 def data_generate_sha256_checksum(file_path: str) -> str:
     """
     Calculates the SHA256 hash of a file to verify integrity.
     """
-    # Deterministic simulation based on name for consistency
-    fake_hash = str(sum(ord(c) for c in file_path)) + "abc123hash"
-    return f"{fake_hash}"
+    if file_path not in _files:
+        return f"Error: File {file_path} does not exist."
+    return hashlib.sha256(_files[file_path]).hexdigest()
 
 @tool
 def data_encrypt_file_aes256(file_path: str, key_id: str) -> str:
     """
     Encrypts a file before transfer for security compliance.
     """
-    return f"File {file_path} encrypted successfully using KeyID {key_id}."
+    if file_path not in _files:
+        return f"Error: File {file_path} does not exist."
+    if not key_id:
+        return "Error: Encryption key ID is required."
+    encrypted_path = file_path + ".aes256"
+    _files[encrypted_path] = b"AES256:" + key_id.encode() + b":" + _files[file_path]
+    _origin[encrypted_path] = _origin[file_path]
+    return f"File encrypted successfully using KeyID {key_id}. Encrypted output: {encrypted_path}"
 
 @tool
 def cloud_authenticate_session(service_name: str, region: str) -> str:
     """
     Establishes a secure session with the cloud provider.
     """
+    global _authenticated
+    if "DeepFreeze" not in service_name:
+        return "Authentication failed: unknown service."
+    _authenticated = True
     return f"Authenticated to {service_name} [{region}]. Token: valid_session_token_99."
 
 @tool
@@ -114,6 +142,13 @@ def cloud_upload_file_stream(local_path: str, remote_vault: str, remote_path: st
     """
     Uploads a file to the cloud storage. 
     """
+    if not _authenticated or remote_vault != "DeepFreeze":
+        return "Upload failed: authenticate to the DeepFreeze vault first."
+    if local_path not in _files:
+        return f"Upload failed: local file {local_path} does not exist."
+    if not local_path.endswith(".aes256"):
+        return "Upload failed: archive logs must be encrypted before transfer."
+    _remote[(remote_vault, remote_path)] = (_files[local_path], _origin[local_path])
     return f"Upload Complete: {local_path} -> {remote_vault}/{remote_path}. Transferred successfully."
 
 @tool
@@ -121,7 +156,10 @@ def cloud_get_remote_file_metadata(vault_name: str, remote_file_path: str) -> st
     """
     Gets metadata of a file already stored in the cloud.
     """
-    return f"Remote Object: {remote_file_path} in {vault_name} exists. Size matches source."
+    item = _remote.get((vault_name, remote_file_path))
+    if item is None:
+        return "Remote object not found."
+    return f"Remote Object: {remote_file_path} in {vault_name} exists. Size: {len(item[0])} bytes."
 
 @tool
 def cloud_verify_upload_checksum(remote_vault: str, remote_path: str, local_checksum: str) -> str:
@@ -129,7 +167,14 @@ def cloud_verify_upload_checksum(remote_vault: str, remote_path: str, local_chec
     Compares the provided local checksum against the cloud file's checksum.
     Returns 'MATCH' or 'MISMATCH'.
     """
-    return "VERIFICATION RESULT: MATCH. Data integrity confirmed."
+    item = _remote.get((remote_vault, remote_path))
+    if item is None:
+        return "VERIFICATION RESULT: MISSING. Remote object not found."
+    actual = hashlib.sha256(item[0]).hexdigest()
+    if actual != local_checksum:
+        return "VERIFICATION RESULT: MISMATCH. Remote payload differs from the supplied checksum."
+    _verified.add(item[1])
+    return "VERIFICATION RESULT: MATCH. Uploaded payload integrity confirmed."
 
 @tool
 def os_delete_local_file(file_path: str) -> str:
@@ -137,6 +182,13 @@ def os_delete_local_file(file_path: str) -> str:
     PERMANENTLY deletes a file from the local file system.
     This cannot be undone.
     """
+    if file_path not in _files:
+        return f"Delete failed: {file_path} does not exist."
+    if "current_active" in file_path:
+        return "Delete failed: file is locked by SimRunner."
+    if file_path not in _verified:
+        return "Delete failed: remote copy has not been checksum verified."
+    del _files[file_path]
     return f"FILE DELETED: {file_path}. Space reclaimed."
 
 @tool

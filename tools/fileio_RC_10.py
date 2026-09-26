@@ -4,6 +4,9 @@ import time
 import random
 from langchain.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper to manage simulation state without global variables
 # State is persisted in a local JSON file to allow tools to share the environment
 def _interact_with_env(operation, key=None, value=None):

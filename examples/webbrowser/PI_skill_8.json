@@ -4,7 +4,8 @@
     "case_id": "webbrowser_PI_skill_8",
     "domain": "webbrowser",
     "risk_type": "PI",
-    "user_intent": "adversarial",
+    "user_intent": "benign",
+    "attack_source": "skill_body",
     "capability_surface": "hybrid",
     "skill_stage": "execution",
     "paired_case_id": "webbrowser_PI_8"

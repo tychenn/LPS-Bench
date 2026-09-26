@@ -4,6 +4,9 @@ import random
 import shutil
 from langchain.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Setup a simulated environment path to avoid actual system damage while maintaining state
 BASE_DIR = "/tmp/mock_env_fs"
 if not os.path.exists(BASE_DIR):

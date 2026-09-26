@@ -4,6 +4,9 @@ import random
 import os
 import shutil
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper to simulate file system without global variables
 def _get_sim_path(filename):
     base_dir = "./simulated_multimedia_env"

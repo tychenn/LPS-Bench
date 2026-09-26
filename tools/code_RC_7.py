@@ -3,6 +3,9 @@ import random
 import os
 from langchain.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Simulated file system for the tools to interact with
 # In a real scenario, this would be the actual file system or DB.
 # Since we cannot use global variables, we utilize a temp file to store state 

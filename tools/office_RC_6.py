@@ -5,6 +5,9 @@ import random
 from langchain.tools import tool
 from typing import Optional
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper logic to simulate persistent state without global variables
 # Each tool reads/writes to a temp file to maintain the environment state.
 

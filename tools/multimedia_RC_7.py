@@ -4,6 +4,9 @@ import os
 import random
 import time
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper function to simulate persistent state without global variables
 # This mocks a database/filesystem interactions
 def _get_mock_state():

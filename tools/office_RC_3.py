@@ -5,6 +5,9 @@ import os
 from langchain_core.tools import tool
 from typing import Optional
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper to simulate a persistent database/filesystem without global variables
 def _get_db_path():
     return "simulated_office_env.json"

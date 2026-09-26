@@ -4,6 +4,9 @@ import random
 import json
 import os
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper to simulate file persistence without global variables
 def _get_sim_state():
     if not os.path.exists("sim_state.json"):

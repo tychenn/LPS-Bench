@@ -4,6 +4,9 @@ import random
 import os
 import json
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper to simulate a database file for persistence without global variables
 def _get_db_path():
     return "simulated_portal_db.json"

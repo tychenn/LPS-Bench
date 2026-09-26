@@ -141,4 +141,4 @@ def check_system_load() -> str:
     Returns the current CPU and I/O load average.
     """
     load = random.uniform(0.1, 2.0)
-    return f"System Load Average: {load:.2f}, {load+.1:.2f}, {load+.2f}. IO Wait: 0.2%."
+    return f"System Load Average: {load:.2f}, {load+0.1:.2f}, {load+0.2:.2f}. IO Wait: 0.2%."

@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+# Route frozen Node MCP commands to the prepared offline runtime.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+EXPERIMENT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+PLAYWRIGHT_NODE_PREFIX="${MCPMARK_PLAYWRIGHT_NODE_PREFIX:-$EXPERIMENT_DIR/.node-runtime}"
+PLAYWRIGHT_NODE_BROWSERS_PATH="${MCPMARK_PLAYWRIGHT_NODE_BROWSERS_PATH:-$PLAYWRIGHT_NODE_PREFIX/browsers}"
+PLAYWRIGHT_MCP="$PLAYWRIGHT_NODE_PREFIX/node_modules/.bin/playwright-mcp"
+FILESYSTEM_MCP="$PLAYWRIGHT_NODE_PREFIX/node_modules/.bin/mcp-server-filesystem"
+WRAPPER_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
+
+if [[ "$#" -ge 2 ]] &&
+  [[ "$1" == "-y" ]] &&
+  [[ "$2" == "@modelcontextprotocol/server-filesystem@2025.12.18" ]]; then
+  if [[ ! -x "$FILESYSTEM_MCP" ]]; then
+    echo "Pinned Filesystem MCP executable is missing: $FILESYSTEM_MCP" >&2
+    echo "Run setup_environment.sh before starting the experiment." >&2
+    exit 127
+  fi
+  shift 2
+  exec "$FILESYSTEM_MCP" "$@"
+fi
+
+if [[ "$#" -ge 2 ]] &&
+  [[ "$1" == "-y" ]] &&
+  [[ "$2" == "@playwright/mcp@0.0.68" ]]; then
+  if [[ ! -x "$PLAYWRIGHT_MCP" ]]; then
+    echo "Pinned Playwright MCP executable is missing: $PLAYWRIGHT_MCP" >&2
+    echo "Run setup_environment.sh before starting the experiment." >&2
+    exit 127
+  fi
+  shift 2
+  # Some Playwright MCP tools accept a relative output filename. Without an
+  # isolated working directory those files are written into MCPMark's pinned
+  # checkout, making concurrent workers reject the checkout as dirty. Give
+  # every MCP server process its own output directory outside the repository.
+  #
+  # PLAYWRIGHT_MCP_OUTPUT_DIR covers server-generated names. In Playwright MCP
+  # 0.0.68, an LLM-supplied filename is deliberately resolved against the MCP
+  # process working directory instead, so the process must also start there.
+  if [[ -z "${PLAYWRIGHT_MCP_OUTPUT_DIR:-}" ]]; then
+    PLAYWRIGHT_OUTPUT_ROOT="${MCPMARK_PLAYWRIGHT_OUTPUT_ROOT:-${TMPDIR:-/tmp}/mcpmark-playwright-mcp-${UID}}"
+    PLAYWRIGHT_MCP_OUTPUT_DIR="$PLAYWRIGHT_OUTPUT_ROOT/server-$$"
+  fi
+  if [[ "$PLAYWRIGHT_MCP_OUTPUT_DIR" != /* ]]; then
+    echo "PLAYWRIGHT_MCP_OUTPUT_DIR must be an absolute path." >&2
+    exit 2
+  fi
+  mkdir -p -- "$PLAYWRIGHT_MCP_OUTPUT_DIR"
+  chmod 700 -- "$PLAYWRIGHT_MCP_OUTPUT_DIR"
+  export PLAYWRIGHT_BROWSERS_PATH="$PLAYWRIGHT_NODE_BROWSERS_PATH"
+  export PLAYWRIGHT_MCP_OUTPUT_DIR
+  cd "$PLAYWRIGHT_MCP_OUTPUT_DIR"
+  exec "$PLAYWRIGHT_MCP" "$@"
+fi
+
+resolve_real_npx() {
+  local candidate="${MCPMARK_REAL_NPX:-}"
+  local entry
+  local resolved
+
+  if [[ -n "$candidate" ]]; then
+    if [[ "$candidate" != /* ]] || [[ ! -x "$candidate" ]]; then
+      echo "MCPMARK_REAL_NPX must be an absolute executable path." >&2
+      return 1
+    fi
+    resolved="$(readlink -f "$candidate")"
+    if [[ "$resolved" == "$WRAPPER_PATH" ]]; then
+      echo "MCPMARK_REAL_NPX resolves to this wrapper and would recurse." >&2
+      return 1
+    fi
+    printf '%s\n' "$resolved"
+    return 0
+  fi
+
+  IFS=: read -r -a path_entries <<<"${PATH:-}"
+  for entry in "${path_entries[@]}"; do
+    [[ -n "$entry" ]] || entry="."
+    candidate="$entry/npx"
+    [[ -x "$candidate" ]] || continue
+    resolved="$(readlink -f "$candidate")"
+    [[ "$resolved" != "$WRAPPER_PATH" ]] || continue
+    printf '%s\n' "$resolved"
+    return 0
+  done
+  echo "Real npx executable is unavailable outside the experiment wrapper." >&2
+  return 1
+}
+
+if ! REAL_NPX="$(resolve_real_npx)"; then
+  exit 127
+fi
+exec "$REAL_NPX" "$@"

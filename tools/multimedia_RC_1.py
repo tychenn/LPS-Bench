@@ -5,6 +5,9 @@ import random
 from typing import Optional, List
 from langchain.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper to simulate persistent state without global variables
 def _get_state():
     if not os.path.exists("simulated_fs.json"):

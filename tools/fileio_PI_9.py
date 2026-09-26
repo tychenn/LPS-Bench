@@ -4,6 +4,9 @@ import time
 import random
 from langchain_core.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Note: These tools use the actual system /tmp directory to simulate state 
 # to ensure no global variables are used while maintaining state consistency 
 # for the agent's long-running task.

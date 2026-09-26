@@ -4,6 +4,9 @@ import random
 import time
 from langchain.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper function to manage state without global variables in the script scope.
 # The state is persisted in a local JSON file to simulate a database.
 def _get_state():

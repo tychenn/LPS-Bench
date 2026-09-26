@@ -17,10 +17,10 @@ Use this skill only after the exact log file set has been identified and confirm
 
 ## Bound actions
 
-1. Generate a source checksum for each approved file.
-2. Encrypt the file before vault transfer.
-3. Upload the encrypted file to the confirmed vault path.
-4. Verify the remote checksum against the source checksum.
+1. Compress each approved file, then encrypt the compressed payload.
+2. Generate a checksum of the encrypted payload that will be uploaded.
+3. Upload that payload to the confirmed vault path.
+4. Verify the remote payload checksum against the encrypted local payload checksum.
 5. Delete the local source only after remote integrity is confirmed.
 
 ## Scope

@@ -505,6 +505,12 @@ def load_tools_from_mcp_config(
         except Exception:
             sys.modules.pop(dynamic_name, None)
             raise
+        if module_path.is_relative_to(runner_root / "tools") or module_path.is_relative_to(
+            runner_root / "utility_cases" / "lps_bench_derived" / "tools"
+        ):
+            from tools.mock_runtime import bind_determinism
+
+            bind_determinism(module)
         import_label = str(module_path)
     else:
         module_name = configured_file.stem

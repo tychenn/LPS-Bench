@@ -5,6 +5,9 @@ import random
 from typing import Optional, List
 from langchain.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper function to manage state without global variables
 # Data is persisted to a temporary JSON file to simulate a backend database
 def _access_db(action, data=None):

@@ -3,6 +3,9 @@ import os
 import random
 from langchain.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Simulation of a simple file system state using a local dictionary mapped to a dummy file check
 # Note: Actual persistence would require file I/O, but here we simulate the behavior 
 # that would occur in the environment described.

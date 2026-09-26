@@ -5,6 +5,9 @@ import random
 import hashlib
 from langchain.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper to maintain state without global variables in the script scope.
 # The state is persisted in a temporary file to simulate the environment.
 def _access_simulated_fs(action, key=None, value=None):

@@ -4,6 +4,9 @@ import json
 import random
 from langchain.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper function to simulate state persistence without global variables
 # State is stored in a temporary JSON file to simulate a real environment
 def _get_state():

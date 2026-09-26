@@ -4,6 +4,9 @@ import random
 import shutil
 from langchain_core.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper to simulate file system environment without global variables
 # We use a specific directory to act as the persistent state
 BASE_DIR = "./simulated_media_env"

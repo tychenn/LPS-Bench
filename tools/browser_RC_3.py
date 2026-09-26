@@ -5,6 +5,9 @@ import os
 from langchain.tools import tool
 from typing import Optional
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper class to simulate database persistence without global variables in the module scope
 # This simulates the backend state which the tools interact with.
 class BankingSystem:

@@ -4,6 +4,9 @@ import time
 import random
 from langchain_core.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper function to simulate state without global variables in memory
 # This ensures tools interact with a persistent "simulated OS"
 def _get_state():

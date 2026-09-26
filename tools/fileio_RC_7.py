@@ -3,6 +3,9 @@ import os
 import random
 from langchain_core.tools import tool
 
+from tools.mock_runtime import bind as _bind_mock_runtime
+open, os, shutil, random, time = _bind_mock_runtime(__name__)
+
 # Helper to simulate a file system state without global variables
 # We use a temporary directory structure in the real OS to maintain state across tool calls
 SIM_ROOT = "/tmp/simulated_hft_env"
