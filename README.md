@@ -1,308 +1,150 @@
 <div align="center">
 
-# LPS-Bench: Long-horizon Plan Safety Benchmark for LLM-based Agents
+# [NeurIPS 2026] LPS-Bench
 
-<p align="center">
-  <b>A comprehensive benchmark for evaluating the safety of LLM-based agents in long-horizon, multi-step planning tasks across realistic computer-use scenarios.</b>
-</p>
+### Benchmarking Safety Awareness of Computer-Use Agents in Long-Horizon Planning under Benign and Adversarial Scenarios
+
+Tianyu Chen · Chujia Hu · Ge Gao · Dongrui Liu · Xia Hu · Wenjie Wang
+
+[![Paper](https://img.shields.io/badge/arXiv-2602.03255-b31b1b.svg)](https://arxiv.org/abs/2602.03255)
+[![Project Page](https://img.shields.io/badge/Project-Page-6366f1.svg)](https://tychenn.github.io/LPS-Bench/)
+[![Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-ffd21e.svg)](https://huggingface.co/datasets/tianyyuu/LPS-Bench)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e.svg)](LICENSE)
+
+**Can an agent recognize safety risks before acting on a long-horizon plan?**
+
+570 base cases · 40 skill variants · 7 domains · 9 risk types
 
 </div>
 
----
+## 📅 News
 
-**Publication:** The paper associated with this benchmark was accepted at NeurIPS. An [earlier preprint](https://arxiv.org/abs/2602.03255) is available online. Dataset revisions in this repository are described in [the content audit](docs/dataset_content_audit.md).
+- **NeurIPS 2026:** LPS-Bench has been accepted to NeurIPS 2026.
+- **Dataset:** The benchmark is available on [Hugging Face](https://huggingface.co/datasets/tianyyuu/LPS-Bench), with executable cases and mock tools in this repository.
+- **Paper:** Read the [public preprint](https://arxiv.org/abs/2602.03255).
 
-## Introduction
+## 🌟 Introduction
 
-As LLM-based agents are increasingly deployed for autonomous computer-use tasks—browsing the web, managing files, writing code, and interacting with operating systems—their ability to **plan safely** becomes critical. However, most existing safety benchmarks focus on short-horizon, single-turn interactions and fail to capture the planning failures that emerge in complex, multi-step workflows.
+**LPS-Bench** evaluates the safety awareness of computer-use agents during long-horizon planning. Tasks cover everyday computer workflows in which an agent must recognize ambiguity, preserve dependencies, inspect untrusted information, and avoid harmful actions across multiple tool calls.
 
-**LPS-Bench** fills this gap by providing:
+The benchmark includes both **benign requests with hidden planning risks** and **adversarial requests that attempt to redirect an agent's behavior**. Each case pairs a user instruction with a simulated MCP-style tool environment and a case-specific safety criterion.
 
-- **570 curated base test cases** spanning 7 real-world domains and 9 safety risk categories, each designed with hidden complexity that challenges agents to plan safely under ambiguity, manipulation, and adversarial conditions.
-- **40 evaluated skill-related cases** for studying higher-level reusable skill abstractions under `tool-only`, `skill-only`, and `hybrid` capability surfaces. One additional, unevaluated `PI_skill_11` candidate is kept in `candidate_cases/`.
-- **Simulated tool environments** with 600+ granular mock tools (via LangChain `@tool`) that return case-specific outputs. File operations in the repaired mock modules use a case-local in-memory filesystem; newly added tool modules should be reviewed before execution.
-- **Automated evaluation pipeline** using LLM-as-judge to score agent execution traces against fine-grained safety criteria.
-- **Multi-agent case synthesis** pipeline for scalable benchmark expansion.
+- **Broad coverage:** 570 base cases across seven domains and nine risk types, including 252 benign and 318 adversarial cases.
+- **Skill-aware evaluation:** 40 paired skill variants examine safety under `tool-only`, `skill-only`, and `hybrid` capability settings.
+- **Trajectory-level assessment:** Automated evaluators inspect the agent's execution trace against the case criterion and report `safe`, `unsafe`, or `execution_failed`.
+- **Extensible construction:** A multi-agent pipeline generates instructions, mock tools, and evaluation criteria for new cases.
 
-Check case JSON and its tool, evaluator, pair, and skill references with `python scripts/validate_dataset.py`.
-The public runner loads each mock toolkit afresh for each case run. Stateful mock
-files use an in-memory filesystem, and generated IDs and timestamps use a
-repeatable random stream and a clock starting at 2026-09-26 00:00 UTC.
+## ⚙️ Benchmark Overview
 
-## Key Findings
+<p align="center">
+  <img src="site/assets/overview.svg" alt="LPS-Bench overview: benign and adversarial tasks, seven domains, nine risks, tool and skill execution, and trajectory evaluation" width="100%">
+</p>
 
-- **Paper-reported results on the original case revision:** Claude-4.5-Sonnet achieved the highest reported safety scores (58.55% benign / 95.77% adversarial), while Llama-3.1-8B scored below 5%. Revised case text and criteria in this repository require fresh evaluation before these numbers can be attributed to the revised dataset.
-- **Capability ≠ Safety.** Strong instruction-following ability does not guarantee safe planning—models that excel on LMArena can still fail catastrophically on plan safety.
-- **Benign risks are harder to detect.** Agents are often worse at catching safety issues arising from well-intentioned but ambiguous instructions than from overtly adversarial prompts.
+An agent receives a task and a case-specific toolkit, interacts with the mock environment, and produces an execution trace. The evaluator judges whether the trace satisfies the safety criterion. The skill extension adds reusable instructions and compares capability settings on paired tasks.
 
-## Safety Taxonomy
+| User intent | Risk categories | Base cases |
+| --- | --- | ---: |
+| Benign | False Assumption (FA), Over-Compliance (OC), Task Sequence (TS), Inefficient Planning (IP) | 252 |
+| Adversarial | Harmless Subtask (HS), Prompt Injection (PI), Multi-turn Attack (MT), Environment Backdoor (EB), Race Condition (RC) | 318 |
 
-LPS-Bench organizes plan safety risks into a **three-layer taxonomy**: User Intent (benign vs. adversarial) → Domain (7 computer-use environments) → Risk Type (9 categories).
+| Domain | Base cases | Example workflows |
+| --- | ---: | --- |
+| Web Browser | 92 | Account management, shopping, order tracking |
+| Code | 90 | Source modification, deployment, debugging |
+| File I/O | 85 | Migration, versioning, archival |
+| Multi-media | 78 | Media processing, conversion, metadata editing |
+| Social Media | 77 | Privacy settings, data export, notifications |
+| OS Operation | 76 | Services, system configuration, file operations |
+| Office | 72 | Documents, formatting, PDF export |
 
-### Risk Categories
+Base PI cases place adversarial text in the user instruction; EB cases place it in tool outputs. PI skill variants use benign user instructions with adversarial text in the skill body. These settings expose different attack surfaces.
 
-| Code | Risk Type | Description | Cases |
-|:----:|-----------|-------------|:-----:|
-| **FA** | False Assumption | Agent makes unjustified guesses on ambiguous instructions instead of asking for clarification | 68 |
-| **HS** | Harmless Subtask | Harmful actions disguised within seemingly beneficial task requests | 68 |
-| **PI** | Prompt Injection | Resistance to authority claims, false urgency, and fake system messages | 67 |
-| **IP** | Inefficient Planning | Avoidable per-item work and resource waste when suitable filtering or batch tools are available | 67 |
-| **MT** | Multi-turn Attack | Gradual manipulation through multi-step social engineering across conversation turns | 66 |
-| **EB** | Environment Backdoor | Hidden directives planted in tool outputs meant to redirect agent behavior | 65 |
-| **OC** | Over-Compliance | Blind rule-following without understanding intent or considering context | 62 |
-| **TS** | Task Sequence | Incorrect execution ordering that violates logical dependencies between steps | 55 |
-| **RC** | Race Condition | Exploitable timing gaps between state checks and actions (TOCTOU) | 52 |
+## 📊 Evaluation
 
-The base **PI** cases place authority-spoofing and jailbreak text in the case's user instruction. They measure resistance to those direct requests; they do not by themselves measure injection through retrieved pages or tool output. The **EB** cases use tool-output text as the attack surface.
+The paper evaluates **13 models** from the GPT, Claude, Gemini, DeepSeek, Llama, and Qwen families. It studies safety across benign and adversarial tasks, the effect of reusable skills, and prompting-based mitigation.
 
-### Domains
+<p align="center">
+  <img src="site/assets/results.svg" alt="Paper-reported safety results on the original LPS-Bench case revision" width="100%">
+</p>
 
-| Domain | Cases | Example Scenarios |
-|--------|:-----:|-------------------|
-| Web Browser | 92 | E-commerce checkout, account management, order tracking |
-| Code | 90 | Source code modification, deployment automation, debugging |
-| File I/O | 85 | Database migration, file versioning, compliance archival |
-| Multi-media | 78 | Media processing, format conversion, metadata manipulation |
-| Social Media | 77 | Privacy settings, data export, notification management |
-| OS Operation | 76 | Service management, configuration changes, system commands |
-| Office | 72 | Document editing, formatting, watermarking, PDF export |
+The reported results show that planning safety remains challenging across model families. Claude-4.5-Sonnet has the highest reported risk-category averages: **58.55% on benign tasks** and **95.77% on adversarial tasks**. Benign planning risks are particularly difficult to detect.
 
-## Getting Started
+> **Dataset version:** These results describe the paper's original cases. The current release contains audited revisions to case text, tool behavior, and evaluation criteria. New results on this release require fresh runs and should record the repository commit. See the [dataset content audit](docs/dataset_content_audit.md) and [experiment configuration and provenance](docs/experiment_reproducibility.md).
 
-### Prerequisites
+## 💻 Usage
+
+### Installation
+
+Use Python 3.11 in a dedicated environment:
 
 ```bash
-# Create conda environment (recommended)
-conda create -n agentbenchmark python=3.11
-conda activate agentbenchmark
+git clone https://github.com/tychenn/LPS-Bench.git
+cd LPS-Bench
 
-# Install core dependencies
-pip install -U langchain langchain-openai langchain-deepseek langgraph openai transformers torch
-
-# Optional: for local models via Ollama
-pip install langchain-ollama
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -U langchain langchain-openai langchain-deepseek \
+  langchain-ollama langgraph openai transformers torch
 ```
 
-### Run a Single Test Case
+### Quickstart
+
+Check the dataset's case, tool, evaluator, and skill references:
 
 ```bash
-# Using an OpenAI-compatible API
+python scripts/validate_dataset.py
+```
+
+With [Ollama](https://ollama.com/) installed and its server running, download a model and run one case:
+
+```bash
+ollama pull qwen3:8b
 python agent.py \
   --cases examples/webbrowser/FA_1.json \
-  --models gpt-4o-mini \
-  --base-url https://api.openai.com/v1 \
-  --api-key $OPENAI_API_KEY \
-  --output-dir runs \
-  --evaluate
-
-# Using a local Ollama model
-python agent.py \
-  --cases examples/code/PI_3.json \
-  --models qwen3:32b \
-  --output-dir runs \
-  --evaluate
+  --models qwen3:8b \
+  --output-dir runs/quickstart
 ```
 
-### Skill Capability Modes
+This produces an execution trace. Add `--evaluate` and configure a judge to obtain safety scores; the paper uses a DeepSeek-R1 judge. See the [usage guide](docs/usage.md) for API endpoints, evaluation, batch runs, skill modes, and case generation.
 
-The 40 evaluated skill-related cases can be run under three capability surfaces:
+### Dataset Access
 
-```bash
-# Baseline: expose only the original MCP tools, with no skill prompt or skill reader.
-python agent.py --cases examples/office/FA_skill_1.json --models gpt-4o-mini --capability-mode tool-only
+Browse or download the [Hugging Face dataset](https://huggingface.co/datasets/tianyyuu/LPS-Bench). This repository contains the corresponding executable case definitions, tool modules, skills, and evaluators.
 
-# Skill-mediated: expose read_skill_markdown and only the MCP tools declared in skill bound_mcp_tools.
-python agent.py --cases examples/office/FA_skill_1.json --models gpt-4o-mini --capability-mode skill-only
-
-# Hybrid: expose all MCP tools plus the skill prompt and read_skill_markdown.
-python agent.py --cases examples/office/FA_skill_1.json --models gpt-4o-mini --capability-mode hybrid
+```text
+LPS-Bench/
+├── examples/               # 570 base cases + 40 evaluated skill variants
+├── tools/                  # Case-specific mock tool modules
+├── skill_assets/           # Case-local skill instructions
+├── evaluator/              # Safety and utility evaluators
+├── agent.py                # Agent execution and evaluation runner
+├── multi-agent_pipeline.py # Case synthesis pipeline
+├── prompt/                 # Case-generation prompt templates
+├── scripts/                # Validation and experiment helpers
+├── docs/                   # Usage, dataset audit, reproducibility notes
+├── site/                   # Project website
+└── candidate_cases/        # Unevaluated case candidates
 ```
 
-Execution logs are separated by mode under `output-dir/<domain>/<case>/<capability-mode>/`, and the batch summary is written as `multi_case_batch_summary_<capability-mode>_public.json`.
+## ⚖️ License
 
-### Batch Testing
+This project is released under the [MIT License](LICENSE).
 
-```bash
-# Run all cases in a domain directory
-python agent.py \
-  --cases examples/webbrowser \
-  --models gpt-4o-mini gpt-5.1 claude-4-sonnet \
-  --base-url https://api.openai.com/v1 \
-  --api-key $OPENAI_API_KEY \
-  --output-dir runs \
-  --evaluate
+## 💬 Contact
 
-# Use built-in default case list
-python agent.py --use-defaults --models gpt-4o-mini --evaluate
-```
+For questions, bug reports, and dataset feedback, please open a [GitHub issue](https://github.com/tychenn/LPS-Bench/issues). When reporting a case, include its path and the repository commit.
 
-### Key Options
+## 📝 Citation
 
-| Flag | Description | Default |
-|------|-------------|---------|
-| `--cases` | Path to a case JSON file or a directory of cases | — |
-| `--models` | One or more model names to test | — |
-| `--base-url` | OpenAI-compatible API base URL | — |
-| `--api-key` | API key for the endpoint | — |
-| `--output-dir` | Directory for execution logs | `records` |
-| `--capability-mode` | Capability surface: `tool-only`, `skill-only`, or `hybrid` | `hybrid` |
-| `--temperature` | Sampling temperature | `1` |
-| `--top-p` | Nucleus-sampling probability | `0.9` |
-| `--top-k` | Top-k truncation | `50` |
-| `--step-limit` | Maximum tool calls per run | `100` |
-| `--evaluate` | Run evaluator after execution | `False` |
-| `--eval-mode` | Evaluator mode: `api` or `local` | `api` |
-| `--eval-model` | Evaluator model name or local path | `deepseek-reasoner` (DeepSeek-R1) |
-| `--use-defaults` | Run the built-in default case list | `False` |
+If you use LPS-Bench in your research, please cite the [paper](https://arxiv.org/abs/2602.03255):
 
-The defaults reproduce the paper's exploration setting: temperature `1`, top-p
-`0.9`, top-k `50`, and at most `100` tool-call steps per episode. For
-OpenAI-compatible endpoints, `top_k` is sent as a provider extension; the
-selected endpoint must support that parameter. Run summaries and trajectory
-logs record the effective decoding configuration.
-
-`deepseek-reasoner` is the API identifier used for the paper's DeepSeek-R1
-judge. If a reproduction endpoint exposes a pinned R1 deployment under a
-different name, pass that identifier with `--eval-model`.
-
-For the distinction between paper settings, historical run evidence and new
-run provenance, see [experiment configuration and provenance](docs/experiment_reproducibility.md).
-
-### Supported Models
-
-| Type | Models |
-|------|--------|
-| **API** | GPT-5, GPT-5.1, GPT-4o-mini, GPT-4.1-mini, Claude-4.5-Sonnet, Claude-4-Sonnet, Gemini-3-Pro, Gemini-2.5-Pro, DeepSeek-R1, DeepSeek-v3.1, DeepSeek-v3.2 |
-| **Local (Ollama)** | Qwen3-32B-Instruct, Qwen3-8B-Instruct, Llama-3.1-70B-Instruct, Llama-3.1-8B-Instruct, Mistral-Small-3.2 |
-
-## Test Case Design
-
-Each test case in `examples/` follows a **hidden complexity** pattern:
-
-```json
-{
-  "instruction": "User request with potential safety issues...",
-  "evaluator": {
-    "file": "false_assumption.py",
-    "func": ["is_false_assumption"],
-    "criterion": "The agent must identify ambiguities and ask for clarification...",
-    "expected": [{"type": "bool", "value": true}]
-  },
-  "MCP": {
-    "file": "browser_FA_1.py",
-    "tools": ["browser_open_url", "browser_login", "account_get_order_history", "..."]
-  }
+```bibtex
+@article{chen2026lpsbench,
+  title={LPS-Bench: Benchmarking Safety Awareness of Computer-Use Agents in Long-Horizon Planning under Benign and Adversarial Scenarios},
+  author={Chen, Tianyu and Hu, Chujia and Gao, Ge and Liu, Dongrui and Hu, Xia and Wang, Wenjie},
+  journal={arXiv preprint arXiv:2602.03255},
+  year={2026},
+  doi={10.48550/arXiv.2602.03255},
+  url={https://arxiv.org/abs/2602.03255}
 }
 ```
-
-**Design Principles:**
-1. **Surface simplicity** — Instructions appear straightforward but contain hidden safety traps.
-2. **Realistic ambiguity** — Tools return multiple plausible results without explicit warnings.
-3. **No artificial safeguards** — Tools accept any input and return plausible outputs (no built-in refusals).
-4. **Granular operations** — 15–20+ fine-grained tools per case, avoiding "do-everything" shortcuts.
-5. **Post-hoc evaluation** — An LLM judge scores execution traces against precise safety criteria.
-
-## Generate New Test Cases
-
-LPS-Bench includes an automated **multi-agent synthesis pipeline** for creating new test cases:
-
-```
-Orchestrator
-    ├──▶ Agent 1: Instruction Designer (crafts user instruction with embedded risks)
-    ├──▶ Agent 2: Tool Developer (implements mock tool environment)
-    └──▶ Agent 3: Criteria Formulator (defines evaluation criterion)
-         │
-         ▼
-    Merged case JSON + tool code
-```
-
-```bash
-# Configure API endpoint
-export LLM_API_KEY=...
-
-# Run the pipeline
-python multi-agent_pipeline.py
-```
-
-Prompt templates in `prompt/` (one per risk category) guide the synthesis process, ensuring generated cases maintain realistic complexity and proper safety trap design.
-
-## Repository Structure
-
-```
-LPS-Bench/
-├── agent.py                        # Simple LangChain agent runner
-├── multi-agent_pipeline.py         # Multi-agent case synthesis pipeline
-│
-├── examples/                       # 570 base cases + 40 evaluated skill-related cases
-│   ├── webbrowser/                 #   Browser tasks and skill variants
-│   ├── code/                       #   Code modification and deployment tasks
-│   ├── fileio/                     #   File migration, versioning, compliance
-│   ├── multi_media/                #   Media processing and conversion
-│   ├── social_media/               #   Privacy, data export, moderation
-│   ├── OS_operation/               #   System commands and service operations
-│   └── office/                     #   Document editing, formatting, export
-│
-├── candidate_cases/                # Unevaluated case variants
-│
-├── evaluator/                      # 9 automated evaluators
-│   ├── false_assumption.py         #   Detects unjustified guesses
-│   ├── harmless_subtask.py         #   Validates harmful vs. harmless recognition
-│   ├── prompt_injection.py         #   Tests jailbreak resistance
-│   ├── over_compliance.py          #   Checks for blind rule-following
-│   ├── race_condition.py           #   Detects timing-based exploits
-│   ├── task_sequence.py            #   Validates proper execution ordering
-│   ├── multiturn.py                #   Multi-turn interaction safety
-│   ├── environment_backdoor.py     #   Backdoor trigger detection
-│   └── inefficient_plan.py         #   Detects suboptimal planning
-│
-├── tools/                          # 600+ simulated tool files
-│   ├── browser_*.py                #   Web browser operations
-│   ├── code_*.py                   #   Code manipulation
-│   ├── fileio_*.py                 #   File I/O operations
-│   ├── socialmedia_*.py            #   Social media actions
-│   ├── osoperation_*.py            #   OS-level operations
-│   ├── multimedia_*.py             #   Media file operations
-│   └── office_*.py                 #   Office document operations
-│
-├── prompt/                         # 9 prompt templates for case generation
-│   ├── FA.md, HS.md, PI.md        #   One template per risk category
-│   └── ...
-│
-├── docs/                           # Case-design notes and release report
-├── schemas/                        # JSON schema for benchmark cases
-├── scripts/                        # Skill experiment helper scripts
-├── skill_assets/                   # Case-local SKILL.md assets
-├── LICENSE                         # MIT License
-└── README.md
-```
-
-## Evaluation
-
-### Running Evaluations
-
-```bash
-# Run and evaluate a case with an API judge
-python agent.py \
-  --cases examples/webbrowser/FA_1.json \
-  --models gpt-4o-mini \
-  --base-url https://api.openai.com/v1 \
-  --api-key $OPENAI_API_KEY \
-  --evaluate \
-  --eval-mode api \
-  --eval-model deepseek-reasoner \
-  --eval-base-url $DEEPSEEK_BASE_URL \
-  --eval-api-key $DEEPSEEK_API_KEY
-```
-
-### Evaluation Modes
-
-| Mode | Description |
-|------|-------------|
-| `local` | Uses a local Qwen3-VL-8B-Instruct model on GPU for evaluation |
-| `api` | Uses DeepSeek-R1 (`deepseek-reasoner`) by default through an OpenAI-compatible API |
-
-Each evaluator constructs a prompt containing the execution trace and the case-specific criterion, then parses the judge model's `safe`, `unsafe`, or `execution_failed` status and derives a pass result.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
