@@ -111,6 +111,91 @@
           Benign ambiguity and adversarial steering. Direct tools and reusable
           skills.
         </p>
+        <section class="film-card" id="film" aria-labelledby="film-title">
+          <div class="film-heading">
+            <h2 id="film-title">LPS-Bench in 90 seconds</h2>
+            <span class="film-duration">01:30 · English / 中文</span>
+          </div>
+          <div class="film-stage">
+            <video
+              id="benchmark-film"
+              controls
+              playsinline
+              preload="none"
+              poster="assets/lps-bench-film-poster.jpg"
+              data-src="assets/lps-bench-film.mp4"
+              width="1920"
+              height="1080"
+              tabindex="0"
+              aria-label="LPS-Bench in 90 seconds"
+              aria-describedby="film-description"
+              hidden
+            >
+              <track
+                kind="subtitles"
+                data-src="assets/lps-bench-film.en.vtt"
+                srclang="en"
+                label="English"
+              />
+              <track
+                kind="subtitles"
+                data-src="assets/lps-bench-film.zh.vtt"
+                srclang="zh-Hans"
+                label="简体中文"
+              />
+              Your browser cannot play this video.
+              <a href="assets/lps-bench-film.mp4">Download the MP4.</a>
+            </video>
+            <button
+              class="film-launch"
+              type="button"
+              data-film-play
+              aria-label="Play LPS-Bench in 90 seconds"
+              aria-controls="benchmark-film"
+              hidden
+            >
+              <img
+                src="assets/lps-bench-film-poster.jpg"
+                alt=""
+                width="1920"
+                height="1080"
+                decoding="async"
+              />
+              <span class="film-play-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="m9 5 11 7-11 7z" /></svg>
+              </span>
+              <span class="film-play-label" aria-hidden="true">Watch the film</span>
+            </button>
+            <noscript>
+              <a class="film-direct" href="assets/lps-bench-film.mp4">
+                <img
+                  src="assets/lps-bench-film-poster.jpg"
+                  alt="Watch LPS-Bench in 90 seconds as an MP4 video"
+                  width="1920"
+                  height="1080"
+                />
+              </a>
+            </noscript>
+          </div>
+          <div class="film-footer">
+            <p id="film-description">A short introduction to the benchmark.<br />English and Chinese text included in the film.</p>
+            <div class="film-actions">
+              <label class="film-subtitles" for="film-subtitles" hidden>
+                Subtitles
+                <select id="film-subtitles" disabled>
+                  <option value="off" selected>Off</option>
+                  <option value="en">English</option>
+                  <option value="zh-Hans">简体中文</option>
+                </select>
+              </label>
+              <a href="assets/lps-bench-film.mp4" download="lps-bench-film.mp4">Download MP4 <span aria-hidden="true">↓</span></a>
+            </div>
+          </div>
+          <p class="film-status" id="film-status" role="status"></p>
+          <noscript>
+            <p class="film-no-script"><a href="assets/lps-bench-film.mp4">Open the MP4 video</a> to watch it directly.</p>
+          </noscript>
+        </section>
       </div>
     </header>
 
@@ -120,7 +205,7 @@
           ><svg class="icon"><use href="#icon-shield" /></svg>LPS-Bench</a
         >
         <div class="nav-links">
-          <a href="#overview">Overview</a><a href="#benchmark">Benchmark</a
+          <a href="#film">Film</a><a href="#overview">Overview</a><a href="#benchmark">Benchmark</a
           ><a href="#skills">Skills</a><a href="#results">Results</a
           ><a href="#get-started">Get started</a
           ><a href="#citation">Citation</a>

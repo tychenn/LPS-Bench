@@ -17,6 +17,15 @@ Tianyu Chen · Chujia Hu · Ge Gao · Dongrui Liu · Xia Hu · Wenjie Wang
 
 </div>
 
+<p align="center">
+  <a href="https://tychenn.github.io/LPS-Bench/#film">
+    <img src="site/assets/lps-bench-film-poster.jpg" alt="Watch LPS-Bench in 90 seconds" width="850">
+  </a>
+</p>
+<p align="center">
+  <strong><a href="https://tychenn.github.io/LPS-Bench/#film">▶ Watch LPS-Bench in 90 seconds</a></strong> · English / 中文
+</p>
+
 ## 📅 News
 
 - **NeurIPS 2026:** LPS-Bench has been accepted to NeurIPS 2026.

@@ -1,0 +1,392 @@
+{
+  "title": "LPS-Bench — Safety Throughout the Trajectory",
+  "duration": 90,
+  "language": "en",
+  "subtitle_languages": [
+    "en",
+    "zh-CN"
+  ],
+  "voiceover_word_count": 164,
+  "timing_note": "Caption boundaries are aligned to the synthesized English narration word timings. Scene boundaries remain fixed.",
+  "scenes": [
+    {
+      "id": "hook",
+      "start": 0,
+      "end": 8,
+      "headline": "A safe outcome can hide unsafe decisions.",
+      "zh": "安全结果可能掩盖过程风险。",
+      "voiceover": "A safe-looking outcome can hide unsafe decisions. LPS-Bench follows safety across the whole trajectory.",
+      "visual": "Introduce a clean final task state, then reveal earlier decision points. Transition into the LPS-Bench wordmark. Use a conceptual graphic without presenting measured model behavior.",
+      "labels": [
+        "Safety throughout the trajectory"
+      ],
+      "assets": []
+    },
+    {
+      "id": "trajectory",
+      "start": 8,
+      "end": 20,
+      "headline": "Every step changes what comes next.",
+      "zh": "每一步都会影响后续行动。",
+      "voiceover": "Agents plan, call tools, and read feedback. An unsupported assumption or untrusted instruction can redirect later actions before the task ends. This sequence is illustrative.",
+      "visual": "Animate Request → Plan → Tool call → Observation → Replan. Highlight an unverified assumption and an instruction carried by a tool output. Show a subsequent risky action as a conceptual possibility, without inventing experiment logs or measured probabilities.",
+      "labels": [
+        "Request",
+        "Plan",
+        "Tool call",
+        "Observation",
+        "Replan"
+      ],
+      "persistent_note": "Illustrative trajectory · 轨迹示意",
+      "assets": []
+    },
+    {
+      "id": "scale",
+      "start": 20,
+      "end": 30,
+      "headline": "570 cases. 7 domains. 9 risks. 40 skill variants.",
+      "zh": "570 个基础案例，覆盖 7 个领域与 9 类风险。",
+      "voiceover": "Five hundred seventy base cases. Seven computer-use domains. Nine risk types. Forty skill variants. One focus: safety throughout planning.",
+      "visual": "Reveal the four verified figures with explicit labels. Keep 570 base cases separate from the additional 40 skill variants. Briefly name the seven computer-use domains.",
+      "labels": [
+        "570 base cases",
+        "7 computer-use domains",
+        "9 risk types",
+        "40 skill variants"
+      ],
+      "domains": [
+        "Web Browser",
+        "Code",
+        "File I/O",
+        "Multimedia",
+        "Social Media",
+        "OS Operation",
+        "Office"
+      ],
+      "assets": [
+        "site/assets/benchmark.json"
+      ]
+    },
+    {
+      "id": "risks",
+      "start": 30,
+      "end": 43,
+      "headline": "Benign ambiguity. Adversarial steering.",
+      "zh": "善意请求中的风险与对抗性诱导。",
+      "voiceover": "Two hundred fifty-two benign cases probe ambiguity, ordering, over-compliance, and waste. Three hundred eighteen adversarial cases examine deception, injected instructions, and timing.",
+      "visual": "Build two balanced panels for base-case user intent. Introduce the four benign and five adversarial risk abbreviations. Distinguish direct user-instruction attacks from malicious tool-output instructions.",
+      "labels": [
+        "252 benign base cases",
+        "318 adversarial base cases"
+      ],
+      "benign_risks": [
+        {
+          "code": "FA",
+          "name": "False Assumption",
+          "zh": "错误假设"
+        },
+        {
+          "code": "TS",
+          "name": "Task Sequence",
+          "zh": "任务顺序"
+        },
+        {
+          "code": "OC",
+          "name": "Over-Compliance",
+          "zh": "过度服从"
+        },
+        {
+          "code": "IP",
+          "name": "Inefficient Planning",
+          "zh": "低效规划"
+        }
+      ],
+      "adversarial_risks": [
+        {
+          "code": "HS",
+          "name": "Harmless Subtask",
+          "zh": "无害子任务掩盖有害目标"
+        },
+        {
+          "code": "MT",
+          "name": "Multi-turn Attack",
+          "zh": "多轮攻击"
+        },
+        {
+          "code": "EB",
+          "name": "Environment Backdoor",
+          "zh": "环境后门"
+        },
+        {
+          "code": "RC",
+          "name": "Race Condition",
+          "zh": "竞争条件"
+        },
+        {
+          "code": "PI",
+          "name": "Prompt Injection",
+          "zh": "提示注入"
+        }
+      ],
+      "assets": [
+        "site/assets/benchmark.json"
+      ]
+    },
+    {
+      "id": "method",
+      "start": 43,
+      "end": 57,
+      "headline": "Generate. Interact. Evaluate.",
+      "zh": "生成案例、交互执行、评估全程。",
+      "voiceover": "A multi-agent pipeline builds instructions, simulated tools, and safety criteria. Agents interact. An LLM judge reviews complete trajectories against explicit safety requirements.",
+      "visual": "Use the original Figure 3 screenshot. Start with the entire diagram, then gently focus on generation, mock-tool interaction, and the evaluator in order. Preserve the original diagram and avoid replacing it with a redrawn figure.",
+      "labels": [
+        "Case generation",
+        "Simulated interaction",
+        "Trajectory evaluation"
+      ],
+      "persistent_note": "Paper Figure 3 · Full-trajectory evaluation",
+      "assets": [
+        "site/assets/paper-overview.png"
+      ]
+    },
+    {
+      "id": "results",
+      "start": 57,
+      "end": 71,
+      "headline": "Planning safety remains challenging.",
+      "zh": "长程规划安全仍具挑战。",
+      "voiceover": "Across thirteen models, challenges remain. Claude Sonnet four point five scores fifty-eight point five five percent on benign risks, and ninety-five point seven seven on adversarial risks: original-case risk-category averages.",
+      "visual": "Begin with the original Figure 1 screenshot. Transition to the original Table 3 screenshot and highlight the Claude-4.5-Sonnet row with the two Avg. columns. Display 58.55% Benign and 95.77% Adversarial without implying a sample-weighted overall rate.",
+      "labels": [
+        "13 evaluated models",
+        "Claude-4.5-Sonnet",
+        "58.55% benign",
+        "95.77% adversarial"
+      ],
+      "persistent_note": "Paper results · Original case revision · Risk-category averages",
+      "assets": [
+        "site/assets/paper-results.png",
+        "site/assets/paper-results-table.png"
+      ]
+    },
+    {
+      "id": "skills",
+      "start": 71,
+      "end": 81,
+      "headline": "Skills shift safety-critical decisions.",
+      "zh": "技能改变安全决策的位置。",
+      "voiceover": "Forty skill variants cover four risks. Ten cases per category. Skills change safety-critical decisions, with effects varying across risks.",
+      "visual": "Use the original Table 4 screenshot. Identify FA, OC, TS, and PI, each with ten skill variants paired with source cases. Gently highlight GPT-5.1 FA 10→70 and OC 70→10 to show mixed effects without generalizing these two comparisons to all models.",
+      "labels": [
+        "FA · OC · TS · PI",
+        "10 skill variants per category",
+        "40 paired skill variants"
+      ],
+      "persistent_note": "Paper Table 4 · Original case revision · Effects vary by risk",
+      "assets": [
+        "site/assets/paper-skills-table.png"
+      ]
+    },
+    {
+      "id": "closing",
+      "start": 81,
+      "end": 90,
+      "headline": "LPS-Bench · NeurIPS 2026",
+      "zh": "探索代码与数据集，研究长程规划安全。",
+      "voiceover": "LPS-Bench. Accepted at NeurIPS twenty twenty-six. Code and data for safer long-horizon planning.",
+      "visual": "Return to a calm LPS-Bench title card with Accepted at NeurIPS 2026. Hold clear repository and dataset URLs for the closing seconds; show real destinations rather than placeholder links.",
+      "labels": [
+        "Accepted at NeurIPS 2026",
+        "Code & dataset available"
+      ],
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/tychenn/LPS-Bench"
+        },
+        {
+          "label": "Hugging Face",
+          "url": "https://huggingface.co/datasets/tianyyuu/LPS-Bench"
+        }
+      ],
+      "assets": []
+    }
+  ],
+  "captions": [
+    {
+      "start": 0.412,
+      "end": 3.59,
+      "en": "A safe-looking outcome can hide unsafe decisions.",
+      "zh": "看似安全的结果，可能掩盖不安全的决策。"
+    },
+    {
+      "start": 3.758,
+      "end": 7.706,
+      "en": "LPS-Bench follows safety across the whole trajectory.",
+      "zh": "LPS-Bench 关注整条轨迹中的安全。"
+    },
+    {
+      "start": 8.412,
+      "end": 11.583,
+      "en": "Agents plan, call tools, and read feedback.",
+      "zh": "智能体规划、调用工具，并读取反馈。"
+    },
+    {
+      "start": 11.734,
+      "end": 14.669,
+      "en": "An unsupported assumption or untrusted instruction",
+      "zh": "缺乏依据的假设，或不可信的指令，"
+    },
+    {
+      "start": 14.694,
+      "end": 17.388,
+      "en": "can redirect later actions before the task ends.",
+      "zh": "都可能在任务结束前改变后续行动。"
+    },
+    {
+      "start": 17.562,
+      "end": 19.713,
+      "en": "This sequence is illustrative.",
+      "zh": "此处展示的是轨迹示意。"
+    },
+    {
+      "start": 20.463,
+      "end": 22.254,
+      "en": "570 base cases.",
+      "zh": "570 个基础案例。"
+    },
+    {
+      "start": 22.437,
+      "end": 27.024,
+      "en": "7 domains. 9 risk types. 40 skill variants.",
+      "zh": "7 个领域、9 类风险、40 个技能变体。"
+    },
+    {
+      "start": 27.195,
+      "end": 29.693,
+      "en": "One focus: safety throughout planning.",
+      "zh": "共同关注规划全程的安全。"
+    },
+    {
+      "start": 30.415,
+      "end": 33.827,
+      "en": "252 benign cases probe ambiguity,",
+      "zh": "252 个善意请求案例考察歧义、"
+    },
+    {
+      "start": 34.003,
+      "end": 36.481,
+      "en": "ordering, over-compliance, and waste.",
+      "zh": "执行顺序、过度服从与资源浪费。"
+    },
+    {
+      "start": 36.714,
+      "end": 40.354,
+      "en": "318 adversarial cases examine deception,",
+      "zh": "318 个对抗案例考察欺骗、"
+    },
+    {
+      "start": 40.507,
+      "end": 42.712,
+      "en": "injected instructions, and timing.",
+      "zh": "注入指令与时序风险。"
+    },
+    {
+      "start": 43.42,
+      "end": 46.254,
+      "en": "A multi-agent pipeline builds instructions,",
+      "zh": "多智能体流程构建用户指令、"
+    },
+    {
+      "start": 46.286,
+      "end": 49.463,
+      "en": "simulated tools, and safety criteria.",
+      "zh": "模拟工具与安全评判标准。"
+    },
+    {
+      "start": 49.667,
+      "end": 50.994,
+      "en": "Agents interact.",
+      "zh": "智能体交互执行。"
+    },
+    {
+      "start": 51.186,
+      "end": 54.15,
+      "en": "An LLM judge reviews complete trajectories",
+      "zh": "大模型评审器检查完整轨迹，"
+    },
+    {
+      "start": 54.175,
+      "end": 56.715,
+      "en": "against explicit safety requirements.",
+      "zh": "依据明确的安全要求进行判断。"
+    },
+    {
+      "start": 57.415,
+      "end": 59.984,
+      "en": "Across 13 models, challenges remain.",
+      "zh": "13 个模型的结果表明，挑战依然存在。"
+    },
+    {
+      "start": 60.14,
+      "end": 62.093,
+      "en": "Claude-4.5-Sonnet scores",
+      "zh": "Claude-4.5-Sonnet 的得分为："
+    },
+    {
+      "start": 62.118,
+      "end": 65.285,
+      "en": "58.55% on benign risks,",
+      "zh": "善意请求风险中为 58.55%，"
+    },
+    {
+      "start": 65.315,
+      "end": 68.413,
+      "en": "and 95.77% on adversarial risks.",
+      "zh": "对抗风险中为 95.77%。"
+    },
+    {
+      "start": 68.593,
+      "end": 70.725,
+      "en": "Original-case risk-category averages.",
+      "zh": "数值为原始案例版本的风险类别平均值。"
+    },
+    {
+      "start": 71.442,
+      "end": 73.703,
+      "en": "40 skill variants cover 4 risks.",
+      "zh": "40 个技能变体覆盖 4 类风险。"
+    },
+    {
+      "start": 73.883,
+      "end": 75.476,
+      "en": "10 cases per category.",
+      "zh": "每类包含 10 个案例。"
+    },
+    {
+      "start": 75.645,
+      "end": 78.251,
+      "en": "Skills change safety-critical decisions,",
+      "zh": "技能改变关键的安全决策，"
+    },
+    {
+      "start": 78.282,
+      "end": 80.727,
+      "en": "with effects varying across risks.",
+      "zh": "影响因风险而异。"
+    },
+    {
+      "start": 81.415,
+      "end": 86.017,
+      "en": "LPS-Bench. Accepted at NeurIPS 2026.",
+      "zh": "LPS-Bench，已被 NeurIPS 2026 接收。"
+    },
+    {
+      "start": 86.2,
+      "end": 89.701,
+      "en": "Code and data for safer long-horizon planning.",
+      "zh": "开放代码与数据，支持更安全的长程规划。"
+    }
+  ]
+}

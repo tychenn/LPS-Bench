@@ -1,5 +1,64 @@
 "use strict";
 
+function initFilm() {
+  const video = document.getElementById("benchmark-film");
+  const launch = document.querySelector("[data-film-play]");
+  const subtitles = document.getElementById("film-subtitles");
+  const status = document.getElementById("film-status");
+  if (!video || !launch || !subtitles || !status) return;
+
+  launch.hidden = false;
+  subtitles.closest("label").hidden = false;
+
+  function setSubtitleLanguage(language) {
+    Array.from(video.textTracks).forEach((track) => {
+      track.mode = track.language === language ? "showing" : "disabled";
+    });
+  }
+
+  subtitles.addEventListener("change", () =>
+    setSubtitleLanguage(subtitles.value),
+  );
+  video.textTracks.addEventListener("change", () => {
+    const visible = Array.from(video.textTracks).find(
+      (track) => track.mode === "showing",
+    );
+    subtitles.value = visible ? visible.language : "off";
+  });
+
+  video.addEventListener("playing", () => {
+    status.textContent = "";
+  });
+  video.addEventListener("error", () => {
+    status.textContent =
+      "The video could not load. Use Download MP4 to open or save the film.";
+  });
+
+  launch.addEventListener("click", () => {
+    // Fetch the film and optional subtitle files only after a user activates it.
+    video.src = video.dataset.src;
+    video.querySelectorAll("track[data-src]").forEach((track) => {
+      track.src = track.dataset.src;
+    });
+    setSubtitleLanguage("off");
+    subtitles.value = "off";
+    subtitles.disabled = false;
+    video.hidden = false;
+    launch.hidden = true;
+    status.textContent = "Loading the film…";
+    video.load();
+    video.focus({ preventScroll: true });
+    const playback = video.play();
+    if (playback) {
+      playback.catch(() => {
+        status.textContent = video.error
+          ? "The video could not load. Use Download MP4 to open or save the film."
+          : "Press Play in the video controls to start the film.";
+      });
+    }
+  });
+}
+
 // Render source text as textContent so case instructions remain inert data.
 async function initCaseExplorer() {
   const buttons = [...document.querySelectorAll("[data-risk]")];
@@ -178,6 +237,7 @@ function initNavigation() {
   });
 }
 
+initFilm();
 initCaseExplorer();
 initCopy();
 initFigure();

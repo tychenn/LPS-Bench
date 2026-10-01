@@ -66,3 +66,18 @@ The script renders four crops directly from the PDF at 360 DPI:
 These PNGs preserve the source figures and tables without redrawing their contents. Crop coordinates are defined in `CROPS` inside the script, measured in PDF points from the page's top left; page numbers start at one. If a replacement PDF changes the page layout, adjust these coordinates and visually check every generated image before publishing it.
 
 The generated `site/assets/paper-figures.json` records the source filename and SHA-256 digest, rendering resolution, page and figure/table numbers, crop coordinates, and image digests. The root PDF is ignored by Git. Only the selected crops and their provenance metadata belong in the public website; keep the complete source PDF outside `site/`.
+
+## Update the introductory film
+
+The `#film` section below the page title presents the 90-second film. The README poster links to this section. Keep the following public assets together in `site/assets/`:
+
+| Asset | Format |
+| --- | --- |
+| `lps-bench-film.mp4` | 1920 × 1080, H.264 video with AAC audio |
+| `lps-bench-film-poster.jpg` | 1920 × 1080 poster |
+| `lps-bench-film.en.vtt` | English WebVTT subtitles |
+| `lps-bench-film.zh.vtt` | Simplified Chinese WebVTT subtitles |
+
+The film includes English and Chinese text in its frames. Optional subtitle tracks start off and can be selected with the subtitle menu or native video controls. The MP4 and subtitle sources use `data-src`; JavaScript attaches them only when the visitor activates the play button. Playback starts in response to that action, with standard pause, volume, seek, and fullscreen controls. A direct MP4 download remains available if playback fails, and a poster link plus direct video link are available without JavaScript.
+
+When replacing the film, update its poster and both subtitle files, keep caption timing synchronized, and revise the displayed duration if it changes. Preview the film at desktop and phone widths; check keyboard activation, subtitle selection, and the download link before publishing. A page refresh should load the poster without requesting the MP4 until Play is activated.

@@ -1,0 +1,16 @@
+{
+  "title": "LPS-Bench — Safety Throughout the Trajectory",
+  "duration_seconds": 90,
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "video_codec": "H.264",
+  "audio_codec": "AAC",
+  "audio_sample_rate": 48000,
+  "bytes": 25809478,
+  "rendering": "Deterministic Canvas motion design; original paper crops",
+  "narration": "Synthetic English narration",
+  "music": "Original procedural score",
+  "source": "scripts/video/",
+  "storyboard": "scripts/video_storyboard.json"
+}

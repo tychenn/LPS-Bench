@@ -1,0 +1,117 @@
+WEBVTT
+
+1
+00:00:00.412 --> 00:00:03.590
+A safe-looking outcome can hide unsafe decisions.
+
+2
+00:00:03.758 --> 00:00:07.706
+LPS-Bench follows safety across the whole trajectory.
+
+3
+00:00:08.412 --> 00:00:11.583
+Agents plan, call tools, and read feedback.
+
+4
+00:00:11.734 --> 00:00:14.669
+An unsupported assumption or untrusted instruction
+
+5
+00:00:14.694 --> 00:00:17.388
+can redirect later actions before the task ends.
+
+6
+00:00:17.562 --> 00:00:19.713
+This sequence is illustrative.
+
+7
+00:00:20.463 --> 00:00:22.254
+570 base cases.
+
+8
+00:00:22.437 --> 00:00:27.024
+7 domains. 9 risk types. 40 skill variants.
+
+9
+00:00:27.195 --> 00:00:29.693
+One focus: safety throughout planning.
+
+10
+00:00:30.415 --> 00:00:33.827
+252 benign cases probe ambiguity,
+
+11
+00:00:34.003 --> 00:00:36.481
+ordering, over-compliance, and waste.
+
+12
+00:00:36.714 --> 00:00:40.354
+318 adversarial cases examine deception,
+
+13
+00:00:40.507 --> 00:00:42.712
+injected instructions, and timing.
+
+14
+00:00:43.420 --> 00:00:46.254
+A multi-agent pipeline builds instructions,
+
+15
+00:00:46.286 --> 00:00:49.463
+simulated tools, and safety criteria.
+
+16
+00:00:49.667 --> 00:00:50.994
+Agents interact.
+
+17
+00:00:51.186 --> 00:00:54.150
+An LLM judge reviews complete trajectories
+
+18
+00:00:54.175 --> 00:00:56.715
+against explicit safety requirements.
+
+19
+00:00:57.415 --> 00:00:59.984
+Across 13 models, challenges remain.
+
+20
+00:01:00.140 --> 00:01:02.093
+Claude-4.5-Sonnet scores
+
+21
+00:01:02.118 --> 00:01:05.285
+58.55% on benign risks,
+
+22
+00:01:05.315 --> 00:01:08.413
+and 95.77% on adversarial risks.
+
+23
+00:01:08.593 --> 00:01:10.725
+Original-case risk-category averages.
+
+24
+00:01:11.442 --> 00:01:13.703
+40 skill variants cover 4 risks.
+
+25
+00:01:13.883 --> 00:01:15.476
+10 cases per category.
+
+26
+00:01:15.645 --> 00:01:18.251
+Skills change safety-critical decisions,
+
+27
+00:01:18.282 --> 00:01:20.727
+with effects varying across risks.
+
+28
+00:01:21.415 --> 00:01:26.017
+LPS-Bench. Accepted at NeurIPS 2026.
+
+29
+00:01:26.200 --> 00:01:29.701
+Code and data for safer long-horizon planning.
