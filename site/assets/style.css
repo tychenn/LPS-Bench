@@ -365,13 +365,17 @@ p {
 .figure-link {
   display: block;
   position: relative;
-  border-radius: 20px;
+  border: 1px solid #e1e8e4;
+  border-radius: 12px;
+  background: white;
+  padding: 14px 14px 40px;
   overflow: hidden;
 }
 .figure-link:hover {
   text-decoration: none;
 }
 .figure-link img {
+  display: block;
   width: 100%;
   height: auto;
 }
@@ -385,18 +389,27 @@ p {
   padding: 5px 10px;
   font-size: 10px;
   color: #4d655c;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.figure-link:hover .figure-zoom,
-.figure-link:focus-visible .figure-zoom {
   opacity: 1;
+  transition: opacity 0.2s;
 }
 figcaption {
   font-size: 12px;
   text-align: center;
   color: #586c5f;
   margin-top: 14px;
+}
+.paper-figure {
+  margin: 28px 0;
+}
+.paper-figure-section {
+  margin-top: 38px;
+}
+.paper-figure-section .paper-figure {
+  margin-bottom: 0;
+}
+.paper-results-figure {
+  max-width: 500px;
+  margin: 0 auto 36px;
 }
 .stat-grid {
   display: grid;
@@ -848,94 +861,6 @@ details[open] > summary .details-plus {
   color: #586c5f;
   margin: 0;
 }
-.chart-controls {
-  display: flex;
-  gap: 3px;
-  padding: 4px;
-  background: #f0f4f1;
-  border-radius: 8px;
-  flex-shrink: 0;
-}
-.chart-controls button {
-  border: 0;
-  background: transparent;
-  border-radius: 5px;
-  color: #5b7263;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 7px 14px;
-  min-height: 36px;
-}
-.chart-controls button[aria-pressed="true"] {
-  background: white;
-  color: var(--green);
-  box-shadow: 0 1px 4px #23382a18;
-}
-.chart-row {
-  display: grid;
-  grid-template-columns: 190px 1fr 45px;
-  gap: 17px;
-  align-items: center;
-  min-height: 35px;
-  font-variant-numeric: tabular-nums;
-}
-.chart-label {
-  font-size: 11px;
-  color: #4b6254;
-  white-space: nowrap;
-}
-.chart-track {
-  height: 17px;
-  position: relative;
-  background: repeating-linear-gradient(
-    to right,
-    #e9eeeb 0,
-    #e9eeeb 1px,
-    transparent 1px,
-    transparent 25%
-  );
-}
-.chart-bar {
-  height: 17px;
-  background: #6184ad;
-  border-radius: 0 3px 3px 0;
-  transition: width 0.35s ease;
-  min-width: 2px;
-}
-.chart-row:first-child .chart-bar {
-  background: #365e8b;
-}
-.adversarial-chart .chart-bar {
-  background: #bc8964;
-}
-.adversarial-chart .chart-row:first-child .chart-bar {
-  background: #99603d;
-}
-.chart-value {
-  font-size: 11px;
-  font-weight: 600;
-  color: #3f5c4b;
-  text-align: right;
-}
-.chart-axis {
-  display: grid;
-  grid-template-columns: 190px 1fr 45px;
-  gap: 17px;
-  margin-top: 6px;
-  margin-bottom: 25px;
-}
-.chart-axis-values {
-  display: flex;
-  justify-content: space-between;
-  color: #586c5f;
-  font-size: 9px;
-  grid-column: 2;
-}
-.chart-footnote {
-  font-size: 10px;
-  color: #586c5f;
-  margin: 15px 0 0;
-}
 .results-table-details {
   border-top: 1px solid #e8eeea;
   margin-top: 17px;
@@ -1218,7 +1143,7 @@ footer {
   max-height: 70vh;
 }
 .dialog-image-scroll img {
-  min-width: 900px;
+  min-width: var(--figure-min-width, 1100px);
 }
 @media (min-width: 1500px) {
   .hero-inner {
@@ -1246,11 +1171,6 @@ footer {
   .skill-layout,
   .start-layout {
     gap: 35px;
-  }
-  .chart-row,
-  .chart-axis {
-    grid-template-columns: 175px 1fr 43px;
-    gap: 12px;
   }
   .method-card {
     padding: 22px;
@@ -1374,9 +1294,6 @@ footer {
   }
   .section-lead {
     font-size: 14px;
-  }
-  .figure-zoom {
-    display: none;
   }
   figcaption {
     font-size: 10px;
@@ -1521,32 +1438,6 @@ footer {
   .results-toolbar p {
     font-size: 10px;
   }
-  .chart-controls button {
-    font-size: 11px;
-    min-height: 38px;
-    padding: 7px 20px;
-  }
-  .chart-row,
-  .chart-axis {
-    grid-template-columns: 155px 1fr 38px;
-    gap: 8px;
-  }
-  .chart-label {
-    font-size: 9px;
-  }
-  .chart-value {
-    font-size: 10px;
-  }
-  .chart-track,
-  .chart-bar {
-    height: 14px;
-  }
-  .chart-row {
-    min-height: 32px;
-  }
-  .chart-footnote {
-    font-size: 9px;
-  }
   .finding-grid {
     grid-template-columns: 1fr;
     gap: 23px;
@@ -1619,17 +1510,6 @@ footer {
   }
   .risk-button {
     font-size: 10px;
-  }
-  .chart-row,
-  .chart-axis {
-    grid-template-columns: 139px 1fr 35px;
-    gap: 6px;
-  }
-  .chart-label {
-    font-size: 8.5px;
-  }
-  .chart-value {
-    font-size: 9px;
   }
   .case-card {
     padding: 19px;

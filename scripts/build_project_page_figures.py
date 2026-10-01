@@ -1,78 +1,121 @@
 #!/usr/bin/env python3
-"""Create the README's static chart from the project page's paper-results table."""
+"""Crop the project's paper figures directly from a local PDF with Poppler."""
 
-from html import escape
-from html.parser import HTMLParser
+import argparse
+import hashlib
+import json
 from pathlib import Path
+import shutil
+import struct
+import subprocess
+
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_PDF = ROOT / "847_LPS_Bench_Benchmarking_Saf.pdf"
+OUTPUT = ROOT / "site" / "assets"
+DPI = 360
+# Coordinates are PDF points (1/72 inch), measured from the page's top left.
+# Each tuple contains x, y, width, height. Page numbers are one-based.
+CROPS = [
+    {
+        "filename": "paper-overview.png",
+        "page": 3,
+        "label": "Figure 3",
+        "crop_points": (107, 64, 398, 271),
+    },
+    {
+        "filename": "paper-results.png",
+        "page": 2,
+        "label": "Figure 1",
+        "crop_points": (107, 64, 166, 171),
+    },
+    {
+        "filename": "paper-results-table.png",
+        "page": 7,
+        "label": "Table 3",
+        "crop_points": (106, 142, 399, 176),
+    },
+    {
+        "filename": "paper-skills-table.png",
+        "page": 8,
+        "label": "Table 4",
+        "crop_points": (121, 111, 368, 99),
+    },
+]
 
 
-class ResultsTable(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.active = False
-        self.cell = None
-        self.row = []
-        self.rows = []
-
-    def handle_starttag(self, tag, attrs):
-        if tag == "table" and dict(attrs).get("id") == "results-table":
-            self.active = True
-        if self.active and tag == "tr":
-            self.row = []
-        if self.active and tag in ("td", "th"):
-            self.cell = ""
-
-    def handle_data(self, data):
-        if self.cell is not None:
-            self.cell += data
-
-    def handle_endtag(self, tag):
-        if self.active and tag in ("td", "th") and self.cell is not None:
-            self.row.append(self.cell.strip())
-            self.cell = None
-        if self.active and tag == "tr" and len(self.row) == 3:
-            try:
-                self.rows.append((self.row[0], float(self.row[1]), float(self.row[2])))
-            except ValueError:
-                pass  # Header row.
-        if tag == "table":
-            self.active = False
+def sha256(path):
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def main():
-    parser = ResultsTable()
-    parser.feed((ROOT / "site/index.html").read_text())
-    if len(parser.rows) != 13:
-        raise ValueError("Expected the 13 paper-reported model rows")
-    parts = ['''<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title description">
-<title id="title">LPS-Bench paper-reported Safe Rate across 13 models</title>
-<desc id="description">Benign and adversarial risk-category averages from Table 3 of the paper. These values refer to the original case revision; the revised dataset requires fresh evaluation. Higher is better.</desc>
-<rect x="1" y="1" width="1198" height="658" rx="16" fill="white" stroke="#e0e7e5"/>
-<g font-family="Arial, Helvetica, sans-serif">
-<text x="34" y="43" font-size="23" font-weight="700" fill="#253c33">Safety across the full trajectory</text>
-<text x="34" y="70" font-size="14" fill="#65776c">Average Safe Rate (%) by user-intent group · Higher is better</text>
-<rect x="825" y="32" width="15" height="10" rx="2" fill="#6184ad"/><text x="848" y="43" font-size="14" fill="#546b5c">Benign</text>
-<rect x="935" y="32" width="15" height="10" rx="2" fill="#bc8964"/><text x="958" y="43" font-size="14" fill="#546b5c">Adversarial</text>''']
-    left, width, first_y, stride = 286, 780, 110, 36
-    for tick in (0, 25, 50, 75, 100):
-        x = left + width * tick / 100
-        parts.append(f'<path d="M{x} 102V577" stroke="#e9eeeb"/>')
-        parts.append(f'<text x="{x}" y="598" text-anchor="middle" font-size="12" fill="#7b8b80">{tick}</text>')
-    for index, (name, benign, adversarial) in enumerate(sorted(parser.rows, key=lambda row: -row[1])):
-        y = first_y + index * stride
-        parts.append(f'<text x="268" y="{y+16}" text-anchor="end" font-size="15" fill="#415b4b">{escape(name)}</text>')
-        for offset, value, color in ((0, benign, "#6184ad"), (13, adversarial, "#bc8964")):
-            bar_width = width * value / 100
-            parts.append(f'<rect x="{left}" y="{y+offset}" width="{bar_width:.2f}" height="9" rx="2" fill="{color}"/>')
-            parts.append(f'<text x="{left+bar_width+7:.2f}" y="{y+offset+9}" font-size="11" fill="#536e5c">{value:.2f}</text>')
-    parts.append('''<text x="34" y="628" font-size="13" fill="#62786b">Paper results on the original case revision. Current repository cases require fresh evaluation.</text>
-<text x="34" y="648" font-size="11" fill="#7a8c80">Source: LPS-Bench, Table 3 · arXiv:2602.03255</text>
-</g></svg>''')
-    target = ROOT / "site/assets/results.svg"
-    target.write_text("\n".join(parts) + "\n")
-    print(f"Rendered 13 model comparisons to {target.relative_to(ROOT)}")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--pdf",
+        type=Path,
+        default=DEFAULT_PDF,
+        help="Source PDF (default: repository-root 847_LPS_Bench_Benchmarking_Saf.pdf)",
+    )
+    args = parser.parse_args()
+    pdf = args.pdf.expanduser().resolve()
+    if not pdf.is_file():
+        parser.error(f"Source PDF does not exist: {pdf}")
+    renderer = shutil.which("pdftoppm")
+    if not renderer:
+        parser.error("pdftoppm is required; install Poppler (for example, apt install poppler-utils).")
+
+    OUTPUT.mkdir(parents=True, exist_ok=True)
+    figures = []
+    for crop in CROPS:
+        x, y, width, height = [round(value * DPI / 72) for value in crop["crop_points"]]
+        output = OUTPUT / crop["filename"]
+        command = [
+            renderer,
+            "-f", str(crop["page"]),
+            "-l", str(crop["page"]),
+            "-r", str(DPI),
+            "-x", str(x),
+            "-y", str(y),
+            "-W", str(width),
+            "-H", str(height),
+            "-singlefile",
+            "-png",
+            str(pdf),
+            str(output.with_suffix("")),
+        ]
+        subprocess.run(command, check=True)
+        with output.open("rb") as image:
+            header = image.read(24)
+        if header[:8] != b"\x89PNG\r\n\x1a\n":
+            raise ValueError(f"Renderer did not produce a PNG: {output}")
+        actual_size = struct.unpack(">II", header[16:24])
+        if actual_size != (width, height):
+            raise ValueError(
+                f"Unexpected crop size for {output.name}: {actual_size}; expected {(width, height)}"
+            )
+        figures.append({
+            **crop,
+            "crop_pixels": {"x": x, "y": y, "width": width, "height": height},
+            "sha256": sha256(output),
+        })
+        print(f"Cropped {crop['label']} (page {crop['page']}) to {output.relative_to(ROOT)} ({width} x {height})")
+
+    manifest = {
+        "source_filename": pdf.name,
+        "source_sha256": sha256(pdf),
+        "renderer": "pdftoppm",
+        "dpi": DPI,
+        "coordinate_origin": "top-left of PDF page",
+        "crop_points_units": "1/72 inch; x, y, width, height",
+        "figures": figures,
+    }
+    target = OUTPUT / "paper-figures.json"
+    target.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    print(f"Recorded source and crop metadata in {target.relative_to(ROOT)}")
 
 
 if __name__ == "__main__":

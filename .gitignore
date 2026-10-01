@@ -16,6 +16,7 @@ experiments/mcpmark_verified_utility/.node-runtime/
 experiments/mcp_bench_utility/.venv/
 experiments/mcp_bench_utility/.npm-prefix/
 neurips_latex.pdf
+/847_LPS_Bench_Benchmarking_Saf.pdf
 tmp/
 .env
 .env.*

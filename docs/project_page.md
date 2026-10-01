@@ -33,9 +33,36 @@ This setup follows the [GitHub Pages custom workflow documentation](https://docs
 - Edit [`site/index.html`](../site/index.html) for the title, research description, links, results, and citation.
 - Keep styles, scripts, and public images in `site/assets/`.
 - Regenerate the public case examples and initial example text from the dataset with `python scripts/build_project_page_data.py`. The output is `site/assets/benchmark.json`; it contains counts and nine selected public case examples.
-- After updating the paper-results table in `site/index.html`, run `python scripts/build_project_page_figures.py` to refresh the README chart at `site/assets/results.svg`. The overview diagram is maintained in `site/assets/overview.svg`.
+- Regenerate the paper illustrations and tables directly from the source PDF with `python scripts/build_project_page_figures.py`; see the PDF crop instructions below.
 - Use relative asset links so the page works under the `/LPS-Bench/` project path and in local previews.
 - Preview the page after changes and check the layout at desktop and mobile widths.
 - Update the public paper link and citation only when the corresponding public version and bibliographic details are available. Check displayed results against that paper; repository data may have been revised after the paper's experiments.
 
 The deployment artifact contains **only `site/`**. Keep this directory limited to material approved for public release. Private figures, draft PDFs, raw experiment logs, credentials, and files from `figure/`, `runs/`, or `tmp/` must not be copied into it. Repository documentation outside `site/` is not included in the website artifact.
+
+## Regenerate paper figures
+
+Install Poppler so that `pdftoppm` is available (on Debian or Ubuntu, the package is `poppler-utils`). Place the source PDF at the repository root as `847_LPS_Bench_Benchmarking_Saf.pdf`, then run:
+
+```bash
+python scripts/build_project_page_figures.py
+```
+
+To use a PDF stored elsewhere, provide its path:
+
+```bash
+python scripts/build_project_page_figures.py --pdf /path/to/847_LPS_Bench_Benchmarking_Saf.pdf
+```
+
+The script renders four crops directly from the PDF at 360 DPI:
+
+| Output in `site/assets/` | Source |
+| --- | --- |
+| `paper-overview.png` | Page 3, Figure 3: benchmark overview |
+| `paper-results.png` | Page 2, Figure 1: overall safety scores |
+| `paper-results-table.png` | Page 7, Table 3: results by risk type |
+| `paper-skills-table.png` | Page 8, Table 4: paired skill results |
+
+These PNGs preserve the source figures and tables without redrawing their contents. Crop coordinates are defined in `CROPS` inside the script, measured in PDF points from the page's top left; page numbers start at one. If a replacement PDF changes the page layout, adjust these coordinates and visually check every generated image before publishing it.
+
+The generated `site/assets/paper-figures.json` records the source filename and SHA-256 digest, rendering resolution, page and figure/table numbers, crop coordinates, and image digests. The root PDF is ignored by Git. Only the selected crops and their provenance metadata belong in the public website; keep the complete source PDF outside `site/`.

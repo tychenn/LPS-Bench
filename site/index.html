@@ -149,22 +149,24 @@
           <figure class="overview-figure">
             <a
               class="figure-link"
-              href="assets/overview.svg"
+              href="assets/paper-overview.png"
               data-lightbox
-              aria-label="Enlarge the LPS-Bench overview diagram"
+              data-figure-title="Figure 3 · Benchmark construction and evaluation"
+              aria-label="Enlarge Figure 3 from the paper"
               ><img
-                src="assets/overview.svg"
-                alt="LPS-Bench workflow: benign ambiguity and adversarial steering enter an agent's plan–tool–observation loop, then a case-specific evaluator checks the full trajectory."
-                width="1200"
-                height="580"
+                src="assets/paper-overview.png"
+                alt="Paper Figure 3: task domains and risk types feed a multi-agent case generation pipeline, followed by expert review, mock-tool interaction, and trajectory evaluation by an LLM judge."
+                width="1990"
+                height="1355"
                 fetchpriority="high"
               /><span class="figure-zoom" aria-hidden="true"
                 >View full figure ↗</span
               ></a
             >
             <figcaption>
-              Each case combines a user instruction, a simulated toolkit, and an
-              explicit safety criterion.
+              <strong>Figure 3 from the paper.</strong> Multi-agent test case
+              generation and automated trajectory evaluation. Cropped directly
+              from the current manuscript; figure numbering follows that version.
             </figcaption>
           </figure>
           <dl class="stat-grid">
@@ -500,6 +502,33 @@
             </div>
           </div>
         </div>
+        <div class="container paper-figure-section">
+          <figure class="paper-figure">
+            <a
+              class="figure-link"
+              href="assets/paper-skills-table.png"
+              data-lightbox
+              data-figure-title="Table 4 · Original and skill-augmented subsets"
+              aria-label="Enlarge Table 4 from the paper"
+            >
+              <img
+                src="assets/paper-skills-table.png"
+                width="1840"
+                height="495"
+                loading="lazy"
+                alt="Paper Table 4: original versus skill-augmented Safe Rates for six models across FA, OC, TS, and PI. GPT-5.1 changes from 10 to 70 in FA and from 70 to 10 in OC; gains depend on the risk category."
+              />
+              <span class="figure-zoom" aria-hidden="true"
+                >View full table ↗</span
+              >
+            </a>
+            <figcaption>
+              <strong>Table 4 from the paper.</strong> Paired skill results on
+              the original case revision. Skill augmentation has different
+              effects across risk categories. Direct PDF crop.
+            </figcaption>
+          </figure>
+        </div>
       </section>
 
       <section class="section" id="results" aria-labelledby="results-title">
@@ -530,35 +559,63 @@
           <div class="results-panel">
             <div class="results-toolbar">
               <div>
-                <h3>Average Safe Rate</h3>
+                <h3>Results from the paper</h3>
                 <p>Risk-category averages within each user-intent group · %</p>
               </div>
-              <div
-                class="chart-controls"
-                role="group"
-                aria-label="Results by user intent"
-                hidden
-              >
-                <button
-                  type="button"
-                  data-result-group="benign"
-                  aria-pressed="true"
-                >
-                  Benign</button
-                ><button
-                  type="button"
-                  data-result-group="adversarial"
-                  aria-pressed="false"
-                >
-                  Adversarial
-                </button>
-              </div>
             </div>
-            <div id="results-chart" hidden></div>
-            <p id="results-status" class="sr-only" role="status"></p>
-            <details class="results-table-details" open>
+            <figure class="paper-figure paper-results-figure">
+              <a
+                class="figure-link"
+                href="assets/paper-results.png"
+                data-lightbox
+                data-figure-title="Figure 1 · Overall safety scores"
+                aria-label="Enlarge Figure 1 from the paper"
+              >
+                <img
+                  src="assets/paper-results.png"
+                  width="830"
+                  height="855"
+                  loading="lazy"
+                  alt="Paper Figure 1: average benign and adversarial safety scores for 13 models. Claude-4.5-Sonnet has the highest score in both groups."
+                />
+                <span class="figure-zoom" aria-hidden="true"
+                  >View full figure ↗</span
+                >
+              </a>
+              <figcaption>
+                <strong>Figure 1 from the paper.</strong> Overall safety scores,
+                averaged separately over benign and adversarial risks. Direct
+                PDF crop.
+              </figcaption>
+            </figure>
+            <figure class="paper-figure">
+              <a
+                class="figure-link"
+                href="assets/paper-results-table.png"
+                data-lightbox
+                data-figure-title="Table 3 · Safe Rate by risk type"
+                aria-label="Enlarge Table 3 from the paper"
+              >
+                <img
+                  src="assets/paper-results-table.png"
+                  width="1995"
+                  height="880"
+                  loading="lazy"
+                  alt="Paper Table 3: all 13 models across nine risk types, with benign and adversarial averages. Claude-4.5-Sonnet scores 58.55 and 95.77 percent. A text version of the group averages follows."
+                />
+                <span class="figure-zoom" aria-hidden="true"
+                  >View full table ↗</span
+                >
+              </a>
+              <figcaption>
+                <strong>Table 3 from the paper.</strong> Safe Rate across all
+                nine risk types. The two Avg. columns correspond to benign and
+                adversarial risks. Direct PDF crop.
+              </figcaption>
+            </figure>
+            <details class="results-table-details">
               <summary>
-                View all reported results<span
+                Read group averages as text<span
                   class="details-plus"
                   aria-hidden="true"
                   >+</span
@@ -651,12 +708,6 @@
                 </table>
               </div>
             </details>
-            <p class="chart-footnote">
-              Source:
-              <a href="https://arxiv.org/pdf/2602.03255#page=6"
-                >LPS-Bench paper, Table 3</a
-              >. Models are ordered by the selected group's Safe Rate.
-            </p>
           </div>
           <div class="finding-grid">
             <article>
@@ -729,7 +780,10 @@
                 <svg class="icon"><use href="#icon-copy" /></svg>Copy
               </button>
             </div>
-            <pre tabindex="0" aria-label="Setup commands"><code id="quickstart">git clone https://github.com/tychenn/LPS-Bench.git
+            <pre
+              tabindex="0"
+              aria-label="Setup commands"
+            ><code id="quickstart">git clone https://github.com/tychenn/LPS-Bench.git
 cd LPS-Bench
 
 # Check cases and their toolkit / skill references
@@ -770,7 +824,10 @@ python scripts/validate_dataset.py</code></pre>
                 <svg class="icon"><use href="#icon-copy" /></svg>Copy
               </button>
             </div>
-            <pre tabindex="0" aria-label="BibTeX citation"><code id="bibtex">@misc{chen2026lpsbench,
+            <pre
+              tabindex="0"
+              aria-label="BibTeX citation"
+            ><code id="bibtex">@misc{chen2026lpsbench,
   title={LPS-Bench: Benchmarking Safety Awareness of Computer-Use Agents
          in Long-Horizon Planning under Benign and Adversarial Scenarios},
   author={Tianyu Chen and Chujia Hu and Ge Gao and Dongrui Liu
@@ -811,7 +868,7 @@ python scripts/validate_dataset.py</code></pre>
     </footer>
     <dialog class="figure-dialog" aria-labelledby="figure-dialog-title">
       <div class="dialog-toolbar">
-        <h2 id="figure-dialog-title">Benchmark overview</h2>
+        <h2 id="figure-dialog-title">Figure from the paper</h2>
         <button type="button" class="dialog-close" aria-label="Close figure">
           Close <span aria-hidden="true">×</span>
         </button>
@@ -820,17 +877,20 @@ python scripts/validate_dataset.py</code></pre>
         class="dialog-image-scroll"
         tabindex="0"
         role="region"
-        aria-label="Scrollable overview diagram"
+        aria-label="Scrollable paper figure"
       >
         <img
-          src="assets/overview.svg"
-          alt="LPS-Bench overview diagram"
-          width="1200"
-          height="580"
+          src="assets/paper-overview.png"
+          alt="Paper Figure 3: benchmark construction and evaluation"
+          width="1990"
+          height="1355"
         />
       </div>
-      <a href="assets/overview.svg" target="_blank" rel="noopener noreferrer"
-        >Open original figure ↗</a
+      <a
+        href="assets/paper-overview.png"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Open full-resolution paper crop ↗</a
       >
     </dialog>
   </body>

@@ -67,76 +67,6 @@ async function initCaseExplorer() {
   }
 }
 
-function initResults() {
-  const chart = document.getElementById("results-chart");
-  const controls = [...document.querySelectorAll("[data-result-group]")];
-  const results = [...document.querySelectorAll("#results-table tbody tr")].map(
-    (row) => ({
-      name: row.cells[0].textContent,
-      benign: Number(row.cells[1].textContent),
-      adversarial: Number(row.cells[2].textContent),
-    }),
-  );
-  function render(group, announce = true) {
-    chart.replaceChildren();
-    chart.classList.toggle("adversarial-chart", group === "adversarial");
-    [...results]
-      .sort((a, b) => b[group] - a[group])
-      .forEach((model) => {
-        const row = document.createElement("div");
-        row.className = "chart-row";
-        const label = document.createElement("span");
-        label.className = "chart-label";
-        label.textContent = model.name;
-        const track = document.createElement("div");
-        track.className = "chart-track";
-        track.setAttribute("aria-hidden", "true");
-        const bar = document.createElement("div");
-        bar.className = "chart-bar";
-        bar.style.width = `${model[group]}%`;
-        track.append(bar);
-        const value = document.createElement("span");
-        value.className = "chart-value";
-        value.textContent = model[group].toFixed(2);
-        value.setAttribute("aria-label", `${model[group].toFixed(2)} percent`);
-        row.append(label, track, value);
-        chart.append(row);
-      });
-    const axis = document.createElement("div");
-    axis.className = "chart-axis";
-    axis.setAttribute("aria-hidden", "true");
-    const ticks = document.createElement("div");
-    ticks.className = "chart-axis-values";
-    ["0", "25", "50", "75", "100%"].forEach((tick) => {
-      const label = document.createElement("span");
-      label.textContent = tick;
-      ticks.append(label);
-    });
-    axis.append(ticks);
-    chart.append(axis);
-    chart.setAttribute(
-      "aria-label",
-      `${group === "benign" ? "Benign" : "Adversarial"} average Safe Rate in percent, sorted highest first`,
-    );
-    controls.forEach((button) =>
-      button.setAttribute(
-        "aria-pressed",
-        String(button.dataset.resultGroup === group),
-      ),
-    );
-    if (announce)
-      document.getElementById("results-status").textContent =
-        `Showing ${group} average Safe Rate for 13 models, sorted highest first.`;
-  }
-  render("benign", false);
-  chart.hidden = false;
-  document.querySelector(".chart-controls").hidden = false;
-  document.querySelector(".results-table-details").open = false;
-  controls.forEach((button) =>
-    button.addEventListener("click", () => render(button.dataset.resultGroup)),
-  );
-}
-
 function initCopy() {
   document.querySelectorAll("[data-copy]").forEach((button) => {
     button.hidden = false;
@@ -171,19 +101,42 @@ function initCopy() {
 
 function initFigure() {
   const dialog = document.querySelector(".figure-dialog");
-  const trigger = document.querySelector("[data-lightbox]");
-  if (typeof dialog.showModal !== "function") return;
-  trigger.addEventListener("click", (event) => {
-    if (
-      event.ctrlKey ||
-      event.metaKey ||
-      event.shiftKey ||
-      event.altKey ||
-      event.button !== 0
-    )
-      return;
-    event.preventDefault();
-    dialog.showModal();
+  if (!dialog || typeof dialog.showModal !== "function") return;
+  const preview = dialog.querySelector("img");
+  const originalLink = dialog.querySelector(":scope > a");
+  const title = document.getElementById("figure-dialog-title");
+  const scrollRegion = dialog.querySelector(".dialog-image-scroll");
+  let activeTrigger;
+  document.querySelectorAll("[data-lightbox]").forEach((trigger) => {
+    trigger.addEventListener("click", (event) => {
+      if (
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey ||
+        event.altKey ||
+        event.button !== 0
+      )
+        return;
+      event.preventDefault();
+      const source = trigger.querySelector("img");
+      activeTrigger = trigger;
+      title.textContent = trigger.dataset.figureTitle;
+      preview.src = trigger.href;
+      preview.alt = source.alt;
+      preview.width = Number(source.getAttribute("width"));
+      preview.height = Number(source.getAttribute("height"));
+      preview.style.setProperty(
+        "--figure-min-width",
+        `${Math.min(Number(source.getAttribute("width")), 1100)}px`,
+      );
+      originalLink.href = trigger.href;
+      scrollRegion.setAttribute(
+        "aria-label",
+        `${trigger.dataset.figureTitle}, scrollable image`,
+      );
+      dialog.showModal();
+      scrollRegion.scrollTo(0, 0);
+    });
   });
   dialog
     .querySelector(".dialog-close")
@@ -199,7 +152,7 @@ function initFigure() {
       dialog.close();
   });
   dialog.addEventListener("close", () =>
-    trigger.focus({ preventScroll: true }),
+    activeTrigger?.focus({ preventScroll: true }),
   );
 }
 
@@ -226,7 +179,6 @@ function initNavigation() {
 }
 
 initCaseExplorer();
-initResults();
 initCopy();
 initFigure();
 initNavigation();

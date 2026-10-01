@@ -1,0 +1,82 @@
+{
+  "source_filename": "847_LPS_Bench_Benchmarking_Saf.pdf",
+  "source_sha256": "623d1c2c25f752a20ba616f0c0db444fac85500db7a73d4b80b40baf4870a9f4",
+  "renderer": "pdftoppm",
+  "dpi": 360,
+  "coordinate_origin": "top-left of PDF page",
+  "crop_points_units": "1/72 inch; x, y, width, height",
+  "figures": [
+    {
+      "filename": "paper-overview.png",
+      "page": 3,
+      "label": "Figure 3",
+      "crop_points": [
+        107,
+        64,
+        398,
+        271
+      ],
+      "crop_pixels": {
+        "x": 535,
+        "y": 320,
+        "width": 1990,
+        "height": 1355
+      },
+      "sha256": "0a617cb288cfbf38e5dad4803995437a88c2d52f5b0b297e34f3966ef3fab97b"
+    },
+    {
+      "filename": "paper-results.png",
+      "page": 2,
+      "label": "Figure 1",
+      "crop_points": [
+        107,
+        64,
+        166,
+        171
+      ],
+      "crop_pixels": {
+        "x": 535,
+        "y": 320,
+        "width": 830,
+        "height": 855
+      },
+      "sha256": "aed644bc6569b3a71a6b3113a6eebbeb9103752c6fffb043eaad6f1931e9cd17"
+    },
+    {
+      "filename": "paper-results-table.png",
+      "page": 7,
+      "label": "Table 3",
+      "crop_points": [
+        106,
+        142,
+        399,
+        176
+      ],
+      "crop_pixels": {
+        "x": 530,
+        "y": 710,
+        "width": 1995,
+        "height": 880
+      },
+      "sha256": "c85dd1eeae5db8e5e594306c787b2148a76a0fb5cff044739f5ef0547dcefbf7"
+    },
+    {
+      "filename": "paper-skills-table.png",
+      "page": 8,
+      "label": "Table 4",
+      "crop_points": [
+        121,
+        111,
+        368,
+        99
+      ],
+      "crop_pixels": {
+        "x": 605,
+        "y": 555,
+        "width": 1840,
+        "height": 495
+      },
+      "sha256": "b7020701968a02de5d1939d82bd88aab6ec4cd0be3839908deb34cae0a161dd8"
+    }
+  ]
+}

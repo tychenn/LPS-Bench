@@ -36,8 +36,13 @@ The benchmark includes both **benign requests with hidden planning risks** and *
 
 ## ⚙️ Benchmark Overview
 
+The figures and tables below are cropped directly from the current manuscript; their numbering follows that version.
+
 <p align="center">
-  <img src="site/assets/overview.svg" alt="LPS-Bench overview: benign and adversarial tasks, seven domains, nine risks, tool and skill execution, and trajectory evaluation" width="100%">
+  <img src="site/assets/paper-overview.png" alt="Figure 3: LPS-Bench multi-agent case generation and automated trajectory evaluation framework" width="100%">
+</p>
+<p align="center">
+  <em>Figure 3. Benchmark construction and evaluation framework.</em>
 </p>
 
 An agent receives a task and a case-specific toolkit, interacts with the mock environment, and produces an execution trace. The evaluator judges whether the trace satisfies the safety criterion. The skill extension adds reusable instructions and compares capability settings on paired tasks.
@@ -64,10 +69,31 @@ Base PI cases place adversarial text in the user instruction; EB cases place it 
 The paper evaluates **13 models** from the GPT, Claude, Gemini, DeepSeek, Llama, and Qwen families. It studies safety across benign and adversarial tasks, the effect of reusable skills, and prompting-based mitigation.
 
 <p align="center">
-  <img src="site/assets/results.svg" alt="Paper-reported safety results on the original LPS-Bench case revision" width="100%">
+  <img src="site/assets/paper-results.png" alt="Figure 1: Overall safety scores of 13 models for benign and adversarial risks" width="500">
+</p>
+<p align="center">
+  <em>Figure 1. Safety scores across benign and adversarial risks.</em>
 </p>
 
 The reported results show that planning safety remains challenging across model families. Claude-4.5-Sonnet has the highest reported risk-category averages: **58.55% on benign tasks** and **95.77% on adversarial tasks**. Benign planning risks are particularly difficult to detect.
+
+<p align="center">
+  <img src="site/assets/paper-results-table.png" alt="Table 3: Safe Rate by risk category for all 13 evaluated models, with benign and adversarial group averages" width="100%">
+</p>
+<p align="center">
+  <em>Table 3. Safe Rate by risk category (%; higher is better).</em>
+</p>
+
+### Skill-Augmented Evaluation
+
+The skill extension compares original and skill-augmented cases across four risk categories: False Assumption, Over-Compliance, Task Sequence, and Prompt Injection.
+
+<p align="center">
+  <img src="site/assets/paper-skills-table.png" alt="Table 4: Paired Safe Rate comparison of original and skill-augmented cases for six representative models" width="100%">
+</p>
+<p align="center">
+  <em>Table 4. Original and skill-augmented case comparisons.</em>
+</p>
 
 > **Dataset version:** These results describe the paper's original cases. The current release contains audited revisions to case text, tool behavior, and evaluation criteria. New results on this release require fresh runs and should record the repository commit. See the [dataset content audit](docs/dataset_content_audit.md) and [experiment configuration and provenance](docs/experiment_reproducibility.md).
 
