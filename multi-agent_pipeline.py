@@ -10,8 +10,12 @@ Architecture:
 """
 
 import json
+import ast
+import copy
 import os
+import re
 import time
+import uuid
 from datetime import datetime
 from typing import Optional
 from dataclasses import dataclass, field
@@ -343,17 +347,23 @@ SYNTHESIZER_PROMPT = ""  # Deprecated placeholder; synthesis now handled in Orch
 def parse_json_response(text: str) -> dict:
     """Parse JSON from an LLM response"""
     try:
-        # Extract JSON block if wrapped in fences
-        if "```json" in text:
-            start = text.find("```json") + 7
-            end = text.find("```", start)
-            text = text[start:end].strip()
-        elif "```" in text:
-            start = text.find("```") + 3
-            end = text.find("```", start)
-            text = text[start:end].strip()
-        return json.loads(text)
-    except json.JSONDecodeError:
+        json_block = re.search(r"```json\s*(.*?)```", text, flags=re.DOTALL | re.IGNORECASE)
+        if json_block:
+            text = json_block.group(1).strip()
+        else:
+            # ToolDeveloper emits a JSON object followed by a separate Python
+            # fence. Never attempt to decode that Python block as JSON.
+            text = re.sub(r"```(?:python|py)\s*.*?```", "", text, flags=re.DOTALL | re.IGNORECASE).strip()
+            if text.startswith("```"):
+                text = text[3:].split("```", 1)[0].strip()
+        start = text.find("{")
+        if start < 0:
+            raise ValueError("No JSON object found")
+        parsed, _ = json.JSONDecoder().raw_decode(text[start:])
+        if not isinstance(parsed, dict):
+            raise ValueError("Expected a JSON object")
+        return parsed
+    except (json.JSONDecodeError, ValueError):
         return {"raw_response": text, "parse_error": True}
 
 
@@ -752,14 +762,37 @@ class MultiAgentPipeline:
                 return item.get("instructions", "")
         raise ValueError(f"Dispatch result missing task for {role}")
 
-    def _persist_artifacts(self, merged_case: dict) -> dict:
+    def _validate_draft(self, merged_case: dict) -> None:
+        if not isinstance(merged_case, dict) or merged_case.get("parse_error"):
+            raise ValueError("The generated draft is not a valid JSON object")
+        container = merged_case.get("merged", merged_case)
+        case = container.get("case", container)
+        if not isinstance(case, dict) or not isinstance(case.get("instruction"), str):
+            raise ValueError("The generated draft is missing its case instruction")
+        if not isinstance(case.get("MCP"), dict) or not isinstance(case.get("evaluator"), dict):
+            raise ValueError("The generated draft is missing MCP/evaluator configuration")
+        mcp_file = container.get("artifacts", {}).get("mcp_file", {})
+        filename = mcp_file.get("filename")
+        content = mcp_file.get("content_py")
+        if not isinstance(filename, str) or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_.-]*\.py", filename):
+            raise ValueError("Generated MCP filename must be a plain Python basename")
+        if filename != case["MCP"].get("file"):
+            raise ValueError("Generated MCP filename does not match case.MCP.file")
+        if not isinstance(content, str) or not content.strip():
+            raise ValueError("The generated draft is missing its MCP Python source")
+        parsed = ast.parse(content, filename=filename)
+        defined = {node.name for node in parsed.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
+        requested = case["MCP"].get("tools")
+        if not isinstance(requested, list) or not requested or any(name not in defined for name in requested):
+            raise ValueError("Generated MCP tools must name functions present in the source")
+
+    def _persist_artifacts(self, merged_case: dict, case_directory: Optional[Path] = None) -> dict:
         """
         Persist Tool Developer python code to a standalone file and remove inline code from the case JSON.
         Returns updated merged_case (structure preserved).
         """
-        if not isinstance(merged_case, dict):
-            return merged_case
-        
+        self._validate_draft(merged_case)
+        merged_case = copy.deepcopy(merged_case)
         container = merged_case.get("merged", merged_case)
         artifacts = container.get("artifacts") if isinstance(container, dict) else None
         if not artifacts or "mcp_file" not in artifacts:
@@ -771,14 +804,24 @@ class MultiAgentPipeline:
         if not filename or not content:
             return merged_case
         
-        filepath = self.artifact_dir / filename
-        filepath.write_text(content, encoding="utf-8")
+        artifact_root = self.artifact_dir.resolve()
+        artifact_root.mkdir(parents=True, exist_ok=True)
+        unique_filename = f"case_{uuid.uuid4().hex}_{filename}"
+        filepath = (artifact_root / unique_filename).resolve()
+        if filepath.parent != artifact_root:
+            raise ValueError("Generated MCP file escapes the artifact directory")
+        # Exclusive creation protects previous approved cases and source files.
+        with filepath.open("x", encoding="utf-8") as handle:
+            handle.write(content)
         Logger.success(f"MCP code written to file: {filepath}", "Pipeline")
         
         # Update artifact info in case JSON
         mcp_file["path"] = str(filepath)
+        mcp_file["filename"] = unique_filename
         mcp_file.pop("content_py", None)
         artifacts["mcp_file"] = mcp_file
+        case = container.get("case", container)
+        case["MCP"]["file"] = os.path.relpath(filepath, (case_directory or Path.cwd()).resolve())
         
         return merged_case
     
@@ -792,8 +835,8 @@ class MultiAgentPipeline:
             dispatch_result = self.orchestrator.revision(feedback, previous_case)
             if "dispatch" not in dispatch_result and "merged" in dispatch_result:
                 # Orchestrator returned a merged result directly
-                merged_direct = self._persist_artifacts(dispatch_result)
-                return dispatch_result, {}, {}, {}, None, merged_direct
+                self._validate_draft(dispatch_result)
+                return dispatch_result, {}, {}, {}, None, dispatch_result
         else:
             dispatch_result = self.orchestrator.dispatch(template)
         
@@ -806,7 +849,7 @@ class MultiAgentPipeline:
         criterion_output = self.criterion_formulator.run(criteria_task, instruction_output, tool_output, tool_code)
         
         merged_case = self.orchestrator.merge(instruction_output, tool_output, criterion_output, tool_code)
-        merged_case = self._persist_artifacts(merged_case)
+        self._validate_draft(merged_case)
         return dispatch_result, instruction_output, tool_output, criterion_output, tool_code, merged_case
     
     def run(self, prompt_template: str) -> dict:
@@ -835,7 +878,9 @@ class MultiAgentPipeline:
                 return {"status": "cancelled", "draft": merged_case}
             
             if approved:
-                final_case = merged_case.get("merged", merged_case) if isinstance(merged_case, dict) else merged_case
+                persisted = self._persist_artifacts(merged_case, self.repository.storage_dir)
+                container = persisted.get("merged", persisted)
+                final_case = container.get("case", container)
                 case_id = self.repository.save_case(final_case)
                 total_elapsed = time.time() - pipeline_start
                 Logger.success(f"Case approved! Case ID: {case_id} (elapsed: {total_elapsed:.2f}s)", "Pipeline")
@@ -843,6 +888,7 @@ class MultiAgentPipeline:
                     "status": "approved",
                     "case_id": case_id,
                     "case": final_case,
+                    "artifacts": container.get("artifacts", {}),
                     "total_time": total_elapsed,
                     "dispatch": dispatch_result,
                     "instruction_output": instruction_output,

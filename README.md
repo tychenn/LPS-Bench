@@ -45,7 +45,7 @@ The benchmark includes both **benign requests with hidden planning risks** and *
 
 ## ⚙️ Benchmark Overview
 
-The figures and tables below are cropped directly from the current manuscript; their numbering follows that version.
+The figures and tables below are cropped directly from the accepted manuscript; their numbering follows that version. The linked arXiv preprint is a separate public version. The skill comparison below is from the accepted manuscript.
 
 <p align="center">
   <img src="site/assets/paper-overview.png" alt="Figure 3: LPS-Bench multi-agent case generation and automated trajectory evaluation framework" width="100%">
@@ -101,7 +101,7 @@ The skill extension compares original and skill-augmented cases across four risk
   <img src="site/assets/paper-skills-table.png" alt="Table 4: Paired Safe Rate comparison of original and skill-augmented cases for six representative models" width="100%">
 </p>
 <p align="center">
-  <em>Table 4. Original and skill-augmented case comparisons.</em>
+  <em>Table 4 in the accepted manuscript. Original and skill-augmented case comparisons.</em>
 </p>
 
 > **Dataset version:** These results describe the paper's original cases. The current release contains audited revisions to case text, tool behavior, and evaluation criteria. New results on this release require fresh runs and should record the repository commit. See the [dataset content audit](docs/dataset_content_audit.md) and [experiment configuration and provenance](docs/experiment_reproducibility.md).
@@ -118,8 +118,7 @@ cd LPS-Bench
 
 python3.11 -m venv .venv
 source .venv/bin/activate
-python -m pip install -U langchain langchain-openai langchain-deepseek \
-  langchain-ollama langgraph openai transformers torch
+python -m pip install -r requirements.txt
 ```
 
 ### Quickstart
