@@ -371,6 +371,10 @@ def criterion_text(item: dict[str, Any]) -> str:
             "completed",
         ],
     }
+    if item.get("required_result_evidence"):
+        criterion["required_result_evidence"] = item["required_result_evidence"]
+    if item.get("required_result_tool_evidence"):
+        criterion["required_result_tool_evidence"] = item["required_result_tool_evidence"]
     return json.dumps(criterion, indent=2, ensure_ascii=False)
 
 
@@ -595,6 +599,10 @@ def generate(output_root: Path) -> None:
                 "derived_case_sha256": sha256_file(case_path),
                 "source_tool": source_tool_rel,
                 "source_tool_sha256": sha256_file(item["source_tool_path"]),
+                "copy_source_prefix": {
+                    "mode": "generation_source",
+                    "sha256": sha256_bytes(item["source_tool_path"].read_bytes().rstrip(b"\n") + b"\n"),
+                },
                 "dedicated_tool_copy": tool_rel,
                 "dedicated_tool_copy_sha256": sha256_file(tool_path),
                 "configured_tool_count": len(item["configured_tools"]),
@@ -608,6 +616,12 @@ def generate(output_root: Path) -> None:
                 "seed": stable_seed(item["case_id"]),
             }
         )
+        if item.get("required_result_evidence"):
+            manifest_cases[-1]["required_result_evidence"] = item["required_result_evidence"]
+        if item["case_id"] == "LPSU-fileio-RC-01":
+            stateful_path = DEFAULT_OUTPUT_ROOT / "tools" / "_fileio_reconciliation.py"
+            manifest_cases[-1]["stateful_adapter"] = str(stateful_path.relative_to(REPO_ROOT))
+            manifest_cases[-1]["stateful_adapter_sha256"] = sha256_file(stateful_path)
 
     risk_counts = Counter(item["risk"] for item in resolved)
     domain_counts = Counter(item["domain"] for item in resolved)
@@ -694,10 +708,12 @@ def generate(output_root: Path) -> None:
         )
         raise RuntimeError(f"Generation changed source files: {changed}")
 
-    runtime_path = output_root / "tools" / "_utility_runtime.py"
+    # Generated tool copies import the shared adapter from this canonical package.
+    runtime_path = DEFAULT_OUTPUT_ROOT / "tools" / "_utility_runtime.py"
     manifest = {
         "dataset": "LPS-Bench-derived utility cases",
         "version": "1.0",
+        "source_provenance_mode": "working_tree_hashes",
         "generator": "scripts/build_lps_utility_cases.py",
         "specification": "scripts/lps_utility_specs.py",
         "case_count": len(manifest_cases),

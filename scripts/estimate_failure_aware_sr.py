@@ -10,6 +10,8 @@ and a sensitivity-adjusted estimate:
     estimated SR_valid = published SR_strict / (1 - estimated EFR)
 
 The adjusted value is not an exact recomputation over all 570 cases.
+Failure counts use the mutually exclusive execution_failed label; an unsafe
+action observed before a runtime crash remains in the unsafe category.
 """
 
 from __future__ import annotations
@@ -19,6 +21,11 @@ import json
 from collections import Counter, OrderedDict
 from pathlib import Path
 from typing import Any
+
+try:
+    from .summarize_skill_experiment import load_attempts, evaluation_for_result as match_evaluation
+except ImportError:  # Direct script execution.
+    from summarize_skill_experiment import load_attempts, evaluation_for_result as match_evaluation
 
 
 MODELS = OrderedDict(
@@ -51,7 +58,7 @@ def parse_args() -> argparse.Namespace:
         "--records-dir",
         type=Path,
         default=Path("records"),
-        help="Directory containing *_batch_summary.json files.",
+        help="Directory containing legacy *_batch_summary.json or current multi_case_batch_summary_*_public.json files.",
     )
     parser.add_argument(
         "--output",
@@ -66,85 +73,53 @@ def evaluation_for_result(
     result: dict[str, Any], evaluation_results: dict[str, Any]
 ) -> dict[str, Any] | None:
     """Match a successful runner result to its evaluator record."""
-    log_path = result.get("log_path")
-    if log_path:
-        by_stem = evaluation_results.get(Path(log_path).stem)
-        if isinstance(by_stem, dict):
-            return by_stem
-
-    for evaluation in evaluation_results.values():
-        if not isinstance(evaluation, dict):
-            continue
-        if log_path and evaluation.get("file") == log_path:
-            return evaluation
-    return None
+    match = match_evaluation(result, evaluation_results)
+    return match[1] if match else None
 
 
-def main() -> None:
-    args = parse_args()
+def analyze_records(records_dir: Path) -> dict[str, Any]:
     runner_to_display = {
         metadata["runner_name"]: display_name
         for display_name, metadata in MODELS.items()
     }
     counts = {
-        display_name: {"safe": 0, "unsafe": 0, "execution_failed": 0}
+        display_name: {"safe": 0, "unsafe": 0, "execution_failed": 0, "evaluation_error": 0}
         for display_name in MODELS
     }
     domain_counts = {display_name: Counter() for display_name in MODELS}
     diagnostics: list[str] = []
-    summary_files = sorted(args.records_dir.rglob("*_batch_summary.json"))
-
-    for summary_path in summary_files:
-        relative_parts = summary_path.relative_to(args.records_dir).parts
-        domain = relative_parts[0] if relative_parts else "unknown"
-        try:
-            summary = json.loads(summary_path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
-            diagnostics.append(f"{summary_path}: unreadable summary ({exc})")
+    summary_files = sorted(set(records_dir.rglob("*_batch_summary.json")) |
+                           set(records_dir.rglob("multi_case_batch_summary_*_public.json")))
+    for attempt in load_attempts(summary_files, diagnostics, list(runner_to_display), skip_invalid=True):
+        display_name = runner_to_display.get(attempt["model_name"])
+        if display_name is None:
             continue
-
-        evaluation_results = (
-            summary.get("evaluation", {}).get("results", {})
-            if isinstance(summary.get("evaluation"), dict)
-            else {}
-        )
-        if not isinstance(evaluation_results, dict):
-            evaluation_results = {}
-
-        for result in summary.get("results", []):
-            if not isinstance(result, dict):
-                continue
-            display_name = runner_to_display.get(result.get("model_name"))
-            if display_name is None:
-                continue
-            domain_counts[display_name][domain] += 1
-
-            # Runner failures and evaluator execution failures are deliberately
-            # combined into the single F category used by the paper.
-            if result.get("success") is not True:
-                counts[display_name]["execution_failed"] += 1
-                continue
-
-            evaluation = evaluation_for_result(result, evaluation_results)
-            label = (
-                evaluation.get("execution_status")
-                if isinstance(evaluation, dict)
-                else None
-            )
-            if label not in VALID_LABELS:
-                diagnostics.append(
-                    f"{summary_path}: missing/invalid evaluator label for "
-                    f"{result.get('model_name')}"
-                )
-                continue
-            counts[display_name][label] += 1
+        case_path = Path(attempt["case"]) if attempt["case"] else None
+        if case_path and case_path.parent.name:
+            domain = case_path.parent.name
+        elif attempt["log_path"]:
+            # Legacy exports need not include a case path. Prefer the log's
+            # original domain directory when it lies underneath records_dir.
+            try:
+                parts = Path(attempt["log_path"]).relative_to(records_dir).parts
+                domain = parts[0] if len(parts) > 1 else "unknown"
+            except ValueError:
+                domain = "unknown"
+        else:
+            domain = "unknown"
+        if domain == "unknown":
+            parts = Path(attempt["source_path"]).relative_to(records_dir).parts
+            domain = parts[0] if len(parts) > 1 else "unknown"
+        domain_counts[display_name][domain] += 1
+        counts[display_name][attempt["execution_status"]] += 1
 
     results: list[dict[str, Any]] = []
     for display_name, metadata in MODELS.items():
         safe = counts[display_name]["safe"]
         unsafe = counts[display_name]["unsafe"]
         failed = counts[display_name]["execution_failed"]
-        total = safe + unsafe + failed
+        errors = counts[display_name]["evaluation_error"]
+        total = safe + unsafe + failed + errors
         if total == 0:
             diagnostics.append(f"{display_name}: no recoverable records")
             continue
@@ -153,7 +128,17 @@ def main() -> None:
         subset_valid = 100.0 * safe / (safe + unsafe) if safe + unsafe else None
         efr = 100.0 * failed / total
         published_strict = metadata["published_strict_sr_pct"]
-        estimated_valid = published_strict / (1.0 - failed / total)
+        estimated_valid = None
+        if failed == total:
+            diagnostics.append(f"{display_name}: 100% execution failures; failure-excluded sensitivity estimate is undefined")
+        elif errors:
+            diagnostics.append(f"{display_name}: {errors} evaluation errors; sensitivity estimate withheld until missing labels are recovered")
+        else:
+            estimate = published_strict / (1.0 - failed / total)
+            if estimate > 100.0:
+                diagnostics.append(f"{display_name}: sensitivity estimate exceeds 100%; subset EFR is incompatible with the published score")
+            else:
+                estimated_valid = estimate
 
         results.append(
             {
@@ -162,6 +147,7 @@ def main() -> None:
                     "safe": safe,
                     "unsafe": unsafe,
                     "execution_failed": failed,
+                    "evaluation_error": errors,
                     "total": total,
                 },
                 "recoverable_domain_counts": dict(
@@ -176,8 +162,8 @@ def main() -> None:
                 },
                 "published_and_sensitivity_estimate_pct": {
                     "published_strict_sr": published_strict,
-                    "estimated_failure_excluded_sr": round(estimated_valid, 4),
-                    "change_pp": round(estimated_valid - published_strict, 4),
+                    "estimated_failure_excluded_sr": round(estimated_valid, 4) if estimated_valid is not None else None,
+                    "change_pp": round(estimated_valid - published_strict, 4) if estimated_valid is not None else None,
                     "subset_strict_minus_published_pp": round(
                         subset_strict - published_strict, 4
                     ),
@@ -188,9 +174,12 @@ def main() -> None:
     payload = {
         "analysis_type": "recoverable-record sensitivity estimate",
         "method": (
-            "Estimate EFR from recoverable batch summaries, combine all runner- "
-            "and evaluator-level execution failures into F, and compute "
-            "estimated SR_valid = published SR_strict / (1 - estimated EFR)."
+            "Estimate EFR from recoverable batch summaries, classify runner- "
+            "and evaluator-level failures without a demonstrated unsafe action "
+            "as F, retain unsafe partial traces as U, and compute "
+            "estimated SR_valid = published SR_strict / (1 - estimated EFR). "
+            "Evaluation errors remain in the strict denominator as a separate "
+            "category; conditional safety uses only labeled safe/unsafe attempts."
         ),
         "limitation": (
             "The recoverable summaries are not the complete 570-case evaluation; "
@@ -202,6 +191,12 @@ def main() -> None:
         "diagnostics": diagnostics,
     }
 
+    return payload
+
+
+def main() -> None:
+    args = parse_args()
+    payload = analyze_records(args.records_dir)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(payload, indent=2, ensure_ascii=False) + "\n",

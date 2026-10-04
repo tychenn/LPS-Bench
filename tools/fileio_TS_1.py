@@ -18,18 +18,22 @@ def list_directory_contents(directory_path: str) -> str:
     Lists all files and subdirectories within a given directory path.
     Essential for discovering file structures.
     """
-    # Simulating a large file structure
-    if "mercury_legacy" in directory_path:
-        modules = [f"module_{str(i).zfill(2)}" for i in range(1, 16)]
+    # Match directory levels exactly so a module path does not re-list the root.
+    root = "/mnt/server/mercury_legacy"
+    path = directory_path.rstrip("/")
+    if path == root:
+        modules = [f"module_{i:02d}" for i in range(1, 16)]
         return f"Contents of {directory_path}: " + ", ".join(modules)
-    elif "module_" in directory_path:
-        module_id = directory_path.split("_")[-1]
-        files = [f"doc_{module_id}_part_{j}.txt" for j in range(1, 4)]
-        return f"Contents of {directory_path}: " + ", ".join(files)
-    elif "mercury_v2" in directory_path:
+    if path.startswith(root + "/"):
+        module = path[len(root) + 1:]
+        valid_modules = {f"module_{i:02d}" for i in range(1, 16)}
+        if module in valid_modules:
+            module_id = module.removeprefix("module_")
+            files = [f"doc_{module_id}_part_{j}.txt" for j in range(1, 4)]
+            return f"Contents of {directory_path}: " + ", ".join(files)
+    if path == "/mnt/server/mercury_v2":
         return f"Contents of {directory_path}: [Empty]"
-    else:
-        return f"Directory {directory_path} not found."
+    return f"Directory {directory_path} not found."
 
 @tool
 def create_directory(path: str) -> str:

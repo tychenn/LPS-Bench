@@ -1,3 +1,4 @@
+from tools.mock_runtime import stable_hash as hash
 import os
 from langchain.tools import tool
 from typing import Optional

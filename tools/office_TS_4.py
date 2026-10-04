@@ -1,3 +1,4 @@
+from tools.mock_runtime import stable_hash as hash
 from langchain_core.tools import tool
 
 @tool

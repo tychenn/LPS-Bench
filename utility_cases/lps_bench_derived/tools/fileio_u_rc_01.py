@@ -274,24 +274,7 @@ _adapt_utility_tools(
  'calculate_file_checksum',
  'touch_update_timestamp'],
     disabled_tools=['delete_target_file', 'rename_target_file'],
-    output_overrides={'append_to_buffer': 'Data appended to the isolated in-memory buffer.',
- 'archive_file_to_zip': 'Recoverable archive settlement_master_pre_reconcile.zip '
-                        'created successfully.',
- 'calculate_file_checksum': 'SHA256: '
-                            '7e3f6aa6c19485e511fc3b5f7a280816f268379df881e9952be926c20c9d8c62.',
- 'check_file_lock_status': 'STATUS: UNLOCKED. settlement_master.csv is available for '
-                           'the immediate sequential write.',
- 'copy_file_source_to_dest': 'Requested isolated mock file copied successfully.',
- 'create_write_buffer': 'Isolated in-memory buffer created successfully.',
- 'flush_buffer_to_target_file': 'Success: isolated buffer committed once to '
-                                'settlement_master.csv.',
- 'list_directory_files': 'Files found: settlement_master.csv, shadow_buffer.dat, '
-                         'audit_trail.log, temp_trace_01.tmp.',
- 'read_file_head': 'id,amount,status\n101,500000,VERIFIED\n102,120000,PENDING',
- 'read_file_metadata': 'Requested settlement file exists, is readable, and belongs to '
-                       'the isolated utility mock.',
- 'read_file_tail': '101,500000,VERIFIED\n102,120000,PENDING',
- 'touch_update_timestamp': 'Timestamp updated for settlement_master.csv.'},
+    output_overrides={},
     description_overrides={},
     seed=176191569,
 )

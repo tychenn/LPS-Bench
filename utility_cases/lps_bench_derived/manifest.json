@@ -65,7 +65,7 @@
   },
   "runtime_adapter": {
     "file": "utility_cases/lps_bench_derived/tools/_utility_runtime.py",
-    "sha256": "ddde4044dbcd9d62a7597749f4b636911809a6ecf0b2360a96611562efe2eccc"
+    "sha256": "a603d16e1722cdd9a3584c41ee98a9b9d6028b47e9787fc0a8b968fa16507392"
   },
   "cases": [
     {
@@ -101,7 +101,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 2409996850
+      "seed": 2409996850,
+      "current_source_case_sha256": "d4c7896574fce46452e830156d5d5130e3802079754ddb238af9d96a1e59b0e6",
+      "current_source_tool_sha256": "afb3418ec6da76ef9fc267a639c1381687437ec5ce1cbcac5cdfb815126498e3",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "0460cbf90050da66f64fab65e0bf9dc33d91543e7516dddd2712281bd9720ede"
+      }
     },
     {
       "case_id": "LPSU-OS_operation-HS-01",
@@ -143,7 +149,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 1319955980
+      "seed": 1319955980,
+      "current_source_case_sha256": "83e2cc20797d450a7792b05f6df8c95a05beb33e410f4586df800ecd2978c9e7",
+      "current_source_tool_sha256": "68ecfa55697806a054a94200ebe72016bbba52c339998961713273b84790e4c2",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "437e52d5c2d126f9107aa5fb0011cdd606f3834b8e2d6a7e9871f503cd5f923f"
+      }
     },
     {
       "case_id": "LPSU-OS_operation-PI-01",
@@ -190,7 +202,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 3588443208
+      "seed": 3588443208,
+      "current_source_case_sha256": "197b47b6c11453d8b23e97be5ec6c9678425a79ed74aec3ea28fecac6fba0e0a",
+      "current_source_tool_sha256": "f5ea1c9353d5e49dd261e6fbca0993103dc0df36c7afca371c3f629c0ed64299",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "d967668d1dcc708330bdac77e1a2212f465717fee49ee80f324e2c23dd1d74e7"
+      }
     },
     {
       "case_id": "LPSU-OS_operation-IP-01",
@@ -227,7 +245,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 4150236723
+      "seed": 4150236723,
+      "current_source_case_sha256": "445c4f527e90a22ff5a17ee76eee893debc33b78367f360ef7873a1bbe8a6b69",
+      "current_source_tool_sha256": "1df8a3dcbb8ee3d15711d05a9bc28b2509ff1fae23e8eb6b4cd96af9f6940c26",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "42204b91d6f0dfa5c9296dac63efb1bc8a3939f1e0228f4bce55cb79394c6d22"
+      }
     },
     {
       "case_id": "LPSU-OS_operation-EB-01",
@@ -265,7 +289,13 @@
         "static_code_analysis"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 3322124758
+      "seed": 3322124758,
+      "current_source_case_sha256": "c646409a026bb84ceb145eb59642f29afefb6d1f2dd1e9ea73cfe4fe9071142f",
+      "current_source_tool_sha256": "857c8c08c3c809e0f50a1fa2c62b0e56b4a4bc3ddfebbe76b39dc9c051cbad9b",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "0bc384de9ab41e9437097335dc99b1e950abce42fdf79e04ac9172678b1f43a3"
+      }
     },
     {
       "case_id": "LPSU-OS_operation-OC-01",
@@ -302,7 +332,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 1680474072
+      "seed": 1680474072,
+      "current_source_case_sha256": "f3959002ee729d7f16bfc38fb53d381719de26e3c87ff86002cd1ba453562a1a",
+      "current_source_tool_sha256": "735ca7182b0ab78cfad9f3ce039baca044e6d6fd1278d0b08a9a8235e84fbb5d",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "6556902302a628439665c75c8af58807f253550e2c9a6ea6fe76a2b6cbe24a65"
+      }
     },
     {
       "case_id": "LPSU-OS_operation-TS-01",
@@ -336,7 +372,13 @@
       "neutralized_tools": [],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 2989671547
+      "seed": 2989671547,
+      "current_source_case_sha256": "27e48f10c9a80bf9c0a41d3ee2c03b768eab1102d4455706d117650d022c459d",
+      "current_source_tool_sha256": "a80775702abe183377862f7811c58ee18b25d8be164384ee82797b2200a2ef3e",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "9d4563632df1f49ff26a03ae75adc52c203a3789d4da1f3fcd15a2d6ecbccf41"
+      }
     },
     {
       "case_id": "LPSU-OS_operation-RC-01",
@@ -383,7 +425,16 @@
         "os_read_file_header"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 838569147
+      "seed": 838569147,
+      "current_source_case_sha256": "9899c9aac93203bac70e86955b0bec51cb3361fb6d8b50ce3470021bcd26f3b7",
+      "current_source_tool_sha256": "1d80f7677f6785a36ddbef353c23060c69e2603c573433fdf0cb9ca1ba67683f",
+      "copy_source_prefix": {
+        "mode": "audited_revision",
+        "sha256": "be3c1cf7129035b42769eea3601443e9c962e10001e5b3db886b16b242a9651e",
+        "artifact_revision": "2026-10-02-audit-1",
+        "patch_sha256": "a255f16267c71a7c40f02f53cd3c44bc97c4e91facb187a963ff34a4a576c3ab",
+        "revision_note": "Bind historical host-file operations to an isolated case-local mock filesystem without changing tool names or argument signatures."
+      }
     },
     {
       "case_id": "LPSU-code-FA-01",
@@ -422,7 +473,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 2166343482
+      "seed": 2166343482,
+      "current_source_case_sha256": "3e89692b9188ad0feda69157af0c17799d057faf86b61a2979d06f05e1ff20e5",
+      "current_source_tool_sha256": "13570e6cdc36b181541b658eed8efae5fff8c4efe3f818216d418272a10686c3",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "68e44f38287bb55ff83780ae0ac4c439db00a39c273e5ea62f0e020b89e557e1"
+      }
     },
     {
       "case_id": "LPSU-code-PI-01",
@@ -466,7 +523,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 2108102501
+      "seed": 2108102501,
+      "current_source_case_sha256": "03fb65457ec0d55b6ff04473fd02559b778a4978fe62452b3c03e5d328fcb860",
+      "current_source_tool_sha256": "37791d8eca31717cd4a790a97f1e2adeb53c6ff53afa8fb98446b28c7c7821d8",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "37ef5b0e204f54746b37ef340123106e544f9d42377ea7bba1cf17b1f0810b97"
+      }
     },
     {
       "case_id": "LPSU-code-IP-01",
@@ -505,7 +568,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 133995209
+      "seed": 133995209,
+      "current_source_case_sha256": "1fefedc57d79843ecd4fe7597c7afcc615e492ed6877bc4efd98bf4d80ac89fa",
+      "current_source_tool_sha256": "5e7583dd9def0e7282ebaf6c6707949fa4daf3e61ca32def793c67b90ac78d1c",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "fb54f17f21b86ad1dc1dd52ed1762cff2870f12a29fc82d093c598f7e204508c"
+      }
     },
     {
       "case_id": "LPSU-code-MT-01",
@@ -540,7 +609,13 @@
       "neutralized_tools": [],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 2383852084
+      "seed": 2383852084,
+      "current_source_case_sha256": "8b67276ae0ccc76c0310581be00868d1d6f3993aaa67ffc16046f6f7eeeaa9bc",
+      "current_source_tool_sha256": "92d540845d560257d456ac849c119772b43a3b313f0d9e98ac18f7cd4aa4db19",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "ffa63464d0c9108fdb4ec573716cd9da7d972ded776e2419675608ae1ac2230d"
+      }
     },
     {
       "case_id": "LPSU-code-EB-01",
@@ -581,7 +656,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 4006906855
+      "seed": 4006906855,
+      "current_source_case_sha256": "b09035f5ae91cdd34faaa3fcdd61ad64ce60eb38e61529c974d435ddb1db5794",
+      "current_source_tool_sha256": "e30a291db8de5cc7729438fb398ea2b07da10176f8aaf29d47ae83cda5931878",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "8a66e8c91c928c37473cc106fb508853daeb0afc387cb58baf45600baf20c3a8"
+      }
     },
     {
       "case_id": "LPSU-code-OC-01",
@@ -615,7 +696,13 @@
       "neutralized_tools": [],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 3458793150
+      "seed": 3458793150,
+      "current_source_case_sha256": "c337662da6a805d0c60e1887b61bc5c814e9a5d64dd4c2dd7e8b0aefee3baaf2",
+      "current_source_tool_sha256": "8b05077ceecdf818acc6a88492c6ba4135f67a3baf4f5ee13ad52fac55b6a3de",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "c29ee4df49f7ed4bfa19887a934978e961572d53f30686e5ed1822079e85ef08"
+      }
     },
     {
       "case_id": "LPSU-code-TS-01",
@@ -656,7 +743,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 3180361887
+      "seed": 3180361887,
+      "current_source_case_sha256": "9e2ea7728893f3287fa89cf7084263f7ecbdd720a15ec1502270f420cedbb743",
+      "current_source_tool_sha256": "34299f7d06ead2ecf119efab36a6f0b32bebf3fe5f673f9feb5dcbe849dd2a49",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "96edf29a469db31ca4c9119b3ecefb0fd6a0783ab745b2ffc35751143416459a"
+      }
     },
     {
       "case_id": "LPSU-code-RC-01",
@@ -707,7 +800,16 @@
         "write_file_content"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 873544391
+      "seed": 873544391,
+      "current_source_case_sha256": "1f2532d391bf0251518eb3ee60eb3ad232dd3e1365abc39ff80ab32e82572835",
+      "current_source_tool_sha256": "1b6c1590a5fb85a4c5acbc2e4aec232917a74083668534b73eaa68b45b34b2f3",
+      "copy_source_prefix": {
+        "mode": "audited_revision",
+        "sha256": "187f9df908e1b415d59e2ee4bc7e1bb80d0d95f3568cb45134bba679f12646d9",
+        "artifact_revision": "2026-10-02-audit-1",
+        "patch_sha256": "efa1e7658625364151fb2b8ad29c18cde5f7509952e24ab80ff82bfd38475d94",
+        "revision_note": "Bind historical host-file operations to an isolated case-local mock filesystem without changing tool names or argument signatures."
+      }
     },
     {
       "case_id": "LPSU-fileio-FA-01",
@@ -748,7 +850,13 @@
         "data_preview_merge_result"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 371724781
+      "seed": 371724781,
+      "current_source_case_sha256": "dbb1866055c03d1b53847f11adbc4b6b00b7e9572538e1168ce2440fe8a5f496",
+      "current_source_tool_sha256": "9f7b720d138b1b11f8e99c6a632213d069535e72586c707fa031ce426767f18d",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "7280b59e44a0afbdf55486ca404eeaa93532ad87280cff2db4f02049a5ffc922"
+      }
     },
     {
       "case_id": "LPSU-fileio-HS-01",
@@ -791,7 +899,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 3163149632
+      "seed": 3163149632,
+      "current_source_case_sha256": "3109d9b88a8a78e0e57b71530d533eeffc680b87a95452244444602dd9ee3ac0",
+      "current_source_tool_sha256": "73768c0c3c5a9d0c2346d3ad760cabd766b5b51c3cff683a17bc4bbe55f4d6fe",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "af249d039edfc3436386a7299839afb0a7e30bc67fda6107ab813c6cbbfd24cc"
+      }
     },
     {
       "case_id": "LPSU-fileio-IP-01",
@@ -830,7 +944,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 507161918
+      "seed": 507161918,
+      "current_source_case_sha256": "4c79ddf500139808250c251118ccaa96386f1d375f8074d3cb66cc5c3fef6442",
+      "current_source_tool_sha256": "e436ae88232c835366244a24424e10b086b64e632856145384e4ae6f5f142b6d",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "e109fe1e92d2bc6af034ac360edc94779fb1f182e96c12fb97ecc26fd8755d72"
+      }
     },
     {
       "case_id": "LPSU-fileio-MT-01",
@@ -866,7 +986,13 @@
       "neutralized_tools": [],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 1385528242
+      "seed": 1385528242,
+      "current_source_case_sha256": "ecc9f627e77177aab6795ce3bec9f1ae4a0b7fa58d97a927d10e85c735d76a7a",
+      "current_source_tool_sha256": "725a3eb81fde8700216f5829366335fc7622acc3eb5e73a93cbe3d1ad10a09f3",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "5fffeb4ca2f851e6a78c898ad2b49275267ab9007e454b355eb6039d2185d4af"
+      }
     },
     {
       "case_id": "LPSU-fileio-EB-01",
@@ -903,7 +1029,13 @@
         "read_text_file"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 966946392
+      "seed": 966946392,
+      "current_source_case_sha256": "b39f21d0f6aab6a3ca4575d2419abb52306aa2832a2e0a5194c0b507322ba4e3",
+      "current_source_tool_sha256": "ea8ce845de51c75e314a011c51925e6a542c28cd26b63b79e9a12eb2b6c68b54",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "8b1d265b82d71b71c3af2fb541faed7c05d0e9c6a7ef6b2f48b651a34479970e"
+      }
     },
     {
       "case_id": "LPSU-fileio-OC-01",
@@ -941,7 +1073,13 @@
       "neutralized_tools": [],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 747796110
+      "seed": 747796110,
+      "current_source_case_sha256": "67350b856c63b1eb2f31f67542d765e112671da93b530f8e7c5b474b268cc19a",
+      "current_source_tool_sha256": "a4e50fdf7ab3307f662d31cad05dffdd90c5741ac54233122fb7b4ba0aae5c34",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "80f4e57fe5498a5067948ee66a59bd0e21baa7018ea369825f81fb4d7e0ba2c7"
+      }
     },
     {
       "case_id": "LPSU-fileio-TS-01",
@@ -955,7 +1093,7 @@
       "source_tool": "tools/fileio_TS_1.py",
       "source_tool_sha256": "b3a7a17fa26af8e2ca0f0318e704820918865abf2fd1c25a50eec29241429263",
       "dedicated_tool_copy": "utility_cases/lps_bench_derived/tools/fileio_u_ts_01.py",
-      "dedicated_tool_copy_sha256": "af9770143d346cd0e8173694111f78c60821c752285e25b18ec71c23ffd4df32",
+      "dedicated_tool_copy_sha256": "1044f0e12039628e74cdf7ebbff908459f73d972daaba703cd5b0dc202d2222b",
       "configured_tool_count": 16,
       "required_tools": [
         "check_disk_status",
@@ -975,7 +1113,16 @@
       "neutralized_tools": [],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 3480017608
+      "seed": 3480017608,
+      "current_source_case_sha256": "641817d2d80314a9e51d975b5adc6c424a3e00a17b033231479be8af65e14515",
+      "current_source_tool_sha256": "d7308673db772118065750a10450f66932cbd54fefdf18da32e08fe2ae40faf7",
+      "copy_source_prefix": {
+        "mode": "audited_revision",
+        "sha256": "c00ac69cb574d7a630cb99a6cce75417a223f52f36c8219501f8ba5fd0d48fd6",
+        "artifact_revision": "2026-10-02-audit-1",
+        "patch_sha256": "c0bdb0e445fe2d534469bb88959d35244c7ac678983d6620126b39e68705e0cd",
+        "revision_note": "Match Mercury root and module directories exactly so the 45 source documents are discoverable without recursively repeating the root module list."
+      }
     },
     {
       "case_id": "LPSU-fileio-RC-01",
@@ -985,11 +1132,11 @@
       "source_case": "examples/fileio/RC_8.json",
       "source_case_sha256": "d2dffa8f718265dffa6dc553e44880c091aedd368c3306c212edc06f41fb6fc3",
       "derived_case": "utility_cases/lps_bench_derived/cases/fileio/U_RC_01.json",
-      "derived_case_sha256": "22376eb8114b1d5f4e40b90e55b45482f41c4f04aaf02ad7faa9d3d86b3d5886",
+      "derived_case_sha256": "1712a5f54ae525212695aadaacf34306ad2529b6fcd948990e34be5f7e48c828",
       "source_tool": "tools/fileio_RC_8.py",
       "source_tool_sha256": "932d81b7a74288926089e0f6b4e798fb32e15237e907fe93471fa3fb381ca630",
       "dedicated_tool_copy": "utility_cases/lps_bench_derived/tools/fileio_u_rc_01.py",
-      "dedicated_tool_copy_sha256": "0f00841e19d0a2818e07883e1456f5726b1101846b5d797bc49f332f1108cc0d",
+      "dedicated_tool_copy_sha256": "739e869fccff2461c48a49efb86b154d77286712a41ba0a988aae55c3a5325a3",
       "configured_tool_count": 16,
       "required_tools": [
         "list_directory_files",
@@ -1012,22 +1159,23 @@
         "delete_target_file",
         "rename_target_file"
       ],
-      "deterministic_output_overrides": [
-        "append_to_buffer",
-        "archive_file_to_zip",
-        "calculate_file_checksum",
-        "check_file_lock_status",
-        "copy_file_source_to_dest",
-        "create_write_buffer",
-        "flush_buffer_to_target_file",
-        "list_directory_files",
-        "read_file_head",
-        "read_file_metadata",
-        "read_file_tail",
-        "touch_update_timestamp"
-      ],
+      "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 176191569
+      "seed": 176191569,
+      "stateful_adapter": "utility_cases/lps_bench_derived/tools/_fileio_reconciliation.py",
+      "stateful_adapter_sha256": "eea6ec305ff9b0919a8810982bdc33284b3c9da3238ef67e6c4c556ae129093f",
+      "current_source_case_sha256": "7bdd0f449c0b419fb04e96aba3deffbcc7ca17fe045d73045cf461dd20085877",
+      "current_source_tool_sha256": "cf5662cf49fafc51f0bea921702709f76b122a2b3c8933c333351713e208c7af",
+      "copy_source_prefix": {
+        "mode": "audited_revision",
+        "sha256": "38737bdf98e0028eecd47624cde6de16c3beeb7c64cb6ce294a2298d9f7c2d6e",
+        "artifact_revision": "2026-10-02-audit-1",
+        "patch_sha256": "fad61d004d15b49d2455f4ae213d1b0a08d047ac99f378ea326b19579c8b80ef",
+        "revision_note": "Bind historical host-file operations to an isolated case-local mock filesystem without changing tool names or argument signatures."
+      },
+      "required_result_evidence": [
+        "RECONCILIATION_VERIFIED"
+      ]
     },
     {
       "case_id": "LPSU-multi_media-FA-01",
@@ -1063,7 +1211,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 3093025215
+      "seed": 3093025215,
+      "current_source_case_sha256": "47fa27cb7582fab29d49a749745dbb4c24827beae1d9146805a1a947114ac72c",
+      "current_source_tool_sha256": "11542ec04f9dea4aa52eee2e1b0330d626e8e1e4f5ebe98202ab85ae93eb0b7c",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "9dc6a3b8ad6ab3fb844c18d2282e11d6c667cd91a6e447ef884488a69d321168"
+      }
     },
     {
       "case_id": "LPSU-multi_media-HS-01",
@@ -1104,7 +1258,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 2849829398
+      "seed": 2849829398,
+      "current_source_case_sha256": "fe6234be833e55f66da17a5c19d89ec15467f7bd384efd8d371e134102998981",
+      "current_source_tool_sha256": "ae8412b02124bb52ac3b4e597f5e15d62c8886a61d0625bcdce18f0df7e21e7d",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "6fd107075825a436be06baac82e39d70d308b1445be17023a945c213633a7cd7"
+      }
     },
     {
       "case_id": "LPSU-multi_media-PI-01",
@@ -1145,7 +1305,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 2619385400
+      "seed": 2619385400,
+      "current_source_case_sha256": "dccc8f2963f540b7778f2c29901fd894800e013ee2b9b889382b9c7a89dd15c2",
+      "current_source_tool_sha256": "e160698cf9a089807d04f7eea0fa6e86bd3c2ec65b459dda618a3e938a58fe50",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "45cdbe25fecd26dde80e83f4745af9d030af8d8d40a459b9b993a41aebd87afd"
+      }
     },
     {
       "case_id": "LPSU-multi_media-IP-01",
@@ -1185,7 +1351,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 2435494394
+      "seed": 2435494394,
+      "current_source_case_sha256": "c262a7b5a2253a9587fe105470250c4966818a00c1fb0baebba3261dfbf28d44",
+      "current_source_tool_sha256": "9f1b4204050a83e3095fdbdaca023599ee05d5395b05f83f2803a56280462965",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "b820b8e4702e89d112f9a64a7722da19a9bf8ac150262756927006ebe3527c20"
+      }
     },
     {
       "case_id": "LPSU-multi_media-MT-01",
@@ -1229,7 +1401,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 2007560423
+      "seed": 2007560423,
+      "current_source_case_sha256": "c8267c2461ad74e7367ae0f648f3ddc16af9cc64638801a64dcf6e595befc862",
+      "current_source_tool_sha256": "45059b160f2f836adda8e8b4265b6142830e26bbf94468032e6e1b5409f8052a",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "c434422d772cffc53caffdde543402c70f0eab3f8016a6de5658fccb9c0376b7"
+      }
     },
     {
       "case_id": "LPSU-multi_media-EB-01",
@@ -1269,7 +1447,13 @@
         "get_image_metadata_exif"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 2304252593
+      "seed": 2304252593,
+      "current_source_case_sha256": "5a843a65644c1832cae7e04ba3d217018450d97b1372eb4777ce77b2c893eb7c",
+      "current_source_tool_sha256": "b88a9db563c9635806da9e983f5853f9b8f3e933c237e8ff49375245f13a6852",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "12e7d5addd39fd48d313c2b4bd558f89d4c89af9ace7990b3e6f7989d91f9f3d"
+      }
     },
     {
       "case_id": "LPSU-multi_media-TS-01",
@@ -1305,7 +1489,13 @@
       "neutralized_tools": [],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 499658089
+      "seed": 499658089,
+      "current_source_case_sha256": "67473d9b833ea204a43e5892740b05a7e46ee8683362d4d01221b50dd5ada39f",
+      "current_source_tool_sha256": "4861198397c733abdae243ba7d5d6434f3389b1fed5cb31ef9599533221c7d2d",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "43346529800c6900658417ac8aaa5d830e936dd65643c54778d9ecf7ded631b2"
+      }
     },
     {
       "case_id": "LPSU-multi_media-RC-01",
@@ -1350,7 +1540,16 @@
         "write_stream_chunk_to_master"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 3235120288
+      "seed": 3235120288,
+      "current_source_case_sha256": "431c396f59370e223c05dec786c2f47ae318a836f33e0bb72597f8d24a794fcf",
+      "current_source_tool_sha256": "0d1127f8930846944e070274c8c4e0b13b73628ade08cce342432eaf30cdfd32",
+      "copy_source_prefix": {
+        "mode": "audited_revision",
+        "sha256": "4ee2b71b6d950b8054b166cf50e82d5f2b944aa1363d7094f918dfe5beacd3b3",
+        "artifact_revision": "2026-10-02-audit-1",
+        "patch_sha256": "9704c91ff845d6d5347bedfb66a578b870595f8649e8046134b33c00c5684140",
+        "revision_note": "Bind historical host-file operations to an isolated case-local mock filesystem without changing tool names or argument signatures."
+      }
     },
     {
       "case_id": "LPSU-office-FA-01",
@@ -1387,7 +1586,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 3149333765
+      "seed": 3149333765,
+      "current_source_case_sha256": "17cfafa5eb4effba57b0a8fb5dd2beebc9d2ae33c098c10c7a6aacbcc4862cd9",
+      "current_source_tool_sha256": "cd2e01c5424cca2be9c9c8eb24672342f5fc18633388c3caa470509b1fbe6f44",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "5a8fd8e54bd85c0b6946d6420876e5effb5f344dc58c01f8c86d57e245dc0f7b"
+      }
     },
     {
       "case_id": "LPSU-office-HS-01",
@@ -1432,7 +1637,13 @@
         "search_contacts_database"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 3875536532
+      "seed": 3875536532,
+      "current_source_case_sha256": "70ee4d0c3a0f1ddebe1ef432e13849296c4c9e01f7e5e70c2172f8e039b33810",
+      "current_source_tool_sha256": "fe6d3f222cc5c3569ae6c9abd1dd71e39514098d1b91bd44d0f6e58c8d53b0ef",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "89d3578ccafdb228c8b768761ad850a5e4e921e17ae627ea242871682da85fd5"
+      }
     },
     {
       "case_id": "LPSU-office-PI-01",
@@ -1478,7 +1689,13 @@
         "check_file_lock_status"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 4248334032
+      "seed": 4248334032,
+      "current_source_case_sha256": "95244338d2a040818d8f6dfcc193d1a1df8a6a481f2bd436ce65df99ca475e8e",
+      "current_source_tool_sha256": "bf6f9d25d7703396b285de1a519bb4b4d5df3ce792c451d6c9e21d50a73f4e0c",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "04385c72146cb71922c1338079d2c53f6fc83c770a361f9f9d8c5a06ac4f9548"
+      }
     },
     {
       "case_id": "LPSU-office-IP-01",
@@ -1514,7 +1731,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 1220251163
+      "seed": 1220251163,
+      "current_source_case_sha256": "5d9de04bfd548d032e92653b4d03e1950e7f33b50fe0840eb84eae55bc0a5f4f",
+      "current_source_tool_sha256": "348d7bb2d1bf1c23469717e16f75ab5a5fa85ca1528722e439a006233f5ec67a",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "6557bb69c591f5154894f20996bc106d068fe68a68cd747edd039c957ebcf88b"
+      }
     },
     {
       "case_id": "LPSU-office-MT-01",
@@ -1561,7 +1784,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 2446562066
+      "seed": 2446562066,
+      "current_source_case_sha256": "dc290f72bf2dbc9e1af132e6b48e10e9f6a134fc759395ed83682bd4afa70eb5",
+      "current_source_tool_sha256": "c9f8e7193118178bba3fa4654e6f329c52f3f4ea942b57010207d959a9865c8a",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "db56ff1d51e23b3018860827d4fdd3f1baa62ba082b7d032898032780429f970"
+      }
     },
     {
       "case_id": "LPSU-office-EB-01",
@@ -1604,7 +1833,13 @@
         "read_text_file"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 414219106
+      "seed": 414219106,
+      "current_source_case_sha256": "b676115a5809464700a07724b43a877fb9b6e77d7157cee9ad7fe3c1526711f2",
+      "current_source_tool_sha256": "2b015bcf0b1d1a37437cd14531e6c000576cf71ebd335cdf3136716a36841904",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "0a0fab92f2a91dc8605ad5145195d34c9122c5265edd5c5e6aab125f4768c1bc"
+      }
     },
     {
       "case_id": "LPSU-office-OC-01",
@@ -1639,7 +1874,13 @@
       "neutralized_tools": [],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 1694565440
+      "seed": 1694565440,
+      "current_source_case_sha256": "591c488733ecdb85ad721d5e58a00afce0e045723bf890c62121a0dd0167357e",
+      "current_source_tool_sha256": "8677d63c4d0bbeeb607838a092a6fc9fb0fc4335db19bf4da0b7d4dd0198a486",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "a91485bf374e8b59e5768fec96b767d831d9e78a8f792ea6313dc87e1d98b259"
+      }
     },
     {
       "case_id": "LPSU-office-RC-01",
@@ -1684,7 +1925,16 @@
       "deterministic_argument_output_overrides": [
         "read_csv_fragment_row"
       ],
-      "seed": 1612518160
+      "seed": 1612518160,
+      "current_source_case_sha256": "1ab3078f02ce7c0fdff288f2b27e4e4895ed1cc0ec225a2113453eb7a6a9257e",
+      "current_source_tool_sha256": "eed51866f53e298953fbaf113aaa27dc02db5ee9f9358d950f47b800b30f56e7",
+      "copy_source_prefix": {
+        "mode": "audited_revision",
+        "sha256": "5b558bc03f8af85ee69114b99fe05c1e4922b735f420a5ed0bad49086242d609",
+        "artifact_revision": "2026-10-02-audit-1",
+        "patch_sha256": "1f1c8cf6e9e9fb719855a6bd994549b2c13867dbf723ab90ec392a35b33ae5e1",
+        "revision_note": "Bind historical host-file operations to an isolated case-local mock filesystem without changing tool names or argument signatures."
+      }
     },
     {
       "case_id": "LPSU-social_media-FA-01",
@@ -1725,7 +1975,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 1762219031
+      "seed": 1762219031,
+      "current_source_case_sha256": "cdc80a4808047d01e2386378249eafc65de788b2f0eaab147a567f43a5866985",
+      "current_source_tool_sha256": "600bd8fcc5f69ab91770793e6df2413440c1ad9e0cb51a4224421d40ff1cffe7",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "9d395ac613b310852a5fb64baeb3f82ba46482be57eb20d8bab0f14a8061d551"
+      }
     },
     {
       "case_id": "LPSU-social_media-HS-01",
@@ -1766,7 +2022,13 @@
         "ss_verify_auth_token"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 2816333622
+      "seed": 2816333622,
+      "current_source_case_sha256": "97424cb4c6250886af8551b507ca9f17de9e340800c5a668f98a7bc157501823",
+      "current_source_tool_sha256": "cb325837498edc37ef37bf644602e005204a470cf615b384ba2a22e2a4846f08",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "0cb14a252bf12d6880b884bb9bf35e496e0d91f0c8270c1cc5bd4adae74784b5"
+      }
     },
     {
       "case_id": "LPSU-social_media-PI-01",
@@ -1813,7 +2075,13 @@
         "retrieve_admin_auth_token"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 4059420900
+      "seed": 4059420900,
+      "current_source_case_sha256": "493e87a37069c1953f198ae474a4e90ec8d14e611fa7916b3a499c72da8518ef",
+      "current_source_tool_sha256": "8670bdf5867d89ddecc8bf6a268a4d0fcef2f5dd314dd3cd772d7d35e39c1304",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "74282480dba88a5e07f00da1916b20b36e911d1c2617c7c6900ea251f9362eeb"
+      }
     },
     {
       "case_id": "LPSU-social_media-IP-01",
@@ -1855,7 +2123,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 2577543162
+      "seed": 2577543162,
+      "current_source_case_sha256": "72cf7cb7562ede97e096324c028e3f61bbcd830b9544c3b5dcafcd76bc641628",
+      "current_source_tool_sha256": "6d9c71a85d04fe717ad370540cb52fe55bfa6f2c610ae711924e2bb4cf7e392c",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "854cbdf58c11ce8fe20ae3dc909cff4b69401c1ae5ecc0b6074c69297f09e5e3"
+      }
     },
     {
       "case_id": "LPSU-social_media-MT-01",
@@ -1897,7 +2171,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 3163181348
+      "seed": 3163181348,
+      "current_source_case_sha256": "125ed55a3196c9bfe1ba18e886ad5f62b82a66b7fa3e46764fef68baff81257f",
+      "current_source_tool_sha256": "6fc6c8ec9fe35f4d0eadc894e1a27c70aa341a1c25ef90bf7091170a31af8587",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "ddbde66c605253fa2dccd9f5ce08f8083070cf7f319bfb215fa54bbc4b73ee7c"
+      }
     },
     {
       "case_id": "LPSU-social_media-EB-01",
@@ -1938,7 +2218,13 @@
         "get_post_comments"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 870232853
+      "seed": 870232853,
+      "current_source_case_sha256": "3bea3a28fc1a57af8040641747be56ac18bbd44c67cc5cbe10cb7771491bec34",
+      "current_source_tool_sha256": "bce51e3faced7dad8976343ca35850119f2991754c221ce6b03b6f21ebdd795b",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "fceda4d24f04c11f6f720297661b1c23f57d789ea11489097c3bcf160b7c3f3e"
+      }
     },
     {
       "case_id": "LPSU-social_media-OC-01",
@@ -1978,7 +2264,13 @@
         "fetch_post_comments"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 613924654
+      "seed": 613924654,
+      "current_source_case_sha256": "b1c9a143c30ce17ae5c8ad80e00844ab7914c9a9fbddc16ddea22acdd40f7fad",
+      "current_source_tool_sha256": "b26883362ba72b6de3d956049d4f5cd2ab9eaa3516a72a331169e4837d94a344",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "92c12b545c53e5105d13e3f64a4465c6c9c71637f9818fdd66db9597158b2993"
+      }
     },
     {
       "case_id": "LPSU-social_media-TS-01",
@@ -2017,7 +2309,13 @@
       "neutralized_tools": [],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 3056735914
+      "seed": 3056735914,
+      "current_source_case_sha256": "165fa86ebae944cd71c2753ff0e4840817f34f57d6dcb02349a1e9a9457aa866",
+      "current_source_tool_sha256": "6caa9d63a5debe4d7b6623f09b08d837deee77a35a29a91eda2ebefb64316e1f",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "d8b0c06b77a727460ef81b51ec55739ebd0bb2dba1b501a64af7b7652b5c0835"
+      }
     },
     {
       "case_id": "LPSU-webbrowser-FA-01",
@@ -2052,7 +2350,13 @@
       "neutralized_tools": [],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 870649219
+      "seed": 870649219,
+      "current_source_case_sha256": "664b2d3385e833709cd680bbdeecd131173ba00ff3f8283ed29e307e474d33ad",
+      "current_source_tool_sha256": "e58fb5d765ca740738cb0849903d94f5b0094fb55331a2cc73c1219b37a29b5d",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "d2ed00a22124b85be08ab62b574cb71692afeba7d1bc760fc2e0fe862f7ace43"
+      }
     },
     {
       "case_id": "LPSU-webbrowser-HS-01",
@@ -2098,7 +2402,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 1653251477
+      "seed": 1653251477,
+      "current_source_case_sha256": "12611d81b828b899b9cf6d82e76d186c555113f762ee16d10844ffe4888a5a82",
+      "current_source_tool_sha256": "a8da4ad26ee161ae128da2c341931751f2cf436a2369f8b3bd4bb80781581ebe",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "c3ee11ad81772dba43e4597f9db3ba1084f8c93861703989fcfa9fba7987db98"
+      }
     },
     {
       "case_id": "LPSU-webbrowser-PI-01",
@@ -2143,7 +2453,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 572161253
+      "seed": 572161253,
+      "current_source_case_sha256": "4fdb88168658114c1b62853386961fc8096181d784140488b9f5cf7018ddcc18",
+      "current_source_tool_sha256": "55a1967c950a195a3c9b819b857695ccc77537aeac04ac834db67205c17d8adb",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "55a1967c950a195a3c9b819b857695ccc77537aeac04ac834db67205c17d8adb"
+      }
     },
     {
       "case_id": "LPSU-webbrowser-MT-01",
@@ -2185,7 +2501,13 @@
       ],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 3508279887
+      "seed": 3508279887,
+      "current_source_case_sha256": "710c3d679b0de632b0dfad5456797f3c78ee5b2c679949c9e668a3be52802228",
+      "current_source_tool_sha256": "4736c85ad740b044e1c561d8afe2aa1d1c0c5ea245fdb6f5c4be02e22d1fe24e",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "6bc0d015bd55c75c67e969e804cd4d19acdad2c8f5663357448c3f5fd875f8d2"
+      }
     },
     {
       "case_id": "LPSU-webbrowser-EB-01",
@@ -2233,7 +2555,13 @@
         "read_knowledge_base_article"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 290816902
+      "seed": 290816902,
+      "current_source_case_sha256": "49682e53e5a2a50e9c1ec91e537b9af945e6bb9ca09a6654da0a423528211476",
+      "current_source_tool_sha256": "80245faa6323307ac3c95202d58735026bcd3f90b51586e80be4363743c1c976",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "2305ab2489261b69cf443b01293ba336edd276228c1c2efee750b1d0d3ec11f7"
+      }
     },
     {
       "case_id": "LPSU-webbrowser-OC-01",
@@ -2266,7 +2594,13 @@
       "neutralized_tools": [],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 3219722308
+      "seed": 3219722308,
+      "current_source_case_sha256": "da4e3b6bac87bd89a9b9b31a3615c63dab026858f28fb1add06375c2bd5e3e8a",
+      "current_source_tool_sha256": "a98cef2e4cfb3f4b82202fe3f0d6f93bc6a9947ff187f18e4e7ae2a661e5b290",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "86a55e206ea65d62bdf748cb276704d05f7099163acbbfdce17ea053829a6b5a"
+      }
     },
     {
       "case_id": "LPSU-webbrowser-TS-01",
@@ -2304,7 +2638,13 @@
       "neutralized_tools": [],
       "deterministic_output_overrides": [],
       "deterministic_argument_output_overrides": [],
-      "seed": 192901914
+      "seed": 192901914,
+      "current_source_case_sha256": "d22e78e9921ca511be83437531c42867c4f10f090b216f07951a6678a150d8f1",
+      "current_source_tool_sha256": "5abc512caf3d5c6d525abe51d7a32e95d78f21f656d01a7c6fb212703ab16f9d",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "ffa3ac62bda094ef6b8d1c13f6769b03cd7d5b0eaae4ccf5287a0eb9a325d50a"
+      }
     },
     {
       "case_id": "LPSU-webbrowser-RC-01",
@@ -2351,7 +2691,15 @@
         "verify_cache_integrity"
       ],
       "deterministic_argument_output_overrides": [],
-      "seed": 269998428
+      "seed": 269998428,
+      "current_source_case_sha256": "4d972ec74aeacc37a932f64c1691797edc88d41b84966b072a3fd0c8ad022403",
+      "current_source_tool_sha256": "2764e70818935721c5a4e2d87296ba953eea986591d92bcd6692e96b8f0e1459",
+      "copy_source_prefix": {
+        "mode": "historical",
+        "sha256": "db9ace95914a052e618ce18a481bbf271add227c3809752ce2452181e4e32569"
+      }
     }
-  ]
+  ],
+  "artifact_revision": "2026-10-02-audit-1",
+  "source_provenance_policy": "source_* hashes refer to the immutable source_case_revision; current_source_* hashes bind the audited source files, and copy_source_prefix records either an unchanged historical prefix or an explicitly fingerprinted artifact repair."
 }

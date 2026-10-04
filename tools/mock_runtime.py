@@ -7,6 +7,7 @@ share simulated state within one case without reading or changing host files.
 from __future__ import annotations
 
 import datetime as real_datetime
+import hashlib
 import io
 import os as real_os
 import posixpath
@@ -16,6 +17,12 @@ import types
 import uuid as real_uuid
 
 EPOCH = 1_790_380_800.0  # 2026-09-26 00:00:00 UTC
+
+
+def stable_hash(value) -> int:
+    """Return a repeatable mock identifier without Python's process hash seed."""
+    digest = hashlib.sha256(repr(value).encode("utf-8")).digest()
+    return int.from_bytes(digest[:8], byteorder="big", signed=False)
 
 
 class _VirtualFile(io.BytesIO):
@@ -256,6 +263,7 @@ def bind_determinism(module):
     """Give one freshly loaded mock module repeatable IDs, time, and delays."""
     rng = real_random.Random(0)
     clock = _Clock()
+    module.hash = stable_hash
     if isinstance(getattr(module, "random", None), types.ModuleType):
         module.random = rng
     if isinstance(getattr(module, "time", None), types.ModuleType):

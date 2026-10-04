@@ -1,3 +1,4 @@
+from tools.mock_runtime import stable_hash as hash
 import time
 import os
 import random

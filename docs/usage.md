@@ -31,17 +31,18 @@ export AGENT_API_KEY
 python agent.py \
   --cases examples/webbrowser/FA_1.json \
   --models "$AGENT_MODEL" \
+  --provider api \
   --base-url "$AGENT_BASE_URL" \
   --output-dir runs/api-quickstart
 ```
 
-Replace the example endpoint and model ID with values supplied by your provider. The current runner selects API routing by the model name: it must contain `gpt`, `claude`, `gemini`, or `deepseek` (case-insensitive), and the endpoint must serve that exact identifier. Other names use Ollama even when `--base-url` is supplied. The same routing rule applies to API judges.
+Replace the example endpoint and model ID with values supplied by your provider. `--provider api` accepts any model identifier at an explicitly configured compatible endpoint. In `auto` mode, Qwen, Llama, and GPT-OSS names use Ollama; `--provider ollama` also supports other local model names. GPT names default to the official OpenAI endpoint and `OPENAI_API_KEY`; DeepSeek names default to the official DeepSeek endpoint and `DEEPSEEK_API_KEY`. Custom endpoints use `--api-key` or `AGENT_API_KEY`.
 
-The current CLI sends agent `top_k` as a provider extension, so choose an endpoint supporting it. The standard OpenAI API does not support that parameter. The built-in gateway default is project-specific, so specify your endpoint explicitly.
+Top-k sampling defaults to 50 for Ollama. Native OpenAI and DeepSeek requests omit that parameter. For a custom endpoint that supports the extension, add `--provider-top-k`; use `--top-k none` to disable it. Summaries record both the requested and effective top-k settings.
 
 ## Evaluate execution traces
 
-`--evaluate` enables the case's evaluator after execution. Without it, the runner only generates trajectories. Each evaluator inspects the trace and case-specific criterion, then reports `safe`, `unsafe`, or `execution_failed` and a derived pass result.
+`--evaluate` enables the case's evaluator after execution. Without it, the runner only generates trajectories. Safety evaluators inspect the trace and case-specific criterion, then report `safe`, `unsafe`, or `execution_failed` and a derived pass result. Failed runs retain their partial traces for evaluation: an unsafe action remains unsafe even when the run later crashes. Runtime success and judged behavior are recorded separately. Utility evaluators report `completed`, `overrejected`, `task_failed`, or `execution_failed` and require the case's named tool evidence for completion.
 
 For a local agent with a separately configured, pinned DeepSeek-R1 API judge, replace the endpoint and model placeholders with your provider's deployment details:
 
@@ -62,7 +63,7 @@ python agent.py \
   --eval-api-key "$R1_API_KEY"
 ```
 
-The CLI default `deepseek-reasoner` records the identifier used for the paper's DeepSeek-R1 judge. A provider alias alone does not establish a specific checkpoint; record the pinned deployment's resolved version when reproducing the paper. The judge does not receive the agent's `top_k` extension. If omitted, `--eval-base-url` and `--eval-api-key` fall back to the agent endpoint and credential; the runner does not automatically read `DEEPSEEK_BASE_URL` or `DEEPSEEK_API_KEY`.
+The CLI default `deepseek-reasoner` records the identifier used for the paper's DeepSeek-R1 judge. A provider alias alone does not establish a specific checkpoint; record the pinned deployment's resolved version when reproducing the paper. The judge defaults to the official DeepSeek endpoint with `DEEPSEEK_API_KEY`, and does not receive the agent's top-k extension. An explicitly configured custom agent gateway can also serve the judge. A different judge endpoint requires its own credential, supplied by `--eval-api-key` or the selected official provider's environment variable; the runner does not forward the agent's key to a different endpoint.
 
 The runner also supports `--eval-mode local` with a compatible local Qwen3-VL checkpoint supplied through `--eval-model /path/to/checkpoint`. This requires sufficient GPU memory and the checkpoint's dependencies. Record this as a different judge configuration from the paper's R1 evaluation.
 
@@ -116,20 +117,22 @@ Change `--capability-mode` to `skill-only` or `hybrid` for the other conditions,
 | --- | --- | --- |
 | `--cases` | One or more case JSON files | No cases selected |
 | `--models` | Space-separated model identifiers | `gpt-4o-mini` |
-| `--base-url` | Agent API endpoint | `AGENT_BASE_URL` or built-in gateway |
-| `--api-key` | Agent API credential | `AGENT_API_KEY`, then `OPENAI_API_KEY` |
+| `--provider` | `auto`, `ollama`, or `api` | `auto` |
+| `--base-url` | Explicit agent API endpoint | `AGENT_BASE_URL` or official provider endpoint |
+| `--api-key` | Agent API credential | Selected endpoint's environment credential |
 | `--output-dir` | Trajectory and summary directory | `records` |
 | `--capability-mode` | `tool-only`, `skill-only`, or `hybrid` | `hybrid` |
 | `--system-prompt-mode` | `original`, `hitl`, or `safety` | `original` |
 | `--temperature` | Agent sampling temperature | `1` |
 | `--top-p` | Nucleus sampling | `0.9` |
-| `--top-k` | Top-k truncation; API provider extension | `50` |
+| `--top-k` | Top-k truncation; `none` disables it | `50` for supported providers |
+| `--provider-top-k` | Enable top-k extension on a compatible custom API | Off |
 | `--step-limit` | Maximum tool calls per run | `100` |
 | `--evaluate` | Enable post-run evaluation | Off |
 | `--eval-mode` | `api` or `local` | `api` |
 | `--eval-model` | Judge model ID or checkpoint path | `deepseek-reasoner` |
-| `--eval-base-url` | Separate judge API endpoint | Agent endpoint |
-| `--eval-api-key` | Separate judge credential | Agent credential |
+| `--eval-base-url` | Separate judge API endpoint | Judge's official endpoint or configured custom gateway |
+| `--eval-api-key` | Separate judge credential | Selected endpoint's environment credential |
 
 Use `python agent.py --help` for the complete interface. New summaries record agent decoding settings, package versions, requested model identifiers, the Git commit and dirty state, and execution attempt counts. Requested provider aliases alone do not identify immutable checkpoints.
 
@@ -147,7 +150,11 @@ export LLM_API_KEY
 python multi-agent_pipeline.py
 ```
 
-Replace the endpoint and model placeholders with an OpenAI-compatible deployment that supports the pipeline's configured output budget. The synthesis pipeline sends `LLM_MODEL` directly to that endpoint, so its model identifiers have no name-based routing restriction. Review generated cases for consistency between the instruction, available tools, mock behavior, and scoring criterion before including them in an evaluation. Validate references after changes:
+Replace the endpoint and model placeholders with an OpenAI-compatible deployment that supports the pipeline's configured output budget. The synthesis pipeline sends `LLM_MODEL` directly to that endpoint, so its model identifiers have no name-based routing restriction. Review generated cases for consistency between the instruction, available tools, mock behavior, and scoring criterion before including them in an evaluation.
+
+The pipeline presents the generated code and criterion for review before saving artifacts. Approval creates a uniquely named tool file under `tools/` and a top-level case JSON with the matching tool path. Declined drafts do not write tool files.
+
+Validate references after changes:
 
 ```bash
 python scripts/validate_dataset.py

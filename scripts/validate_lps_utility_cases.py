@@ -4,12 +4,15 @@
 from __future__ import annotations
 
 import argparse
+import ast
+import difflib
 import hashlib
 import importlib.util
 import json
 import os
 import re
 import sys
+import subprocess
 import uuid
 from pathlib import Path
 from typing import Any
@@ -45,6 +48,135 @@ def parse_args() -> argparse.Namespace:
 
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def read_historical_sources(revision: str, paths: list[str]) -> dict[str, bytes]:
+    """Read immutable source blobs without checking out or executing old mocks."""
+    if not isinstance(revision, str) or not re.fullmatch(r"[0-9a-f]{40}", revision):
+        raise AssertionError("source_case_revision must be a full Git commit SHA")
+    for path in paths:
+        if Path(path).is_absolute() or ".." in Path(path).parts or "\n" in path:
+            raise AssertionError(f"Invalid source-provenance path: {path!r}")
+    references = "".join(f"{revision}:{path}\n" for path in paths)
+    result = subprocess.run(
+        ["git", "cat-file", "--batch"],
+        input=references.encode("utf-8"),
+        cwd=REPO_ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode:
+        raise AssertionError(
+            f"Cannot read historical source revision {revision}: "
+            f"{result.stderr.decode('utf-8', errors='replace').strip()}"
+        )
+    stream = result.stdout
+    historical: dict[str, bytes] = {}
+    for path in paths:
+        header, separator, stream = stream.partition(b"\n")
+        parts = header.split()
+        if not separator or len(parts) != 3 or parts[1] != b"blob":
+            raise AssertionError(
+                f"Missing historical source blob {revision}:{path}. "
+                f"Fetch the recorded revision with: git fetch origin {revision}"
+            )
+        size = int(parts[2])
+        if len(stream) < size + 1 or stream[size:size + 1] != b"\n":
+            raise AssertionError(f"Truncated Git blob response for {path}")
+        historical[path], stream = stream[:size], stream[size + 1:]
+    if stream:
+        raise AssertionError("Unexpected bytes after historical source blobs")
+    return historical
+
+
+_ADAPTER_MARKER = (
+    b"# ---------------------------------------------------------------------------\n"
+    b"# LPS-Bench-derived utility isolation adapter."
+)
+
+
+def normalized_source(source: bytes) -> bytes:
+    return source.rstrip(b"\n") + b"\n"
+
+
+def source_prefix(copy_bytes: bytes) -> bytes:
+    if copy_bytes.count(_ADAPTER_MARKER) != 1:
+        raise AssertionError("Copied tool must have exactly one generated adapter boundary")
+    return normalized_source(copy_bytes.split(_ADAPTER_MARKER, 1)[0])
+
+
+def prefix_patch(historical_source: bytes, revised_prefix: bytes) -> bytes:
+    return "".join(difflib.unified_diff(
+        normalized_source(historical_source).decode("utf-8").splitlines(keepends=True),
+        revised_prefix.decode("utf-8").splitlines(keepends=True),
+        fromfile="historical_source",
+        tofile="audited_source",
+    )).encode("utf-8")
+
+
+def validate_copy_prefix(entry: dict[str, Any], historical_source: bytes,
+                         copied_bytes: bytes, artifact_revision: str,
+                         source_mode: str = "git_revision") -> None:
+    """Require either the original prefix or an explicitly fingerprinted repair."""
+    prefix = source_prefix(copied_bytes)
+    provenance = entry.get("copy_source_prefix", {})
+    # Legacy freshly generated manifests only recorded working-tree hashes.
+    # They receive the original strict prefix check, never a repair exemption.
+    if not provenance and source_mode == "working_tree_hashes":
+        if prefix != normalized_source(historical_source):
+            raise AssertionError(f"Generation source prefix changed: {entry['dedicated_tool_copy']}")
+        return
+    if hashlib.sha256(prefix).hexdigest() != provenance.get("sha256"):
+        raise AssertionError(f"Source prefix hash mismatch: {entry['dedicated_tool_copy']}")
+    mode = provenance.get("mode")
+    if mode == "historical" or (mode == "generation_source" and source_mode == "working_tree_hashes"):
+        if prefix != normalized_source(historical_source):
+            raise AssertionError(f"Historical source prefix changed: {entry['dedicated_tool_copy']}")
+    elif mode == "audited_revision":
+        if provenance.get("artifact_revision") != artifact_revision:
+            raise AssertionError("Source-prefix repair must name this artifact revision")
+        if not str(provenance.get("revision_note", "")).strip():
+            raise AssertionError("Source-prefix repair requires an explicit revision note")
+        patch = prefix_patch(historical_source, prefix)
+        if not patch or hashlib.sha256(patch).hexdigest() != provenance.get("patch_sha256"):
+            raise AssertionError(f"Audited source-prefix patch mismatch: {entry['dedicated_tool_copy']}")
+    else:
+        raise AssertionError(f"Unknown source-prefix provenance mode: {mode!r}")
+
+
+def tool_signatures(source: bytes, names: list[str]) -> dict[str, str]:
+    tree = ast.parse(source.decode("utf-8"))
+    functions = {
+        node.name: ast.dump(node.args, include_attributes=False)
+        for node in tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    missing = set(names) - functions.keys()
+    if missing:
+        raise AssertionError(f"Historical/current tool definitions missing: {sorted(missing)}")
+    return {name: functions[name] for name in names}
+
+
+def validate_runtime_artifacts(manifest: dict[str, Any], dataset_root: Path = DATASET_ROOT) -> int:
+    artifacts = [manifest.get("runtime_adapter")]
+    artifacts += [
+        {"file": row["stateful_adapter"], "sha256": row.get("stateful_adapter_sha256")}
+        for row in manifest["cases"] if row.get("stateful_adapter")
+    ]
+    checked = set()
+    for artifact in artifacts:
+        if not isinstance(artifact, dict) or not artifact.get("file"):
+            raise AssertionError("Runtime adapter provenance is required")
+        relative = Path(artifact["file"])
+        path = (REPO_ROOT / relative).resolve()
+        allowed_toolkits = (dataset_root.resolve() / "tools", DATASET_ROOT.resolve() / "tools")
+        if (relative.is_absolute() or not path.is_relative_to(REPO_ROOT.resolve())
+                or not any(path.is_relative_to(toolkit) for toolkit in allowed_toolkits)):
+            raise AssertionError(f"Runtime artifact is outside the utility toolkit: {relative}")
+        if not path.is_file() or sha256_file(path) != artifact.get("sha256"):
+            raise AssertionError(f"Runtime artifact hash mismatch: {relative}")
+        checked.add(str(relative))
+    return len(checked)
 
 
 def path_state(path: Path) -> Any:
@@ -250,6 +382,25 @@ def validate(dataset_root: Path) -> dict[str, Any]:
     schema_validator = Draft202012Validator(schema)
 
     entries = manifest["cases"]
+    source_revision = manifest.get("source_case_revision")
+    declared_mode = manifest.get("source_provenance_mode")
+    # A recorded immutable revision always wins; changing a mode field must
+    # never downgrade historical provenance into a current-file hash check.
+    source_mode = "git_revision" if source_revision is not None else "working_tree_hashes"
+    if declared_mode not in (None, source_mode):
+        raise AssertionError("source_provenance_mode conflicts with the recorded source revision")
+    artifact_revision = manifest.get("artifact_revision")
+    if source_mode == "working_tree_hashes" and not artifact_revision:
+        artifact_revision = "working-tree-hashes:" + sha256_file(manifest_path)
+    if not isinstance(artifact_revision, str) or not artifact_revision.strip():
+        raise AssertionError("An explicit artifact_revision is required")
+    source_paths = sorted({entry[key] for entry in entries for key in ("source_case", "source_tool")})
+    historical_sources = (
+        read_historical_sources(source_revision, source_paths)
+        if source_mode == "git_revision"
+        else {path: (REPO_ROOT / path).read_bytes() for path in source_paths}
+    )
+    runtime_artifacts_validated = validate_runtime_artifacts(manifest, dataset_root)
     if len(entries) != 56 or manifest.get("case_count") != 56:
         raise AssertionError("Manifest must contain exactly 56 cases")
     if manifest.get("tool_copy_count") != 56:
@@ -280,6 +431,7 @@ def validate(dataset_root: Path) -> dict[str, Any]:
     override_invocations = 0
     fresh_imports_validated = 0
     deterministic_tool_invocations = 0
+    revised_prefixes_validated = 0
 
     for entry in entries:
         case_path = REPO_ROOT / entry["derived_case"]
@@ -287,10 +439,15 @@ def validate(dataset_root: Path) -> dict[str, Any]:
         source_case_path = REPO_ROOT / entry["source_case"]
         source_tool_path = REPO_ROOT / entry["source_tool"]
 
-        if sha256_file(source_case_path) != entry["source_case_sha256"]:
-            raise AssertionError(f"Source case changed: {source_case_path}")
-        if sha256_file(source_tool_path) != entry["source_tool_sha256"]:
-            raise AssertionError(f"Source tool changed: {source_tool_path}")
+        for key in ("source_case", "source_tool"):
+            historical_bytes = historical_sources[entry[key]]
+            if hashlib.sha256(historical_bytes).hexdigest() != entry[f"{key}_sha256"]:
+                raise AssertionError(f"Generation source hash mismatch ({source_mode}): {entry[key]}")
+            current_hash = entry.get(f"current_{key}_sha256")
+            if current_hash is None and source_mode == "working_tree_hashes":
+                current_hash = entry[f"{key}_sha256"]
+            if sha256_file(REPO_ROOT / entry[key]) != current_hash:
+                raise AssertionError(f"Current source hash mismatch: {entry[key]}")
         if sha256_file(case_path) != entry["derived_case_sha256"]:
             raise AssertionError(f"Derived case hash mismatch: {case_path}")
         if sha256_file(tool_copy_path) != entry["dedicated_tool_copy_sha256"]:
@@ -298,8 +455,8 @@ def validate(dataset_root: Path) -> dict[str, Any]:
 
         source_bytes = source_tool_path.read_bytes()
         copied_bytes = tool_copy_path.read_bytes()
-        if not copied_bytes.startswith(source_bytes.rstrip(b"\n") + b"\n"):
-            raise AssertionError(f"Tool copy does not preserve its source prefix: {tool_copy_path}")
+        validate_copy_prefix(entry, historical_sources[entry["source_tool"]], copied_bytes, artifact_revision, source_mode)
+        revised_prefixes_validated += entry.get("copy_source_prefix", {}).get("mode") == "audited_revision"
 
         case = json.loads(case_path.read_text(encoding="utf-8"))
         errors = sorted(schema_validator.iter_errors(case), key=lambda error: list(error.path))
@@ -320,11 +477,19 @@ def validate(dataset_root: Path) -> dict[str, Any]:
             raise AssertionError(f"Case does not point to its dedicated tool copy: {case_path}")
 
         source_case = json.loads(source_case_path.read_text(encoding="utf-8"))
+        historical_case = json.loads(historical_sources[entry["source_case"]])
+        if source_case["MCP"]["tools"] != historical_case["MCP"]["tools"]:
+            raise AssertionError(f"Current source tool list differs from historical provenance: {case_path}")
         if case["MCP"]["tools"] != source_case["MCP"]["tools"]:
             raise AssertionError(f"Configured tool interface changed: {case_path}")
         expected_pair = f"{entry['domain']}/{Path(entry['source_case']).stem}"
         if case["meta"]["paired_case_id"] != expected_pair:
             raise AssertionError(f"Source pairing mismatch: {case_path}")
+        configured_names = case["MCP"]["tools"]
+        original_signatures = tool_signatures(historical_sources[entry["source_tool"]], configured_names)
+        for label, data in (("current source", source_bytes), ("copied prefix", source_prefix(copied_bytes))):
+            if tool_signatures(data, configured_names) != original_signatures:
+                raise AssertionError(f"{label} tool signature changed from historical source: {case_path}")
 
         compile(
             tool_copy_path.read_text(encoding="utf-8"),
@@ -419,8 +584,17 @@ def validate(dataset_root: Path) -> dict[str, Any]:
             "deterministic_tool_invocations": deterministic_tool_invocations,
             "neutralized_tool_invocations": neutralized_invocations,
             "deterministic_override_invocations": override_invocations,
-            "source_hashes_unchanged": True,
-            "source_tool_prefixes_preserved": True,
+            "source_provenance_mode": source_mode,
+            "historical_source_revision": source_revision,
+            "historical_source_hashes_verified": source_mode == "git_revision",
+            "generation_source_hashes_verified": True,
+            "current_source_hashes_verified": True,
+            "historical_tool_interfaces_preserved": source_mode == "git_revision",
+            "source_tool_interfaces_preserved": True,
+            "source_tool_prefixes_verified": True,
+            "audited_prefix_revisions_validated": revised_prefixes_validated,
+            "runtime_artifacts_validated": runtime_artifacts_validated,
+            "artifact_revision": artifact_revision,
             "configured_tool_lists_preserved": True,
             "state_paths_unchanged": True,
             "distribution_exact": True,

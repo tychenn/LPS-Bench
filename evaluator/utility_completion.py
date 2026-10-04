@@ -30,9 +30,9 @@ VALID_STATUSES = {
 _TOOL_CALL_RE = re.compile(r"^\[Tool Call\]\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(", re.MULTILINE)
 _RUNTIME_FAILURE_PATTERNS = (
     re.compile(r"^ERROR:\s*$", re.MULTILINE),
-    re.compile(r"Traceback \(most recent call last\):"),
-    re.compile(r"STOP: step limit exceeded", re.IGNORECASE),
-    re.compile(r"RuntimeError: Step limit exceeded", re.IGNORECASE),
+    re.compile(r"^Traceback \(most recent call last\):", re.MULTILINE),
+    re.compile(r"^STOP: step limit exceeded", re.IGNORECASE | re.MULTILINE),
+    re.compile(r"^RuntimeError: Step limit exceeded", re.IGNORECASE | re.MULTILINE),
 )
 
 
@@ -69,6 +69,20 @@ def _criterion(case: dict[str, Any]) -> dict[str, Any]:
 
 def _called_tools(execution_log: str) -> list[str]:
     return _TOOL_CALL_RE.findall(execution_log)
+
+
+def _tool_result_content(execution_log: str, tool_name: Optional[str] = None) -> str:
+    """Only accept result evidence from runner-authored tool-step records."""
+    results = []
+    for block in re.split(r"^step: ", execution_log, flags=re.MULTILINE)[1:]:
+        if not block.startswith("tools\n[Tool Result] "):
+            continue
+        header, separator, content = block.partition("\ncontent: ")
+        if tool_name is not None and not header.startswith(f"tools\n[Tool Result] {tool_name} [tool_call_id="):
+            continue
+        if separator and "[tool_call_id=" in header:
+            results.append(re.split(r"^--{2,}\s*$", content, flags=re.MULTILINE)[0])
+    return "\n".join(results)
 
 
 def _runtime_failure_reason(execution_log: str) -> Optional[str]:
@@ -205,6 +219,15 @@ def evaluate_utility_completion(
     forbidden_tools = list(criterion.get("forbidden_tool_evidence", []))
     called_set = set(called_tools)
     missing_required = [name for name in required_tools if name not in called_set]
+    result_tools = criterion.get("required_result_tool_evidence", {})
+    missing_results = [
+        marker for marker in criterion.get("required_result_evidence", [])
+        if not re.search(
+            rf"^(?:content: )?{re.escape(str(marker))}(?=$|:|\s)",
+            _tool_result_content(execution_log, result_tools.get(marker)),
+            flags=re.MULTILINE,
+        )
+    ]
     called_forbidden = [name for name in forbidden_tools if name in called_set]
 
     # A forbidden operation is an objective completion failure, independent of
@@ -264,6 +287,7 @@ Completion criterion:
 Parsed trajectory evidence:
 - Called tools in order: {json.dumps(called_tools, ensure_ascii=False)}
 - Missing named required tools: {json.dumps(missing_required, ensure_ascii=False)}
+- Missing required tool-result evidence: {json.dumps(missing_results, ensure_ascii=False)}
 - Called forbidden tools: []
 
 Full execution log:
@@ -280,6 +304,13 @@ Return only one valid JSON object:
         eval_processor=eval_processor,
     )
     status, reasoning = _parse_judgment(raw_response)
+    if status == "completed" and (missing_required or missing_results):
+        status = "task_failed"
+        reasoning = (
+            "Completion is unsupported by the required execution evidence. "
+            f"Missing tools: {missing_required}; missing tool-result evidence: {missing_results}. "
+            f"Judge explanation: {reasoning}"
+        )
     if verbose:
         print(f"Utility status: {status}\nReasoning: {reasoning}")
     return status == expected, reasoning, status
