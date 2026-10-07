@@ -1,0 +1,84 @@
+{
+  "source_filename": "2602.03255v2.pdf",
+  "source_url": "https://arxiv.org/pdf/2602.03255v2",
+  "source_version": "arXiv:2602.03255v2",
+  "source_sha256": "bb814f8f117186001f287026af0087e2bd4116a27e948471e66dcc74a3526c62",
+  "renderer": "pdftoppm",
+  "dpi": 360,
+  "coordinate_origin": "top-left of PDF page",
+  "crop_points_units": "1/72 inch; x, y, width, height",
+  "figures": [
+    {
+      "filename": "paper-overview.png",
+      "page": 3,
+      "label": "Figure 3",
+      "crop_points": [
+        107,
+        72,
+        398,
+        277
+      ],
+      "crop_pixels": {
+        "x": 535,
+        "y": 360,
+        "width": 1990,
+        "height": 1385
+      },
+      "sha256": "d34a209686027b1863f8efa842c8dfcc222acb933d08dd7ee6ea930248fa8ba0"
+    },
+    {
+      "filename": "paper-results.png",
+      "page": 2,
+      "label": "Figure 1",
+      "crop_points": [
+        107,
+        72,
+        170,
+        168
+      ],
+      "crop_pixels": {
+        "x": 535,
+        "y": 360,
+        "width": 850,
+        "height": 840
+      },
+      "sha256": "ebb6120c08e42ef68dd5985ffe33f111c7550ee6dba8373196e270a4f8b3b565"
+    },
+    {
+      "filename": "paper-results-table.png",
+      "page": 7,
+      "label": "Table 3",
+      "crop_points": [
+        106,
+        70,
+        399,
+        158
+      ],
+      "crop_pixels": {
+        "x": 530,
+        "y": 350,
+        "width": 1995,
+        "height": 790
+      },
+      "sha256": "5a1cb31ac05b6cf1ec9c497683d9dc4094885569dbabca0906dcdcb8ba3d49ca"
+    },
+    {
+      "filename": "paper-skills-table.png",
+      "page": 8,
+      "label": "Table 5",
+      "crop_points": [
+        132,
+        312,
+        348,
+        96
+      ],
+      "crop_pixels": {
+        "x": 660,
+        "y": 1560,
+        "width": 1740,
+        "height": 480
+      },
+      "sha256": "f34fa7ca7f98eeca60b873de7260ec8b28e2c413006937d50739d7efb7b96b48"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Keep the pinned upstream postgres-mcp command compatible with current PyPI.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+EXPERIMENT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+CONSTRAINTS="${MCPMARK_POSTGRES_CONSTRAINTS:-$EXPERIMENT_DIR/postgres_mcp_constraints.txt}"
+REAL_PIPX="${MCPMARK_REAL_PIPX:-$EXPERIMENT_DIR/.venv/bin/pipx}"
+FROZEN_REAL_PIPX="$EXPERIMENT_DIR/.venv/bin/pipx"
+
+if [[ ! -x "$REAL_PIPX" ]]; then
+  echo "Real pipx executable is missing: $REAL_PIPX" >&2
+  exit 127
+fi
+if [[ "$(readlink -f "$REAL_PIPX")" == "$(readlink -f "${BASH_SOURCE[0]}")" ]]; then
+  # run_experiment.py's preflight locates `pipx` through PATH, where this
+  # compatibility wrapper intentionally comes first. Recover the frozen real
+  # pipx entry point instead of recursing back into this wrapper.
+  if [[ ! -x "$FROZEN_REAL_PIPX" ]] ||
+    [[ "$(readlink -f "$FROZEN_REAL_PIPX")" == "$(readlink -f "${BASH_SOURCE[0]}")" ]]; then
+    echo "MCPMARK_REAL_PIPX resolves to this wrapper and no frozen fallback is available." >&2
+    exit 2
+  fi
+  REAL_PIPX="$FROZEN_REAL_PIPX"
+fi
+
+if [[ "$#" -ge 2 ]] &&
+  [[ "$1" == "run" ]] &&
+  [[ "$2" == "postgres-mcp==0.3.0" ]]; then
+  if [[ ! -f "$CONSTRAINTS" ]]; then
+    echo "Postgres MCP constraint file is missing: $CONSTRAINTS" >&2
+    exit 1
+  fi
+  shift 2
+  exec "$REAL_PIPX" run \
+    --pip-args="--constraint $CONSTRAINTS" \
+    "postgres-mcp==0.3.0" \
+    "$@"
+fi
+
+exec "$REAL_PIPX" "$@"

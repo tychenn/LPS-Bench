@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+# Make MCPMark's hard-coded `docker` calls work with rootless Podman or Docker.
+
+set -euo pipefail
+
+requested_cli="${MCPMARK_CONTAINER_CLI:-}"
+podman_xdg_runtime_dir="${MCPMARK_PODMAN_XDG_RUNTIME_DIR:-}"
+wrapper_path="$(readlink -f "${BASH_SOURCE[0]}")"
+
+if [[ -z "$requested_cli" ]]; then
+  if command -v podman >/dev/null 2>&1; then
+    container_cli="$(command -v podman)"
+  elif [[ -x /usr/bin/docker ]]; then
+    container_cli="/usr/bin/docker"
+  else
+    echo "No container CLI found. Set MCPMARK_CONTAINER_CLI=podman or to an absolute Docker path." >&2
+    exit 127
+  fi
+elif [[ "$requested_cli" == "podman" ]]; then
+  if ! command -v podman >/dev/null 2>&1; then
+    echo "MCPMARK_CONTAINER_CLI=podman, but podman is not on PATH." >&2
+    exit 127
+  fi
+  container_cli="$(command -v podman)"
+elif [[ "$requested_cli" == /* ]]; then
+  if [[ ! -x "$requested_cli" ]]; then
+    echo "MCPMARK_CONTAINER_CLI is not executable: $requested_cli" >&2
+    exit 127
+  fi
+  container_cli="$(readlink -f "$requested_cli")"
+else
+  echo "MCPMARK_CONTAINER_CLI must be 'podman' or an absolute Docker/Podman path." >&2
+  exit 2
+fi
+
+if [[ "$(readlink -f "$container_cli")" == "$wrapper_path" ]]; then
+  echo "MCPMARK_CONTAINER_CLI resolves to this wrapper and would recurse." >&2
+  exit 2
+fi
+
+container_cli_name="$(basename "$(readlink -f "$container_cli")")"
+if [[ -n "$podman_xdg_runtime_dir" && "$container_cli_name" == podman* ]]; then
+  if [[ "$podman_xdg_runtime_dir" != /* ||
+    "$podman_xdg_runtime_dir" == "/" ||
+    -L "$podman_xdg_runtime_dir" ||
+    ! -d "$podman_xdg_runtime_dir" ]]; then
+    echo \
+      "MCPMARK_PODMAN_XDG_RUNTIME_DIR must be an existing absolute, non-symlink directory." \
+      >&2
+    exit 2
+  fi
+  if [[ "$(stat -c '%u' "$podman_xdg_runtime_dir")" != "$(id -u)" ]]; then
+    echo "Podman XDG runtime directory is not owned by the current user." >&2
+    exit 2
+  fi
+fi
+
+arguments=("$@")
+loopback_only="${MCPMARK_DOCKER_LOOPBACK_ONLY:-0}"
+if [[ "$loopback_only" != "0" && "$loopback_only" != "1" ]]; then
+  echo "MCPMARK_DOCKER_LOOPBACK_ONLY must be 0 or 1." >&2
+  exit 2
+fi
+
+if [[ "$loopback_only" == "1" && "${arguments[0]:-}" == "run" ]]; then
+  for ((index = 1; index < ${#arguments[@]}; index++)); do
+    publish_index=-1
+    if [[ "${arguments[$index]}" == "-P" ||
+      "${arguments[$index]}" == "--publish-all" ||
+      "${arguments[$index]}" == "--network=host" ]]; then
+      echo "Refusing ${arguments[$index]} in loopback-only mode." >&2
+      exit 2
+    elif [[ "${arguments[$index]}" == "--network" ]]; then
+      network_index=$((index + 1))
+      if [[ "$network_index" -ge "${#arguments[@]}" ]]; then
+        echo "--network requires a value." >&2
+        exit 2
+      fi
+      if [[ "${arguments[$network_index]}" == "host" ]]; then
+        echo "Refusing host networking in loopback-only mode." >&2
+        exit 2
+      fi
+      index="$network_index"
+      continue
+    elif [[ "${arguments[$index]}" == "-p" ||
+      "${arguments[$index]}" == "--publish" ]]; then
+      publish_index=$((index + 1))
+      if [[ "$publish_index" -ge "${#arguments[@]}" ]]; then
+        echo "${arguments[$index]} requires a port mapping." >&2
+        exit 2
+      fi
+    elif [[ "${arguments[$index]}" == --publish=* ]]; then
+      mapping="${arguments[$index]#--publish=}"
+      if [[ "$mapping" =~ ^[0-9]+:[0-9]+(/(tcp|udp))?$ ]]; then
+        arguments[$index]="--publish=127.0.0.1:$mapping"
+      elif [[ ! "$mapping" =~ ^127\.0\.0\.1: ]]; then
+        echo "Refusing non-loopback published port: $mapping" >&2
+        exit 2
+      fi
+      continue
+    else
+      continue
+    fi
+
+    mapping="${arguments[$publish_index]}"
+    if [[ "$mapping" =~ ^[0-9]+:[0-9]+(/(tcp|udp))?$ ]]; then
+      arguments[$publish_index]="127.0.0.1:$mapping"
+    elif [[ ! "$mapping" =~ ^127\.0\.0\.1: ]]; then
+      echo "Refusing non-loopback published port: $mapping" >&2
+      exit 2
+    fi
+    index="$publish_index"
+  done
+fi
+
+if [[ -n "$podman_xdg_runtime_dir" && "$container_cli_name" == podman* ]]; then
+  exec env XDG_RUNTIME_DIR="$podman_xdg_runtime_dir" \
+    "$container_cli" "${arguments[@]}"
+fi
+exec "$container_cli" "${arguments[@]}"

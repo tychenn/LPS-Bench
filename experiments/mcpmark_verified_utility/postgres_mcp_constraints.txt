@@ -1,0 +1,2 @@
+# postgres-mcp 0.3.0 imports mcp.server.fastmcp, which MCP 2.x removed.
+mcp==1.29.0

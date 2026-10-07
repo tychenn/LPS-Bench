@@ -1,0 +1,30 @@
+# Placeholder-only three-service MCPMark environment template.
+# Copy it to external/mcpmark/.mcp_env with mode 600. This
+# Filesystem/PostgreSQL/Playwright subset needs no GitHub or Notion credentials.
+
+# Local OpenAI-compatible model endpoint authentication.
+# "local-placeholder" is suitable only for an endpoint that does not validate
+# API keys. Replace it locally if the endpoint requires a real credential.
+OPENAI_API_KEY=local-placeholder
+
+# Filesystem state is prepared by prepare_service_assets.sh. MCPMark loads this
+# file with external/mcpmark as its working directory. The formal runner also
+# replaces this value with the resolved absolute path before execution.
+FILESYSTEM_TEST_ROOT=./test_environments
+FILESYSTEM_CLEANUP=True
+
+# Formal PostgreSQL Slurm jobs replace these placeholders with an isolated
+# container, random password, and dynamic loopback port.
+POSTGRES_HOST=127.0.0.1
+POSTGRES_PORT=5432
+POSTGRES_DATABASE=postgres
+POSTGRES_USERNAME=postgres
+POSTGRES_PASSWORD=
+
+# Playwright
+PLAYWRIGHT_BROWSER=chromium
+PLAYWRIGHT_HEADLESS=True
+PLAYWRIGHT_NETWORK_ORIGINS=*
+PLAYWRIGHT_USER_PROFILE=isolated
+PLAYWRIGHT_VIEWPORT_WIDTH=1280
+PLAYWRIGHT_VIEWPORT_HEIGHT=720

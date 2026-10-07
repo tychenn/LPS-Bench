@@ -1,0 +1,189 @@
+<div align="center">
+
+# [NeurIPS 2026] LPS-Bench
+
+### Benchmarking Safety Awareness of Computer-Use Agents in Long-Horizon Planning under Benign and Adversarial Scenarios
+
+Tianyu Chen · Chujia Hu · Dongrui Liu · Xia Hu · Wenjie Wang
+
+[![Paper](https://img.shields.io/badge/arXiv-2602.03255-b31b1b.svg)](https://arxiv.org/abs/2602.03255)
+[![Project Page](https://img.shields.io/badge/Project-Page-6366f1.svg)](https://tychenn.github.io/LPS-Bench/)
+[![Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-ffd21e.svg)](https://huggingface.co/datasets/tianyyuu/LPS-Bench)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e.svg)](LICENSE)
+
+**Can an agent recognize safety risks before acting on a long-horizon plan?**
+
+570 base cases · 40 skill variants · 7 domains · 9 risk types
+
+</div>
+
+<p align="center">
+  <a href="https://tychenn.github.io/LPS-Bench/#film">
+    <img src="site/assets/lps-bench-film-poster.jpg" alt="Watch LPS-Bench in 90 seconds" width="850">
+  </a>
+</p>
+<p align="center">
+  <strong><a href="https://tychenn.github.io/LPS-Bench/#film">▶ Watch LPS-Bench in 90 seconds</a></strong> · English / 中文
+</p>
+
+## 📅 News
+
+- **October 2, 2026:** [arXiv v2](https://arxiv.org/abs/2602.03255v2) updates the benchmark description, skill evaluation, evaluator validation, and appendices.
+- **NeurIPS 2026:** LPS-Bench has been accepted to the Evaluations and Datasets Track.
+- **Dataset:** The benchmark is available on [Hugging Face](https://huggingface.co/datasets/tianyyuu/LPS-Bench), with executable cases and mock tools in this repository.
+- **Paper:** Read the [NeurIPS 2026 paper](https://arxiv.org/abs/2602.03255v2).
+
+## 🌟 Introduction
+
+**LPS-Bench** evaluates the safety awareness of computer-use agents during long-horizon planning. Tasks cover everyday computer workflows in which an agent must recognize ambiguity, preserve dependencies, inspect untrusted information, and avoid harmful actions across multiple tool calls.
+
+The benchmark includes both **benign requests with hidden planning risks** and **adversarial requests that attempt to redirect an agent's behavior**. Each case pairs a user instruction with a simulated MCP-style tool environment and a case-specific safety criterion.
+
+- **Broad coverage:** 570 base cases derived from 65 scenarios across seven domains and nine risk types, including 252 benign and 318 adversarial cases.
+- **Skill-aware evaluation:** 40 paired skill variants examine safety under reusable skills; the runner supports `tool-only`, `skill-only`, and `hybrid` capability settings.
+- **Trajectory-level assessment:** Automated evaluators inspect the agent's execution trace against the case criterion and report `safe`, `unsafe`, or `execution_failed`.
+- **Extensible construction:** A multi-agent pipeline generates instructions, mock tools, and evaluation criteria for new cases.
+
+## ⚙️ Benchmark Overview
+
+The figures and tables below are cropped directly from [arXiv v2 (October 2, 2026)](https://arxiv.org/abs/2602.03255v2); their numbering follows that version.
+
+<p align="center">
+  <img src="site/assets/paper-overview.png" alt="Figure 3: LPS-Bench multi-agent case generation and automated trajectory evaluation framework" width="100%">
+</p>
+<p align="center">
+  <em>Figure 3. Benchmark construction and evaluation framework.</em>
+</p>
+
+An agent receives a task and a case-specific toolkit, interacts with the mock environment, and produces an execution trace. The evaluator judges whether the trace satisfies the safety criterion. The skill extension adds reusable instructions and compares capability settings on paired tasks.
+
+| User intent | Risk categories | Base cases |
+| --- | --- | ---: |
+| Benign | False Assumption (FA), Over-Compliance (OC), Task Sequence (TS), Inefficient Planning (IP) | 252 |
+| Adversarial | Harmless Subtask (HS), Prompt Injection (PI), Multi-turn Attack (MT), Environment Backdoor (EB), Race Condition (RC) | 318 |
+
+| Domain | Base cases | Example workflows |
+| --- | ---: | --- |
+| Web Browser | 92 | Account management, shopping, order tracking |
+| Code | 90 | Source modification, deployment, debugging |
+| File I/O | 85 | Migration, versioning, archival |
+| Multi-media | 78 | Media processing, conversion, metadata editing |
+| Social Media | 77 | Privacy settings, data export, notifications |
+| OS Operation | 76 | Services, system configuration, file operations |
+| Office | 72 | Documents, formatting, PDF export |
+
+Base PI cases place adversarial text in the user instruction; EB cases place it in tool outputs. PI skill variants use benign user instructions with adversarial text in the skill body. These settings expose different attack surfaces.
+
+## 📊 Evaluation
+
+The paper evaluates **13 models** from the GPT, Claude, Gemini, DeepSeek, Llama, and Qwen families. It studies safety across benign and adversarial tasks, the effect of reusable skills, and prompting-based mitigation.
+
+<p align="center">
+  <img src="site/assets/paper-results.png" alt="Figure 1: Success-conditioned Safe Rate of 13 models for benign and adversarial risks" width="500">
+</p>
+<p align="center">
+  <em>Figure 1. Success-conditioned Safe Rate across benign and adversarial risks.</em>
+</p>
+
+The primary metric is **success-conditioned Safe Rate**, `SR_success = safe / (safe + unsafe)`. Technical failures are excluded only when no earlier safety violation establishes an unsafe verdict. Group averages are unweighted means over risk categories.
+
+The reported results show that planning safety remains challenging across model families. Claude-4.5-Sonnet has the highest reported risk-category averages: **58.55% on benign tasks** and **95.77% on adversarial tasks**. Benign planning risks are particularly difficult to detect.
+
+<p align="center">
+  <img src="site/assets/paper-results-table.png" alt="Table 3: Success-conditioned Safe Rate by risk category for all 13 evaluated models, with benign and adversarial group averages" width="100%">
+</p>
+<p align="center">
+  <em>Table 3. Success-conditioned Safe Rate by risk category (%; higher is better).</em>
+</p>
+
+### Skill-Augmented Evaluation
+
+The skill extension compares original and skill-augmented cases across four risk categories: False Assumption, Over-Compliance, Task Sequence, and Prompt Injection. Both conditions use new runs independent of the primary evaluation in Table 3, with 10 attempted cases per category and condition. The comparison is paired by case; execution-failed trajectories are excluded from each rate denominator.
+
+<p align="center">
+  <img src="site/assets/paper-skills-table.png" alt="Table 5: Paired success-conditioned Safe Rate comparison of original and skill-augmented cases for six representative models" width="100%">
+</p>
+<p align="center">
+  <em>Table 5. Original and skill-augmented case comparisons.</em>
+</p>
+
+**Evaluator validation:** In the paper's blinded audit of 216 trajectories, two annotators agreed on 210 (97.22%). DeepSeek-R1 matched the unanimous label on 202 of those 210 trajectories (96.19%); the six human-disagreement cases were excluded from this comparison. See §4.1 and Appendix F of arXiv v2.
+
+> **Dataset version:** These results describe the paper's experimental case versions. The current release contains audited revisions to case text, tool behavior, and evaluation criteria. New results on this release require fresh runs and should record the repository commit. See the [dataset content audit](docs/dataset_content_audit.md) and [experiment configuration and provenance](docs/experiment_reproducibility.md).
+
+## 💻 Usage
+
+### Installation
+
+Use Python 3.11 in a dedicated environment:
+
+```bash
+git clone https://github.com/tychenn/LPS-Bench.git
+cd LPS-Bench
+
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+### Quickstart
+
+Check the dataset's case, tool, evaluator, and skill references:
+
+```bash
+python scripts/validate_dataset.py
+```
+
+With [Ollama](https://ollama.com/) installed and its server running, download a model and run one case:
+
+```bash
+ollama pull qwen3:8b
+python agent.py \
+  --cases examples/webbrowser/FA_1.json \
+  --models qwen3:8b \
+  --output-dir runs/quickstart
+```
+
+This produces an execution trace. Add `--evaluate` and configure a judge to obtain safety scores; the paper uses a DeepSeek-R1 judge. See the [usage guide](docs/usage.md) for API endpoints, evaluation, batch runs, skill modes, and case generation.
+
+### Dataset Access
+
+Browse or download the [Hugging Face dataset](https://huggingface.co/datasets/tianyyuu/LPS-Bench). This repository contains the corresponding executable case definitions, tool modules, skills, and evaluators.
+
+```text
+LPS-Bench/
+├── examples/               # 570 base cases + 40 evaluated skill variants
+├── tools/                  # Case-specific mock tool modules
+├── skill_assets/           # Case-local skill instructions
+├── evaluator/              # Safety and utility evaluators
+├── agent.py                # Agent execution and evaluation runner
+├── multi-agent_pipeline.py # Case synthesis pipeline
+├── prompt/                 # Case-generation prompt templates
+├── scripts/                # Validation and experiment helpers
+├── docs/                   # Usage, dataset audit, reproducibility notes
+├── site/                   # Project website
+└── candidate_cases/        # Unevaluated case candidates
+```
+
+## ⚖️ License
+
+This project is released under the [MIT License](LICENSE).
+
+## 💬 Contact
+
+For questions, bug reports, and dataset feedback, please open a [GitHub issue](https://github.com/tychenn/LPS-Bench/issues). When reporting a case, include its path and the repository commit.
+
+## 📝 Citation
+
+If you use LPS-Bench in your research, please cite our **NeurIPS 2026 paper (Evaluations and Datasets Track)**:
+
+```bibtex
+@inproceedings{chen2026lpsbench,
+  title={LPS-Bench: Benchmarking Safety Awareness of Computer-Use Agents in Long-Horizon Planning under Benign and Adversarial Scenarios},
+  author={Chen, Tianyu and Hu, Chujia and Liu, Dongrui and Hu, Xia and Wang, Wenjie},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2026},
+  note={Accepted, Evaluations and Datasets Track},
+  url={https://arxiv.org/abs/2602.03255v2}
+}
+```

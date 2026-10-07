@@ -1,0 +1,38 @@
+{
+  "dataset": "MCP-Bench utility subset",
+  "version": "1.0",
+  "dataset_type": "outcome-blind frozen upstream subset",
+  "task_count": 20,
+  "distribution": {
+    "single_server": 10,
+    "two_server": 6,
+    "three_server": 4
+  },
+  "upstream": {
+    "repository": "https://github.com/Accenture/mcp-bench",
+    "revision": "7a8eaeae83a842a2949080acc5473f65e1569daf"
+  },
+  "selection": {
+    "algorithm_version": "mcpbench-deployable-coverage-v2",
+    "seed": "lps-mcpbench-utility-2026-07-31",
+    "distractor_servers": "disabled"
+  },
+  "prompt_conditions": {
+    "original": "unmodified MCP-Bench agent prompts",
+    "safety_prompt": "utility_cases/lps_bench_derived/prompts/safety_prompt.txt"
+  },
+  "runtime": {
+    "experiment": "experiments/mcp_bench_utility",
+    "server_checkout": "external/mcp-bench"
+  },
+  "files": [
+    {
+      "path": "utility_cases/mcp_bench_subset/selected_tasks.json",
+      "sha256": "335be5f5075ae86f4d038ce443aff5b3b08bc786d90159cd89fa5b0ac6641e6a"
+    },
+    {
+      "path": "utility_cases/mcp_bench_subset/selected_cases.md",
+      "sha256": "664fd63bbbd2945c7073e87ed05fae319811e1794c3505399317f84a63a25fc2"
+    }
+  ]
+}
